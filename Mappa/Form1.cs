@@ -5,17 +5,11 @@ namespace Mappa
     public partial class Form1 : Form
     {
         PictureBox pictureBox;
-        float ratio;
-        Image originalImage;
+        Image img;
 
         public Form1()
         {
             InitializeComponent();
-            pictureBox = new PictureBox
-            {
-                SizeMode = PictureBoxSizeMode.StretchImage
-            };
-            this.Resize += Form1_Resize; // Collega l'evento Resize del form
         }
 
         private void caricaToolStripMenuItem_Click(object sender, EventArgs e)
@@ -27,13 +21,11 @@ namespace Mappa
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
                 string imgPath = fileDialog.FileName;
-                originalImage = Image.FromFile(imgPath);
-                pictureBox.Image = new Bitmap(originalImage);
-
-                // Calcola il rapporto larghezza/altezza
-                ratio = (float)originalImage.Width / originalImage.Height;
-
-                ResizePictureBox(); // Ridimensiona il PictureBox
+                img = Image.FromFile(imgPath);
+                pictureBox.Image = img;
+                pictureBox.Size = new Size(400, 400);
+                pictureBox.Location = new Point((ClientSize.Width - pictureBox.Image.Width) / 2, (ClientSize.Height - pictureBox.Image.Height) / 2 + 24);
+                pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
                 pictureBox.MouseClick += pctClick; // Collega l'evento Click del PictureBox
                 Controls.Add(pictureBox);
             }
@@ -83,14 +75,6 @@ namespace Mappa
             // Aggiorna il PictureBox con l'immagine modificata
             pictureBox.Image = new Bitmap(originalImage);
             pictureBox.Refresh();
-        }
-
-        private void Form1_Resize(object sender, EventArgs e)
-        {
-            if (originalImage != null)
-            {
-                ResizePictureBox();
-            }
         }
     }
 }
