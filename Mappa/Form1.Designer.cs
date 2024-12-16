@@ -30,14 +30,16 @@
         {
             menuStrip1 = new MenuStrip();
             caricaToolStripMenuItem = new ToolStripMenuItem();
-            pictureBox1 = new PictureBox();
+            salvaJSONToolStripMenuItem = new ToolStripMenuItem();
+            listPoints = new ListBox();
+            apriJSONToolStripMenuItem = new ToolStripMenuItem();
+            rimuoviToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { caricaToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { caricaToolStripMenuItem, salvaJSONToolStripMenuItem, apriJSONToolStripMenuItem, rimuoviToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(800, 24);
@@ -51,27 +53,49 @@
             caricaToolStripMenuItem.Text = "Carica";
             caricaToolStripMenuItem.Click += caricaToolStripMenuItem_Click;
             // 
-            // pictureBox1
+            // salvaJSONToolStripMenuItem
             // 
-            pictureBox1.Location = new Point(438, 284);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(100, 50);
-            pictureBox1.TabIndex = 3;
-            pictureBox1.TabStop = false;
+            salvaJSONToolStripMenuItem.Name = "salvaJSONToolStripMenuItem";
+            salvaJSONToolStripMenuItem.Size = new Size(77, 20);
+            salvaJSONToolStripMenuItem.Text = "Salva JSON";
+            salvaJSONToolStripMenuItem.Click += salvaJSONToolStripMenuItem_Click;
+            // 
+            // listPoints
+            // 
+            listPoints.FormattingEnabled = true;
+            listPoints.ItemHeight = 15;
+            listPoints.Location = new Point(0, 37);
+            listPoints.Name = "listPoints";
+            listPoints.Size = new Size(175, 424);
+            listPoints.TabIndex = 3;
+            // 
+            // apriJSONToolStripMenuItem
+            // 
+            apriJSONToolStripMenuItem.Name = "apriJSONToolStripMenuItem";
+            apriJSONToolStripMenuItem.Size = new Size(72, 20);
+            apriJSONToolStripMenuItem.Text = "Apri JSON";
+            apriJSONToolStripMenuItem.Click += apriJSONToolStripMenuItem_Click;
+            // 
+            // rimuoviToolStripMenuItem
+            // 
+            rimuoviToolStripMenuItem.Name = "rimuoviToolStripMenuItem";
+            rimuoviToolStripMenuItem.Size = new Size(63, 20);
+            rimuoviToolStripMenuItem.Text = "Rimuovi";
+            rimuoviToolStripMenuItem.Click += rimuoviToolStripMenuItem_Click;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
-            Controls.Add(pictureBox1);
+            ClientSize = new Size(800, 466);
+            Controls.Add(listPoints);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
             Name = "Form1";
             Text = "Form1";
+            ClientSizeChanged += Form1_ClientSizeChanged;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -79,6 +103,9 @@
         #endregion
         private MenuStrip menuStrip1;
         private ToolStripMenuItem caricaToolStripMenuItem;
-        private PictureBox pictureBox1;
+        private ToolStripMenuItem salvaJSONToolStripMenuItem;
+        private ListBox listPoints;
+        private ToolStripMenuItem apriJSONToolStripMenuItem;
+        private ToolStripMenuItem rimuoviToolStripMenuItem;
     }
 }
