@@ -31,15 +31,20 @@
             menuStrip1 = new MenuStrip();
             caricaToolStripMenuItem = new ToolStripMenuItem();
             salvaJSONToolStripMenuItem = new ToolStripMenuItem();
-            listPoints = new ListBox();
             apriJSONToolStripMenuItem = new ToolStripMenuItem();
             rimuoviToolStripMenuItem = new ToolStripMenuItem();
+            modalitaToolStripMenuItem = new ToolStripMenuItem();
+            segmentoToolStripMenuItem = new ToolStripMenuItem();
+            puntoToolStripMenuItem = new ToolStripMenuItem();
+            listPoints = new ListBox();
+            cmbModalita = new ComboBox();
+            listSegmenti = new ListBox();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { caricaToolStripMenuItem, salvaJSONToolStripMenuItem, apriJSONToolStripMenuItem, rimuoviToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { caricaToolStripMenuItem, salvaJSONToolStripMenuItem, apriJSONToolStripMenuItem, rimuoviToolStripMenuItem, modalitaToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(800, 24);
@@ -60,15 +65,6 @@
             salvaJSONToolStripMenuItem.Text = "Salva JSON";
             salvaJSONToolStripMenuItem.Click += salvaJSONToolStripMenuItem_Click;
             // 
-            // listPoints
-            // 
-            listPoints.FormattingEnabled = true;
-            listPoints.ItemHeight = 15;
-            listPoints.Location = new Point(0, 37);
-            listPoints.Name = "listPoints";
-            listPoints.Size = new Size(175, 424);
-            listPoints.TabIndex = 3;
-            // 
             // apriJSONToolStripMenuItem
             // 
             apriJSONToolStripMenuItem.Name = "apriJSONToolStripMenuItem";
@@ -83,11 +79,61 @@
             rimuoviToolStripMenuItem.Text = "Rimuovi";
             rimuoviToolStripMenuItem.Click += rimuoviToolStripMenuItem_Click;
             // 
+            // modalitaToolStripMenuItem
+            // 
+            modalitaToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { segmentoToolStripMenuItem, puntoToolStripMenuItem });
+            modalitaToolStripMenuItem.Name = "modalitaToolStripMenuItem";
+            modalitaToolStripMenuItem.Size = new Size(66, 20);
+            modalitaToolStripMenuItem.Text = "Modalita";
+            // 
+            // segmentoToolStripMenuItem
+            // 
+            segmentoToolStripMenuItem.BackColor = SystemColors.ButtonHighlight;
+            segmentoToolStripMenuItem.Name = "segmentoToolStripMenuItem";
+            segmentoToolStripMenuItem.Size = new Size(127, 22);
+            segmentoToolStripMenuItem.Text = "segmento";
+            // 
+            // puntoToolStripMenuItem
+            // 
+            puntoToolStripMenuItem.Name = "puntoToolStripMenuItem";
+            puntoToolStripMenuItem.Size = new Size(127, 22);
+            puntoToolStripMenuItem.Text = "punto";
+            // 
+            // listPoints
+            // 
+            listPoints.FormattingEnabled = true;
+            listPoints.ItemHeight = 15;
+            listPoints.Location = new Point(0, 37);
+            listPoints.Name = "listPoints";
+            listPoints.Size = new Size(175, 424);
+            listPoints.TabIndex = 3;
+            // 
+            // cmbModalita
+            // 
+            cmbModalita.DisplayMember = "(nessuno)";
+            cmbModalita.FormattingEnabled = true;
+            cmbModalita.Items.AddRange(new object[] { "Punto", "Segmento" });
+            cmbModalita.Location = new Point(664, 37);
+            cmbModalita.Name = "cmbModalita";
+            cmbModalita.Size = new Size(124, 23);
+            cmbModalita.TabIndex = 4;
+            // 
+            // listSegmenti
+            // 
+            listSegmenti.FormattingEnabled = true;
+            listSegmenti.ItemHeight = 15;
+            listSegmenti.Location = new Point(664, 66);
+            listSegmenti.Name = "listSegmenti";
+            listSegmenti.Size = new Size(124, 64);
+            listSegmenti.TabIndex = 5;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 466);
+            Controls.Add(listSegmenti);
+            Controls.Add(cmbModalita);
             Controls.Add(listPoints);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
@@ -107,5 +153,10 @@
         private ListBox listPoints;
         private ToolStripMenuItem apriJSONToolStripMenuItem;
         private ToolStripMenuItem rimuoviToolStripMenuItem;
+        private ToolStripMenuItem modalitaToolStripMenuItem;
+        private ToolStripMenuItem segmentoToolStripMenuItem;
+        private ToolStripMenuItem puntoToolStripMenuItem;
+        private ComboBox cmbModalita;
+        private ListBox listSegmenti;
     }
 }
