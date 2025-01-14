@@ -8,6 +8,6 @@ namespace Mappa
 {
     public class Segmenti
     {
-        
+        int ciao;
     }
 }
