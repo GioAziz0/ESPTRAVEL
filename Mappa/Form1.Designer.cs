@@ -39,7 +39,9 @@
             listPoints = new ListBox();
             cmbModalita = new ComboBox();
             listSegmenti = new ListBox();
+            panel1 = new Panel();
             menuStrip1.SuspendLayout();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
@@ -47,7 +49,7 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { caricaToolStripMenuItem, salvaJSONToolStripMenuItem, apriJSONToolStripMenuItem, rimuoviToolStripMenuItem, modalitaToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(800, 24);
+            menuStrip1.Size = new Size(984, 24);
             menuStrip1.TabIndex = 2;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -103,7 +105,7 @@
             // 
             listPoints.FormattingEnabled = true;
             listPoints.ItemHeight = 15;
-            listPoints.Location = new Point(0, 37);
+            listPoints.Location = new Point(12, 37);
             listPoints.Name = "listPoints";
             listPoints.Size = new Size(175, 424);
             listPoints.TabIndex = 3;
@@ -113,7 +115,7 @@
             cmbModalita.DisplayMember = "(nessuno)";
             cmbModalita.FormattingEnabled = true;
             cmbModalita.Items.AddRange(new object[] { "Punto", "Segmento" });
-            cmbModalita.Location = new Point(664, 37);
+            cmbModalita.Location = new Point(3, 3);
             cmbModalita.Name = "cmbModalita";
             cmbModalita.Size = new Size(124, 23);
             cmbModalita.TabIndex = 4;
@@ -122,18 +124,26 @@
             // 
             listSegmenti.FormattingEnabled = true;
             listSegmenti.ItemHeight = 15;
-            listSegmenti.Location = new Point(664, 66);
+            listSegmenti.Location = new Point(3, 32);
             listSegmenti.Name = "listSegmenti";
             listSegmenti.Size = new Size(124, 64);
             listSegmenti.TabIndex = 5;
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(cmbModalita);
+            panel1.Controls.Add(listSegmenti);
+            panel1.Location = new Point(840, 37);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(131, 304);
+            panel1.TabIndex = 6;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 466);
-            Controls.Add(listSegmenti);
-            Controls.Add(cmbModalita);
+            ClientSize = new Size(984, 511);
+            Controls.Add(panel1);
             Controls.Add(listPoints);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
@@ -142,6 +152,7 @@
             ClientSizeChanged += Form1_ClientSizeChanged;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
+            panel1.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -158,5 +169,6 @@
         private ToolStripMenuItem puntoToolStripMenuItem;
         private ComboBox cmbModalita;
         private ListBox listSegmenti;
+        private Panel panel1;
     }
 }

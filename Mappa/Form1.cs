@@ -14,11 +14,13 @@ namespace Mappa
         private Image img; // Usa Bitmap per una modifica efficace dell'immagine
         private Bitmap imgBitmap; // Bitmap modificabile
         private string filePath;
+        private List<Point> puntiSelezionati = new List<Point>();
 
         public Form1()
         {
             InitializeComponent();
             pictureBox = new PictureBox();
+            cmbModalita.SelectedIndex = 0;
         }
 
         private void caricaToolStripMenuItem_Click(object sender, EventArgs e)
@@ -71,8 +73,54 @@ namespace Mappa
                 punti = punti.OrderBy(p => Distanza(p, pointclick)).ToList();
                 Point puntoPiuVicino = punti.First();
                 listSegmenti.Items.Add(puntoPiuVicino);
-                if(listSegmenti.Items.Count == 2)
+                
+                foreach (Point p in punti)
                 {
+                    if (p == puntoPiuVicino)
+                    {
+                        listPoints.Items.Remove(p);
+
+                        puntiSelezionati.Add(p);
+
+                        if (puntiSelezionati.Count == 2)
+                        {
+                            break;
+                        }
+
+                        Bitmap tempBitmap = new Bitmap(imgBitmap);
+
+                        using (Graphics gpr = Graphics.FromImage(tempBitmap))
+                        {
+                            
+                            //int pointSize = 30; // Dimensione del punto da disegnare
+                            gpr.FillRectangle(Brushes.Orange, p.X - pointSize / 2, p.Y - pointSize / 2, pointSize, pointSize);
+                            
+                            foreach (Point p1 in listPoints.Items)
+                            {
+                                gpr.FillRectangle(Brushes.Red, p1.X - pointSize / 2, p1.Y - pointSize / 2, pointSize, pointSize);
+                            }
+                        }
+
+                        // Aggiorna l'immagine nel PictureBox
+                        pictureBox.Image = new Bitmap(tempBitmap);
+                        pictureBox.Refresh(); // Rendi visibile l'aggiornamento
+
+                        
+
+                    }
+                    break;
+                }
+                //listPoints.Items.Add(puntoPiuVicino);
+                
+
+                if (listSegmenti.Items.Count == 2)
+                {
+                    foreach (Point p in puntiSelezionati)
+                    {
+                        listPoints.Items.Add(p);
+                    }
+                    puntiSelezionati.Clear();
+
                     drawSegment();
                     listSegmenti.Items.Clear();
                 }
