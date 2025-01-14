@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Windows.Forms;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Reflection;
 
 namespace Mappa
 {
@@ -12,13 +13,16 @@ namespace Mappa
     {
         private PictureBox pictureBox;
         private Image img; // Usa Bitmap per una modifica efficace dell'immagine
-        private Bitmap imgBitmap; // Bitmap modificabile
         private string filePath;
+        private List<Punto> ListaPunti;
+        List<Punto> PuntiSegmento;
 
         public Form1()
         {
             InitializeComponent();
             pictureBox = new PictureBox();
+            ListaPunti = new List<Punto>();
+            PuntiSegmento = new List<Punto>();
         }
 
         private void caricaToolStripMenuItem_Click(object sender, EventArgs e)
@@ -32,14 +36,12 @@ namespace Mappa
                 string imgPath = fileDialog.FileName;
                 img = Image.FromFile(imgPath);
 
-                // Crea una Bitmap modificabile per il disegno
-                imgBitmap = new Bitmap(img);
 
                 int altezza = (int)(ClientSize.Height * 0.9);
                 int larghezza = (img.Width * altezza) / img.Height;
                 pictureBox.Size = new Size(larghezza, altezza);
                 pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-                pictureBox.Image = imgBitmap; // Usa la bitmap modificata
+                pictureBox.Image = img;
                 pictureBox.Location = new Point(ClientSize.Width / 2 - larghezza / 2, 44);
                 pictureBox.MouseClick += pctClick;
                 pictureBox.Visible = true;
@@ -56,75 +58,96 @@ namespace Mappa
             // Calcola la posizione corretta nell'immagine originale
             int positionX = (int)(e.X * scaleX);
             int positionY = (int)(e.Y * scaleY);
-            Point pointclick = new Point(positionX, positionY);
+
+            Punto PuntoClick = new Punto(new Point(positionX, positionY), TrovaNome(ListaPunti.Count()));
             int pointSize = 30;
 
             if (cmbModalita.SelectedIndex == 0)
             {
-                listPoints.Items.Add(new Point(positionX, positionY));
-
+                ListaPunti.Add(PuntoClick);
+                listPoints.Items.Add(PuntoClick);
                 DisegnaPunti();
             }
             else if (cmbModalita.SelectedIndex == 1)
             {
-                List<Point> punti = listPoints.Items.Cast<Point>().ToList();
-                punti = punti.OrderBy(p => Distanza(p, pointclick)).ToList();
-                Point puntoPiuVicino = punti.First();
-                listSegmenti.Items.Add(puntoPiuVicino);
-                if(listSegmenti.Items.Count == 2)
+                ListaPunti = ListaPunti.OrderBy(p => Distanza(p, PuntoClick)).ToList();
+                Punto puntoPiuVicino = ListaPunti.First();
+                ListPuntiSeg.Items.Add(puntoPiuVicino);
+                PuntiSegmento.Add(puntoPiuVicino);
+                if (PuntiSegmento.Count() == 2)
                 {
                     drawSegment();
-                    listSegmenti.Items.Clear();
+                    Segmento seg = new Segmento(PuntiSegmento[0], PuntiSegmento[1]);
+                    ListvSegmenti.Items.Add(seg);
+                    ListPuntiSeg.Items.Clear();
+                    PuntiSegmento.Clear();
                 }
             }
+        }
+        public string TrovaNome(int indice)
+        {
+            string nome;
+            indice++;
+            do
+            {
+                nome = string.Empty;
+                int tempIndice = indice;
+
+                // Converte l'indice in un nome alfabetico
+                while (tempIndice > 0)
+                {
+                    tempIndice--;
+                    nome = (char)('A' + (tempIndice % 26)) + nome;
+                    tempIndice /= 26;
+                }
+
+                indice++;
+            }
+            while (ListaPunti.Any(x => x.Name == nome));
+
+            return nome;
         }
 
         private void drawSegment()
         {
-            using (Graphics g = Graphics.FromImage(imgBitmap))
+            using (Graphics g = Graphics.FromImage(img))
             {
-                List<Point> punti = listSegmenti.Items.Cast<Point>().ToList();
 
-                if (punti.Count == 2)
+                if (PuntiSegmento.Count == 2)
                 {
                     Pen pen = new Pen(Color.FromArgb(0, 0, 255), 3);  // Dimensione penna adatta
-                    g.DrawLine(pen, punti[0], punti[1]);
+                    g.DrawLine(pen, PuntiSegmento[0].CordinatePunti, PuntiSegmento[1].CordinatePunti);
                 }
             }
 
             // Aggiorna l'immagine nel PictureBox con imgBitmap che contiene il segmento disegnato
-            pictureBox.Image = new Bitmap(imgBitmap);
+            pictureBox.Image = new Bitmap(img);
             DisegnaPunti();
         }
 
-        private float Distanza(Point p1, Point p2)
+        private float Distanza(Punto p1, Punto p2)
         {
-            return (float)Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
+            return (float)Math.Sqrt(Math.Pow(p1.CordinatePunti.X - p2.CordinatePunti.X, 2) + Math.Pow(p1.CordinatePunti.Y - p2.CordinatePunti.Y, 2));
         }
 
         private void DisegnaPunti()
         {
-            // Crea una nuova bitmap modificabile
-            Bitmap tempBitmap = new Bitmap(imgBitmap);
-
-            using (Graphics gpr = Graphics.FromImage(tempBitmap))
+            using (Graphics gpr = Graphics.FromImage(img))
             {
                 // Disegna ogni punto dalla lista
-                foreach (Point p in listPoints.Items)
+                foreach (Punto p in listPoints.Items)
                 {
                     int pointSize = 30; // Dimensione del punto da disegnare
-                    gpr.FillRectangle(Brushes.Red, p.X - pointSize / 2, p.Y - pointSize / 2, pointSize, pointSize);
+                    gpr.FillRectangle(Brushes.Red, p.CordinatePunti.X - pointSize / 2, p.CordinatePunti.Y - pointSize / 2, pointSize, pointSize);
                 }
             }
 
-            // Aggiorna l'immagine nel PictureBox
-            pictureBox.Image = new Bitmap(tempBitmap);
-            pictureBox.Refresh(); // Rendi visibile l'aggiornamento
+            pictureBox.Image = img;
+            pictureBox.Refresh();
         }
 
         private void Form1_ClientSizeChanged(object sender, EventArgs e)
         {
-            // Rivedere la posizione e le dimensioni del PictureBox
             refresh();
         }
 
@@ -178,20 +201,6 @@ namespace Mappa
                 MessageBox.Show(ex.Message);
             }
         }
-
-        /*private void LoadPoints()
-        {
-            if (File.Exists(filePath))
-            {
-                string json = File.ReadAllText(filePath);
-                listPoints.Items.Clear();
-                List<Point[]> temp = JsonSerializer.Deserialize<Point[]>(json);
-                listPoints.Items.Add(JsonSerializer.Deserialize<Point[]>(json));
-
-                // Dopo aver caricato i punti, ridisegnali
-                DisegnaPunti();
-            }
-        }*/
 
         private void LoadPoints()
         {
@@ -247,6 +256,11 @@ namespace Mappa
             pictureBox.Location = new Point(ClientSize.Width / 2 - larghezza / 2, 44);
 
             DisegnaPunti(); // Ridisegna i punti quando la finestra viene ridimensionata
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            cmbModalita.SelectedIndex = 0;
         }
     }
 }

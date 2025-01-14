@@ -38,7 +38,8 @@
             puntoToolStripMenuItem = new ToolStripMenuItem();
             listPoints = new ListBox();
             cmbModalita = new ComboBox();
-            listSegmenti = new ListBox();
+            ListPuntiSeg = new ListBox();
+            ListvSegmenti = new ListBox();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -118,27 +119,38 @@
             cmbModalita.Size = new Size(124, 23);
             cmbModalita.TabIndex = 4;
             // 
-            // listSegmenti
+            // ListPuntiSeg
             // 
-            listSegmenti.FormattingEnabled = true;
-            listSegmenti.ItemHeight = 15;
-            listSegmenti.Location = new Point(664, 66);
-            listSegmenti.Name = "listSegmenti";
-            listSegmenti.Size = new Size(124, 64);
-            listSegmenti.TabIndex = 5;
+            ListPuntiSeg.FormattingEnabled = true;
+            ListPuntiSeg.ItemHeight = 15;
+            ListPuntiSeg.Location = new Point(664, 66);
+            ListPuntiSeg.Name = "ListPuntiSeg";
+            ListPuntiSeg.Size = new Size(124, 64);
+            ListPuntiSeg.TabIndex = 5;
+            // 
+            // ListvSegmenti
+            // 
+            ListvSegmenti.FormattingEnabled = true;
+            ListvSegmenti.ItemHeight = 15;
+            ListvSegmenti.Location = new Point(664, 136);
+            ListvSegmenti.Name = "ListvSegmenti";
+            ListvSegmenti.Size = new Size(124, 319);
+            ListvSegmenti.TabIndex = 7;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 466);
-            Controls.Add(listSegmenti);
+            Controls.Add(ListvSegmenti);
+            Controls.Add(ListPuntiSeg);
             Controls.Add(cmbModalita);
             Controls.Add(listPoints);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
             Name = "Form1";
             Text = "Form1";
+            Load += Form1_Load;
             ClientSizeChanged += Form1_ClientSizeChanged;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
@@ -157,6 +169,7 @@
         private ToolStripMenuItem segmentoToolStripMenuItem;
         private ToolStripMenuItem puntoToolStripMenuItem;
         private ComboBox cmbModalita;
-        private ListBox listSegmenti;
+        private ListBox ListPuntiSeg;
+        private ListBox ListvSegmenti;
     }
 }
