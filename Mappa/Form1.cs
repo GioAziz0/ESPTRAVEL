@@ -21,6 +21,7 @@ namespace Mappa
             InitializeComponent();
             pictureBox = new PictureBox();
             cmbModalita.SelectedIndex = 0;
+            abilitazioneControlli(false);
         }
 
         private void caricaToolStripMenuItem_Click(object sender, EventArgs e)
@@ -46,7 +47,18 @@ namespace Mappa
                 pictureBox.MouseClick += pctClick;
                 pictureBox.Visible = true;
                 Controls.Add(pictureBox);
+                abilitazioneControlli(true);
+
             }
+        }
+
+        private void abilitazioneControlli(bool ablilitazione)
+        {
+            salvaJSONToolStripMenuItem.Enabled = ablilitazione;
+            apriJSONToolStripMenuItem.Enabled = ablilitazione;
+            rimuoviToolStripMenuItem.Enabled = ablilitazione;
+            modalitaToolStripMenuItem.Enabled = ablilitazione;
+            pnlSegmenti.Visible = ablilitazione;
         }
 
         private void pctClick(object sender, MouseEventArgs e)
@@ -293,6 +305,7 @@ namespace Mappa
             int larghezza = (img.Width * altezza) / img.Height;
             pictureBox.Size = new Size(larghezza, altezza);
             pictureBox.Location = new Point(ClientSize.Width / 2 - larghezza / 2, 44);
+            pnlSegmenti.Location = new Point(ClientSize.Width -160, 37);
 
             DisegnaPunti(); // Ridisegna i punti quando la finestra viene ridimensionata
         }

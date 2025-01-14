@@ -39,9 +39,9 @@
             listPoints = new ListBox();
             cmbModalita = new ComboBox();
             listSegmenti = new ListBox();
-            panel1 = new Panel();
+            pnlSegmenti = new Panel();
             menuStrip1.SuspendLayout();
-            panel1.SuspendLayout();
+            pnlSegmenti.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
@@ -129,21 +129,21 @@
             listSegmenti.Size = new Size(124, 64);
             listSegmenti.TabIndex = 5;
             // 
-            // panel1
+            // pnlSegmenti
             // 
-            panel1.Controls.Add(cmbModalita);
-            panel1.Controls.Add(listSegmenti);
-            panel1.Location = new Point(840, 37);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(131, 304);
-            panel1.TabIndex = 6;
+            pnlSegmenti.Controls.Add(cmbModalita);
+            pnlSegmenti.Controls.Add(listSegmenti);
+            pnlSegmenti.Location = new Point(840, 37);
+            pnlSegmenti.Name = "pnlSegmenti";
+            pnlSegmenti.Size = new Size(131, 304);
+            pnlSegmenti.TabIndex = 6;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(984, 511);
-            Controls.Add(panel1);
+            ClientSize = new Size(984, 561);
+            Controls.Add(pnlSegmenti);
             Controls.Add(listPoints);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
@@ -152,7 +152,7 @@
             ClientSizeChanged += Form1_ClientSizeChanged;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
-            panel1.ResumeLayout(false);
+            pnlSegmenti.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -169,6 +169,6 @@
         private ToolStripMenuItem puntoToolStripMenuItem;
         private ComboBox cmbModalita;
         private ListBox listSegmenti;
-        private Panel panel1;
+        private Panel pnlSegmenti;
     }
 }
