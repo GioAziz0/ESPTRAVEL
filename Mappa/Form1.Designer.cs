@@ -38,9 +38,9 @@
             puntoToolStripMenuItem = new ToolStripMenuItem();
             listPoints = new ListBox();
             cmbModalita = new ComboBox();
-            listSegmenti = new ListBox();
+            listPuntiSeg = new ListBox();
             pnlSegmenti = new Panel();
-            listBox1 = new ListBox();
+            listSegmenti = new ListBox();
             menuStrip1.SuspendLayout();
             pnlSegmenti.SuspendLayout();
             SuspendLayout();
@@ -121,33 +121,33 @@
             cmbModalita.Size = new Size(124, 23);
             cmbModalita.TabIndex = 4;
             // 
-            // listSegmenti
+            // listPuntiSeg
             // 
-            listSegmenti.FormattingEnabled = true;
-            listSegmenti.ItemHeight = 15;
-            listSegmenti.Location = new Point(3, 32);
-            listSegmenti.Name = "listSegmenti";
-            listSegmenti.Size = new Size(124, 34);
-            listSegmenti.TabIndex = 5;
+            listPuntiSeg.FormattingEnabled = true;
+            listPuntiSeg.ItemHeight = 15;
+            listPuntiSeg.Location = new Point(3, 32);
+            listPuntiSeg.Name = "listPuntiSeg";
+            listPuntiSeg.Size = new Size(124, 34);
+            listPuntiSeg.TabIndex = 5;
             // 
             // pnlSegmenti
             // 
-            pnlSegmenti.Controls.Add(listBox1);
-            pnlSegmenti.Controls.Add(cmbModalita);
             pnlSegmenti.Controls.Add(listSegmenti);
+            pnlSegmenti.Controls.Add(cmbModalita);
+            pnlSegmenti.Controls.Add(listPuntiSeg);
             pnlSegmenti.Location = new Point(840, 37);
             pnlSegmenti.Name = "pnlSegmenti";
             pnlSegmenti.Size = new Size(131, 424);
             pnlSegmenti.TabIndex = 6;
             // 
-            // listBox1
+            // listSegmenti
             // 
-            listBox1.FormattingEnabled = true;
-            listBox1.ItemHeight = 15;
-            listBox1.Location = new Point(4, 72);
-            listBox1.Name = "listBox1";
-            listBox1.Size = new Size(124, 349);
-            listBox1.TabIndex = 6;
+            listSegmenti.FormattingEnabled = true;
+            listSegmenti.ItemHeight = 15;
+            listSegmenti.Location = new Point(4, 72);
+            listSegmenti.Name = "listSegmenti";
+            listSegmenti.Size = new Size(124, 349);
+            listSegmenti.TabIndex = 6;
             // 
             // Form1
             // 
@@ -179,8 +179,8 @@
         private ToolStripMenuItem segmentoToolStripMenuItem;
         private ToolStripMenuItem puntoToolStripMenuItem;
         private ComboBox cmbModalita;
-        private ListBox listSegmenti;
+        private ListBox listPuntiSeg;
         private Panel pnlSegmenti;
-        private ListBox listBox1;
+        private ListBox listSegmenti;
     }
 }

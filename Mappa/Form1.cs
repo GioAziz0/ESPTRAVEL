@@ -84,7 +84,7 @@ namespace Mappa
                 List<Point> punti = listPoints.Items.Cast<Point>().ToList();
                 punti = punti.OrderBy(p => Distanza(p, pointclick)).ToList();
                 Point puntoPiuVicino = punti.First();
-                listSegmenti.Items.Add(puntoPiuVicino);
+                listPuntiSeg.Items.Add(puntoPiuVicino);
                 
                 foreach (Point p in punti)
                 {
@@ -125,7 +125,7 @@ namespace Mappa
                 //listPoints.Items.Add(puntoPiuVicino);
                 
 
-                if (listSegmenti.Items.Count == 2)
+                if (listPuntiSeg.Items.Count == 2)
                 {
                     foreach (Point p in puntiSelezionati)
                     {
@@ -134,7 +134,7 @@ namespace Mappa
                     puntiSelezionati.Clear();
 
                     drawSegment();
-                    listSegmenti.Items.Clear();
+                    listPuntiSeg.Items.Clear();
                 }
             }
         }
@@ -143,7 +143,7 @@ namespace Mappa
         {
             using (Graphics g = Graphics.FromImage(imgBitmap))
             {
-                List<Point> punti = listSegmenti.Items.Cast<Point>().ToList();
+                List<Point> punti = listPuntiSeg.Items.Cast<Point>().ToList();
 
                 if (punti.Count == 2)
                 {
