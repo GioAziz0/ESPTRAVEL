@@ -130,11 +130,12 @@
             // 
             // ListvSegmenti
             // 
+            ListvSegmenti.Dock = DockStyle.Right;
             ListvSegmenti.FormattingEnabled = true;
             ListvSegmenti.ItemHeight = 15;
-            ListvSegmenti.Location = new Point(664, 136);
+            ListvSegmenti.Location = new Point(592, 24);
             ListvSegmenti.Name = "ListvSegmenti";
-            ListvSegmenti.Size = new Size(124, 319);
+            ListvSegmenti.Size = new Size(208, 442);
             ListvSegmenti.TabIndex = 7;
             // 
             // Form1

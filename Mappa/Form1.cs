@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Reflection;
+using Newtonsoft.Json;
 
 namespace Mappa
 {
@@ -178,13 +179,13 @@ namespace Mappa
                 File.Create(filePath).Close();
             }
             // Serializza i punti in JSON
-            string stringJson = JsonSerializer.Serialize(listPoints.Items);
+            string stringJson = JsonConvert.SerializeObject(ListvSegmenti.Items);
             File.WriteAllText(filePath, stringJson);
         }
 
         private void apriJSONToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            try
+           /* try
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 openFileDialog.Filter = "JSON|*.json";
@@ -199,10 +200,10 @@ namespace Mappa
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }
+            }*/
         }
 
-        private void LoadPoints()
+        /*private void LoadPoints()
         {
             if (File.Exists(filePath))
             {
@@ -224,7 +225,7 @@ namespace Mappa
                 DisegnaPunti();
                 refresh();
             }
-        }
+        }*/
 
         private void rimuoviToolStripMenuItem_Click(object sender, EventArgs e)
         {
