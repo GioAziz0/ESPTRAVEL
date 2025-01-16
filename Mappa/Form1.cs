@@ -73,14 +73,14 @@ namespace Mappa
             {
                 ListaPunti = ListaPunti.OrderBy(p => Distanza(p, PuntoClick)).ToList();
                 Punto puntoPiuVicino = ListaPunti.First();
-                ListPuntiSeg.Items.Add(puntoPiuVicino);
+                listPuntiSeg.Items.Add(puntoPiuVicino);
                 PuntiSegmento.Add(puntoPiuVicino);
                 if (PuntiSegmento.Count() == 2)
                 {
                     drawSegment();
                     Segmento seg = new Segmento(PuntiSegmento[0], PuntiSegmento[1]);
-                    ListvSegmenti.Items.Add(seg);
-                    ListPuntiSeg.Items.Clear();
+                    listSegmenti.Items.Add(seg);
+                    listPuntiSeg.Items.Clear();
                     PuntiSegmento.Clear();
                 }
             }
@@ -180,7 +180,7 @@ namespace Mappa
             }
             // Serializza i punti in JSON
             List<List<string>> temp = new List<List<string>>();
-            foreach (Segmento segmento in ListvSegmenti.Items)
+            foreach (Segmento segmento in listSegmenti.Items)
             {
                 temp.Add(segmento.ToList());
             }

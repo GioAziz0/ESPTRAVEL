@@ -38,8 +38,8 @@
             puntoToolStripMenuItem = new ToolStripMenuItem();
             listPoints = new ListBox();
             cmbModalita = new ComboBox();
-            ListPuntiSeg = new ListBox();
-            ListvSegmenti = new ListBox();
+            listPuntiSeg = new ListBox();
+            listSegmenti = new ListBox();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -119,32 +119,31 @@
             cmbModalita.Size = new Size(124, 23);
             cmbModalita.TabIndex = 4;
             // 
-            // ListPuntiSeg
+            // listPuntiSeg
             // 
-            ListPuntiSeg.FormattingEnabled = true;
-            ListPuntiSeg.ItemHeight = 15;
-            ListPuntiSeg.Location = new Point(664, 66);
-            ListPuntiSeg.Name = "ListPuntiSeg";
-            ListPuntiSeg.Size = new Size(124, 64);
-            ListPuntiSeg.TabIndex = 5;
+            listPuntiSeg.FormattingEnabled = true;
+            listPuntiSeg.ItemHeight = 15;
+            listPuntiSeg.Location = new Point(664, 66);
+            listPuntiSeg.Name = "listPuntiSeg";
+            listPuntiSeg.Size = new Size(124, 64);
+            listPuntiSeg.TabIndex = 5;
             // 
-            // ListvSegmenti
+            // listSegmenti
             // 
-            ListvSegmenti.Dock = DockStyle.Right;
-            ListvSegmenti.FormattingEnabled = true;
-            ListvSegmenti.ItemHeight = 15;
-            ListvSegmenti.Location = new Point(592, 24);
-            ListvSegmenti.Name = "ListvSegmenti";
-            ListvSegmenti.Size = new Size(208, 442);
-            ListvSegmenti.TabIndex = 7;
+            listSegmenti.FormattingEnabled = true;
+            listSegmenti.ItemHeight = 15;
+            listSegmenti.Location = new Point(664, 134);
+            listSegmenti.Name = "listSegmenti";
+            listSegmenti.Size = new Size(124, 304);
+            listSegmenti.TabIndex = 7;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 466);
-            Controls.Add(ListvSegmenti);
-            Controls.Add(ListPuntiSeg);
+            Controls.Add(listSegmenti);
+            Controls.Add(listPuntiSeg);
             Controls.Add(cmbModalita);
             Controls.Add(listPoints);
             Controls.Add(menuStrip1);
@@ -170,7 +169,7 @@
         private ToolStripMenuItem segmentoToolStripMenuItem;
         private ToolStripMenuItem puntoToolStripMenuItem;
         private ComboBox cmbModalita;
-        private ListBox ListPuntiSeg;
-        private ListBox ListvSegmenti;
+        private ListBox listPuntiSeg;
+        private ListBox listSegmenti;
     }
 }
