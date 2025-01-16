@@ -39,7 +39,9 @@
             listPoints = new ListBox();
             cmbModalita = new ComboBox();
             listPuntiSeg = new ListBox();
+
             pnlSegmenti = new Panel();
+          
             listSegmenti = new ListBox();
             menuStrip1.SuspendLayout();
             pnlSegmenti.SuspendLayout();
@@ -144,6 +146,7 @@
             // 
             listSegmenti.FormattingEnabled = true;
             listSegmenti.ItemHeight = 15;
+
             listSegmenti.Location = new Point(4, 72);
             listSegmenti.Name = "listSegmenti";
             listSegmenti.Size = new Size(124, 349);
@@ -154,12 +157,16 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(984, 561);
+            Controls.Add(listSegmenti);
+            Controls.Add(listPuntiSeg);
+            Controls.Add(cmbModalita);
             Controls.Add(pnlSegmenti);
             Controls.Add(listPoints);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
             Name = "Form1";
             Text = "Form1";
+            Load += Form1_Load;
             ClientSizeChanged += Form1_ClientSizeChanged;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
