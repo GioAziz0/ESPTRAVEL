@@ -40,6 +40,7 @@
             cmbModalita = new ComboBox();
             listSegmenti = new ListBox();
             pnlSegmenti = new Panel();
+            listBox1 = new ListBox();
             menuStrip1.SuspendLayout();
             pnlSegmenti.SuspendLayout();
             SuspendLayout();
@@ -126,17 +127,27 @@
             listSegmenti.ItemHeight = 15;
             listSegmenti.Location = new Point(3, 32);
             listSegmenti.Name = "listSegmenti";
-            listSegmenti.Size = new Size(124, 64);
+            listSegmenti.Size = new Size(124, 34);
             listSegmenti.TabIndex = 5;
             // 
             // pnlSegmenti
             // 
+            pnlSegmenti.Controls.Add(listBox1);
             pnlSegmenti.Controls.Add(cmbModalita);
             pnlSegmenti.Controls.Add(listSegmenti);
             pnlSegmenti.Location = new Point(840, 37);
             pnlSegmenti.Name = "pnlSegmenti";
-            pnlSegmenti.Size = new Size(131, 304);
+            pnlSegmenti.Size = new Size(131, 424);
             pnlSegmenti.TabIndex = 6;
+            // 
+            // listBox1
+            // 
+            listBox1.FormattingEnabled = true;
+            listBox1.ItemHeight = 15;
+            listBox1.Location = new Point(4, 72);
+            listBox1.Name = "listBox1";
+            listBox1.Size = new Size(124, 349);
+            listBox1.TabIndex = 6;
             // 
             // Form1
             // 
@@ -170,5 +181,6 @@
         private ComboBox cmbModalita;
         private ListBox listSegmenti;
         private Panel pnlSegmenti;
+        private ListBox listBox1;
     }
 }
