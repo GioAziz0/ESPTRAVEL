@@ -13,10 +13,11 @@ namespace Mappa
     public partial class Form1 : Form
     {
         private PictureBox pictureBox;
-        private Image img; // Usa Bitmap per una modifica efficace dell'immagine
+        private Image img; 
         private string filePath;
         private List<Punto> ListaPunti;
         List<Punto> PuntiSegmento;
+
 
         public Form1()
         {
@@ -24,6 +25,8 @@ namespace Mappa
             pictureBox = new PictureBox();
             ListaPunti = new List<Punto>();
             PuntiSegmento = new List<Punto>();
+            cmbModalita.SelectedIndex = 0;
+            abilitazioneControlli(false);
         }
 
         private void caricaToolStripMenuItem_Click(object sender, EventArgs e)
@@ -47,7 +50,18 @@ namespace Mappa
                 pictureBox.MouseClick += pctClick;
                 pictureBox.Visible = true;
                 Controls.Add(pictureBox);
+                abilitazioneControlli(true);
+
             }
+        }
+
+        private void abilitazioneControlli(bool ablilitazione)
+        {
+            salvaJSONToolStripMenuItem.Enabled = ablilitazione;
+            apriJSONToolStripMenuItem.Enabled = ablilitazione;
+            rimuoviToolStripMenuItem.Enabled = ablilitazione;
+            modalitaToolStripMenuItem.Enabled = ablilitazione;
+            pnlSegmenti.Visible = ablilitazione;
         }
 
         private void pctClick(object sender, MouseEventArgs e)
@@ -113,7 +127,6 @@ namespace Mappa
         {
             using (Graphics g = Graphics.FromImage(img))
             {
-
                 if (PuntiSegmento.Count == 2)
                 {
                     Pen pen = new Pen(Color.FromArgb(0, 0, 255), 3);  // Dimensione penna adatta
@@ -121,8 +134,7 @@ namespace Mappa
                 }
             }
 
-            // Aggiorna l'immagine nel PictureBox con imgBitmap che contiene il segmento disegnato
-            pictureBox.Image = new Bitmap(img);
+            pictureBox.Image = img;
             DisegnaPunti();
         }
 
@@ -260,6 +272,7 @@ namespace Mappa
             int larghezza = (img.Width * altezza) / img.Height;
             pictureBox.Size = new Size(larghezza, altezza);
             pictureBox.Location = new Point(ClientSize.Width / 2 - larghezza / 2, 44);
+            pnlSegmenti.Location = new Point(ClientSize.Width -160, 37);
 
             DisegnaPunti(); // Ridisegna i punti quando la finestra viene ridimensionata
         }
