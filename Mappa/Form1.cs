@@ -179,7 +179,12 @@ namespace Mappa
                 File.Create(filePath).Close();
             }
             // Serializza i punti in JSON
-            string stringJson = JsonConvert.SerializeObject(ListvSegmenti.Items);
+            List<List<string>> temp = new List<List<string>>();
+            foreach (Segmento segmento in ListvSegmenti.Items)
+            {
+                temp.Add(segmento.ToList());
+            }
+            string stringJson = JsonConvert.SerializeObject(temp);
             File.WriteAllText(filePath, stringJson);
         }
 
