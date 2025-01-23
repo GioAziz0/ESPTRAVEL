@@ -39,9 +39,7 @@
             listPoints = new ListBox();
             cmbModalita = new ComboBox();
             listPuntiSeg = new ListBox();
-
             pnlSegmenti = new Panel();
-          
             listSegmenti = new ListBox();
             menuStrip1.SuspendLayout();
             pnlSegmenti.SuspendLayout();
@@ -118,7 +116,7 @@
             cmbModalita.DisplayMember = "(nessuno)";
             cmbModalita.FormattingEnabled = true;
             cmbModalita.Items.AddRange(new object[] { "Punto", "Segmento" });
-            cmbModalita.Location = new Point(3, 3);
+            cmbModalita.Location = new Point(4, 6);
             cmbModalita.Name = "cmbModalita";
             cmbModalita.Size = new Size(124, 23);
             cmbModalita.TabIndex = 4;
@@ -127,7 +125,7 @@
             // 
             listPuntiSeg.FormattingEnabled = true;
             listPuntiSeg.ItemHeight = 15;
-            listPuntiSeg.Location = new Point(3, 32);
+            listPuntiSeg.Location = new Point(3, 35);
             listPuntiSeg.Name = "listPuntiSeg";
             listPuntiSeg.Size = new Size(124, 34);
             listPuntiSeg.TabIndex = 5;
@@ -146,8 +144,7 @@
             // 
             listSegmenti.FormattingEnabled = true;
             listSegmenti.ItemHeight = 15;
-
-            listSegmenti.Location = new Point(4, 72);
+            listSegmenti.Location = new Point(3, 72);
             listSegmenti.Name = "listSegmenti";
             listSegmenti.Size = new Size(124, 349);
             listSegmenti.TabIndex = 6;
@@ -157,9 +154,6 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(984, 561);
-            Controls.Add(listSegmenti);
-            Controls.Add(listPuntiSeg);
-            Controls.Add(cmbModalita);
             Controls.Add(pnlSegmenti);
             Controls.Add(listPoints);
             Controls.Add(menuStrip1);

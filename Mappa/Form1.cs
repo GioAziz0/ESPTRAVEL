@@ -1,20 +1,23 @@
 using System;
 using System.Drawing;
-using System.IO; 
-using System.Text.Json;  
+using System.IO;
+using System.Text.Json;
 using System.Windows.Forms;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Reflection;
 using Newtonsoft.Json;
+using Microsoft.VisualBasic.ApplicationServices;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Diagnostics;
+using System.Runtime.InteropServices.Marshalling;
 
 namespace Mappa
 {
     public partial class Form1 : Form
     {
         private PictureBox pictureBox;
-        private Image img; 
-        private string filePath;
+        private Image img;
         private List<Punto> ListaPunti;
         List<Punto> PuntiSegmento;
 
@@ -31,6 +34,18 @@ namespace Mappa
 
         private void caricaToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (img != null)
+            {
+                img.Dispose();
+                ListaPunti = new List<Punto>();
+                PuntiSegmento = new List<Punto>();
+                listPoints.Items.Clear();
+                listPuntiSeg.Items.Clear();
+                listSegmenti.Items.Clear();
+                cmbModalita.SelectedIndex = 0;
+            }
+
+
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.Filter = "Immagini|*.jpg;*.jpeg;*.png;*.bmp;*.gif";
             fileDialog.Title = "Seleziona immagine";
@@ -174,8 +189,8 @@ namespace Mappa
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    filePath = saveFileDialog.FileName;
-                    SavePoints();
+                    string filePath = saveFileDialog.FileName;
+                    SavePoints(filePath);
                 }
             }
             catch (Exception ex)
@@ -184,7 +199,7 @@ namespace Mappa
             }
         }
 
-        private void SavePoints()
+        private void SavePoints(string filePath)
         {
             if (!File.Exists(filePath))
             {
@@ -202,7 +217,7 @@ namespace Mappa
 
         private void apriJSONToolStripMenuItem_Click(object sender, EventArgs e)
         {
-           /* try
+            try
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 openFileDialog.Filter = "JSON|*.json";
@@ -210,25 +225,44 @@ namespace Mappa
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    filePath = openFileDialog.FileName;
-                    LoadPoints();
+                    string fileName = openFileDialog.FileName;
+                    string destinazioneCartella = "C:\\Users\\gamba.21149\\source\\repos\\Mappa1\\Mappa\\bin\\Debug\\net8.0-windows";
+                    if (File.Exists(fileName) && Directory.Exists(destinazioneCartella))
+                    {
+                        string nomeFile = Path.GetFileName(fileName);
+                        string destinazioneCompleta = Path.Combine(destinazioneCartella, nomeFile);
+                        File.Move(fileName, destinazioneCompleta);
+                        if (File.Exists(destinazioneCompleta))
+                        {
+                            MessageBox.Show("File spostato correttamente in:\n" + destinazioneCartella);
+                        }
+                        else
+                        {
+                            throw new Exception("Impossibile spostare il file.");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Percorso non valido.");
+                    }
                 }
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }*/
+            }
         }
 
-        /*private void LoadPoints()
+        private void LoadPoints()
         {
-            if (File.Exists(filePath))
+            /*if (File.Exists(filePath))
             {
                 string json = File.ReadAllText(filePath);
                 listPoints.Items.Clear();
 
                 // Deserializza la lista di punti dal JSON
-                var pointsList = JsonSerializer.Deserialize<List<Point>>(json);
+                var pointsList = JsonConvert.DeserializeObject<List<Point>>(json);
 
                 if (pointsList != null)
                 {
@@ -241,8 +275,8 @@ namespace Mappa
                 // Dopo aver caricato i punti, ridisegnali
                 DisegnaPunti();
                 refresh();
-            }
-        }*/
+            }*/
+        }
 
         private void rimuoviToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -272,7 +306,7 @@ namespace Mappa
             int larghezza = (img.Width * altezza) / img.Height;
             pictureBox.Size = new Size(larghezza, altezza);
             pictureBox.Location = new Point(ClientSize.Width / 2 - larghezza / 2, 44);
-            pnlSegmenti.Location = new Point(ClientSize.Width -160, 37);
+            pnlSegmenti.Location = new Point(ClientSize.Width - 160, 37);
 
             DisegnaPunti(); // Ridisegna i punti quando la finestra viene ridimensionata
         }
