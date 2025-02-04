@@ -224,6 +224,19 @@ namespace Mappa
                     int pointSize = 30; // Dimensione del punto da disegnare
                     gpr.FillRectangle(Brushes.Red, p.CordinatePunti.X - pointSize / 2, p.CordinatePunti.Y - pointSize / 2, pointSize, pointSize);
                 }
+
+                // Disegna ogni segmento dalla lista
+                foreach (Segmento s in listSegmenti.Items)
+                {
+                    Punto p1 = ListaPunti.FirstOrDefault(p => p.Name == s.Nome1);
+                    Punto p2 = ListaPunti.FirstOrDefault(p => p.Name == s.Nome2);
+
+                    if (p1 != null && p2 != null)
+                    {
+                        Pen pen = new Pen(Color.FromArgb(0, 0, 255), 3);  // Dimensione penna adatta
+                        gpr.DrawLine(pen, p1.CordinatePunti, p2.CordinatePunti);
+                    }
+                }
             }
 
             pictureBox.Image = img;
@@ -282,19 +295,25 @@ namespace Mappa
             }
             else
             {
-                //avvisa l'utente che il file esiste già e chiede se vuole sovrascriverlo
+                // Avvisa l'utente che il file esiste già e chiede se vuole sovrascriverlo
                 DialogResult dialogResult = MessageBox.Show("Il file esiste già, vuoi sovrascriverlo?", "Attenzione", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.No)
                 {
-                    //richiama la funzione per salvare (può scegliere un'altro nome
+                    // Richiama la funzione per salvare (può scegliere un altro nome)
                     salvaJSONToolStripMenuItem_Click(null, null);
                     return;
                 }
             }
+
             // Serializza i punti in JSON
             string stringJson = JsonConvert.SerializeObject(listPoints.Items);
             File.WriteAllText(filePath, stringJson);
+
+            // Salva i segmenti in un file separato
+            string segmentFilePath = Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + "_GioAziz.json");
+            SavePointsGioAziz(segmentFilePath);
         }
+
 
         private void apriJSONToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -306,28 +325,9 @@ namespace Mappa
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    string fileName = openFileDialog.FileName;
-                    string destinazioneCartella = "C:\\Users\\gamba.21149\\source\\repos\\Mappa1\\Mappa\\bin\\Debug\\net8.0-windows";
-                    if (File.Exists(fileName) && Directory.Exists(destinazioneCartella))
-                    {
-                        string nomeFile = Path.GetFileName(fileName);
-                        string destinazioneCompleta = Path.Combine(destinazioneCartella, nomeFile);
-                        File.Move(fileName, destinazioneCompleta);
-                        if (File.Exists(destinazioneCompleta))
-                        {
-                            MessageBox.Show("File spostato correttamente in:\n" + destinazioneCartella);
-                        }
-                        else
-                        {
-                            throw new Exception("Impossibile spostare il file.");
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception("Percorso non valido.");
-                    }
+                    string filePath = openFileDialog.FileName;
+                    LoadPoints(filePath); // Carica i punti e i segmenti dal file JSON
                 }
-
             }
             catch (Exception ex)
             {
@@ -335,15 +335,57 @@ namespace Mappa
             }
         }
 
-        private void LoadPoints()
+        private void CaricaPuntiDaJSON(string filePath)
         {
-            /*if (File.Exists(filePath))
+            try
+            {
+                string json = File.ReadAllText(filePath);
+                var dati = JsonConvert.DeserializeObject<DatiMappa>(json);
+
+                if (dati != null)
+                {
+                    ListaPunti.Clear();
+                    PuntiSegmento.Clear();
+                    listPoints.Items.Clear();
+                    listSegmenti.Items.Clear();
+
+                    foreach (var punto in dati.Punti)
+                    {
+                        ListaPunti.Add(punto);
+                        listPoints.Items.Add(punto);
+                    }
+
+                    foreach (var segmento in dati.Segmenti)
+                    {
+                        listSegmenti.Items.Add(segmento);
+                    }
+
+                    DisegnaPunti();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Errore nel caricamento del JSON: " + ex.Message);
+            }
+        }
+
+        public class DatiMappa
+        {
+            public List<Punto> Punti { get; set; }
+            public List<Segmento> Segmenti { get; set; }
+        }
+
+
+        private void LoadPoints(string filePath)
+        {
+            if (File.Exists(filePath))
             {
                 string json = File.ReadAllText(filePath);
                 listPoints.Items.Clear();
+                listSegmenti.Items.Clear();
 
                 // Deserializza la lista di punti dal JSON
-                var pointsList = JsonConvert.DeserializeObject<List<Point>>(json);
+                var pointsList = JsonConvert.DeserializeObject<List<Punto>>(json);
 
                 if (pointsList != null)
                 {
@@ -353,10 +395,40 @@ namespace Mappa
                     }
                 }
 
-                // Dopo aver caricato i punti, ridisegnali
+                // Carica i segmenti se presenti
+                string segmentFilePath = Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + "_GioAziz.json");
+                if (File.Exists(segmentFilePath))
+                {
+                    string segmentJson = File.ReadAllText(segmentFilePath);
+                    var segmentList = JsonConvert.DeserializeObject<List<List<string>>>(segmentJson);
+
+                    if (segmentList != null)
+                    {
+                        foreach (var segmentData in segmentList)
+                        {
+                            if (segmentData.Count == 3)
+                            {
+                                string nome1 = segmentData[0];
+                                string nome2 = segmentData[1];
+                                double peso = double.Parse(segmentData[2]);
+
+                                Punto p1 = ListaPunti.FirstOrDefault(p => p.Name == nome1);
+                                Punto p2 = ListaPunti.FirstOrDefault(p => p.Name == nome2);
+
+                                if (p1 != null && p2 != null)
+                                {
+                                    Segmento segmento = new Segmento(p1, p2);
+                                    listSegmenti.Items.Add(segmento);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Dopo aver caricato i punti e i segmenti, ridisegnali
                 DisegnaPunti();
                 refresh();
-            }*/
+            }
         }
 
         private void rimuoviToolStripMenuItem_Click(object sender, EventArgs e)
