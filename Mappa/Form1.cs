@@ -70,13 +70,16 @@ namespace Mappa
             }
         }
 
-        private void abilitazioneControlli(bool ablilitazione)
+        private void abilitazioneControlli(bool ablitazione)
         {
-            salvaJSONToolStripMenuItem.Enabled = ablilitazione;
-            apriJSONToolStripMenuItem.Enabled = ablilitazione;
-            rimuoviToolStripMenuItem.Enabled = ablilitazione;
-            modalitaToolStripMenuItem.Enabled = ablilitazione;
-            pnlSegmenti.Visible = ablilitazione;
+            salvaJSONToolStripMenuItem.Enabled = ablitazione;
+            apriJSONToolStripMenuItem.Enabled = ablitazione;
+            rimuoviToolStripMenuItem.Enabled = ablitazione;
+            modalitaToolStripMenuItem.Enabled = ablitazione;
+            pnlSegmenti.Visible = ablitazione;
+            MaximizeBox = ablitazione;
+            MinimizeBox = ablitazione;
+            if (ablitazione) WindowState = FormWindowState.Maximized;
         }
 
         private void pctClick(object sender, MouseEventArgs e)
@@ -90,7 +93,6 @@ namespace Mappa
             int positionY = (int)(e.Y * scaleY);
 
             Punto PuntoClick = new Punto(new Point(positionX, positionY), TrovaNome(ListaPunti.Count()));
-            int pointSize = 30;
 
             if (cmbModalita.SelectedIndex == 0)
             {
@@ -100,20 +102,74 @@ namespace Mappa
             }
             else if (cmbModalita.SelectedIndex == 1)
             {
+                // Trova il punto più vicino
                 ListaPunti = ListaPunti.OrderBy(p => Distanza(p, PuntoClick)).ToList();
                 Punto puntoPiuVicino = ListaPunti.First();
+
+                // Disegna il punto arancione temporaneamente
+                using (Graphics g = pictureBox.CreateGraphics())
+                {
+                    // Calcola la scala corrente per l'adattamento dell'immagine
+                    float scaleX1 = (float)pictureBox.Width / img.Width;
+                    float scaleY1 = (float)pictureBox.Height / img.Height;
+
+                    // Dimensione adattata del punto
+                    int basePointSize = 30; // Dimensione base del punto
+                    int pointSize = (int)(basePointSize * Math.Min(scaleX1, scaleY1));
+
+                    // Calcolo delle coordinate del punto scalate
+                    float x = puntoPiuVicino.CordinatePunti.X * scaleX1 - pointSize / 2;
+                    float y = puntoPiuVicino.CordinatePunti.Y * scaleY1 - pointSize / 2;
+
+                    // Disegna il punto arancione come quadrato
+                    g.FillRectangle(Brushes.Green, x - 1, y - 1, pointSize, pointSize);
+                }
+
+
+
+
                 listPuntiSeg.Items.Add(puntoPiuVicino);
                 PuntiSegmento.Add(puntoPiuVicino);
-                if (PuntiSegmento.Count() == 2)
+
+                // Disegna il segmento se ci sono due punti
+                if (PuntiSegmento.Count == 2)
                 {
+                    Segmento segTemp = new Segmento(PuntiSegmento[0], PuntiSegmento[1]);
+
+                    //verifica se il segmento collega lo stesso punto
+
+                    if (PuntiSegmento[0] == PuntiSegmento[1])
+                    {
+                        MessageBox.Show("I punti selezionati sono uguali", "Errore", MessageBoxButtons.OK);
+                        listPuntiSeg.Items.Clear();
+                        PuntiSegmento.Clear();
+                        refresh();
+                        return;
+                    }
+
+                    // Verifica se il segmento è già presente
+                    foreach (Segmento s in listSegmenti.Items)
+                    {
+                        if (s.Equals(segTemp))
+                        {
+                            MessageBox.Show("Segmento già presente", "Errore", MessageBoxButtons.OK);
+                            listPuntiSeg.Items.Clear();
+                            PuntiSegmento.Clear();
+                            refresh();
+                            return;
+                        }
+                    }
+
+                    // Aggiunge il nuovo segmento
                     drawSegment();
-                    Segmento seg = new Segmento(PuntiSegmento[0], PuntiSegmento[1]);
-                    listSegmenti.Items.Add(seg);
+                    listSegmenti.Items.Add(segTemp);
                     listPuntiSeg.Items.Clear();
                     PuntiSegmento.Clear();
                 }
+
             }
         }
+
         public string TrovaNome(int indice)
         {
             string nome;
@@ -186,11 +242,14 @@ namespace Mappa
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
                 saveFileDialog.Filter = "JSON|*.json";
                 saveFileDialog.Title = "Salva punti in JSON";
+                saveFileDialog.FileName = "ListaPunti";
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string filePath = saveFileDialog.FileName;
-                    SavePoints(filePath);
+                    filePath = filePath.Remove(filePath.Length - 5);
+                    SavePointsGioAziz(filePath + "_GioAziz.json");
+                    SavePoints(filePath + "_ListaPunti.json");
                 }
             }
             catch (Exception ex)
@@ -199,7 +258,7 @@ namespace Mappa
             }
         }
 
-        private void SavePoints(string filePath)
+        private void SavePointsGioAziz(string filePath)
         {
             if (!File.Exists(filePath))
             {
@@ -212,6 +271,28 @@ namespace Mappa
                 temp.Add(segmento.ToList());
             }
             string stringJson = JsonConvert.SerializeObject(temp);
+            File.WriteAllText(filePath, stringJson);
+        }
+
+        private void SavePoints(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                File.Create(filePath).Close();
+            }
+            else
+            {
+                //avvisa l'utente che il file esiste già e chiede se vuole sovrascriverlo
+                DialogResult dialogResult = MessageBox.Show("Il file esiste già, vuoi sovrascriverlo?", "Attenzione", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.No)
+                {
+                    //richiama la funzione per salvare (può scegliere un'altro nome
+                    salvaJSONToolStripMenuItem_Click(null, null);
+                    return;
+                }
+            }
+            // Serializza i punti in JSON
+            string stringJson = JsonConvert.SerializeObject(listPoints.Items);
             File.WriteAllText(filePath, stringJson);
         }
 
@@ -314,6 +395,34 @@ namespace Mappa
         private void Form1_Load(object sender, EventArgs e)
         {
             cmbModalita.SelectedIndex = 0;
+        }
+
+        private void listPoints_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Punto puntoSelezionato = (Punto)listPoints.SelectedItem;
+
+            using (Graphics g = pictureBox.CreateGraphics())
+            {
+                // Calcola la scala corrente per l'adattamento dell'immagine
+                float scaleX = (float)pictureBox.Width / img.Width;
+                float scaleY = (float)pictureBox.Height / img.Height;
+
+                // Dimensione adattata del punto
+                int basePointSize = 30; // Dimensione base del punto
+                int pointSize = (int)(basePointSize * Math.Min(scaleX, scaleY));
+
+                /*foreach (Point point in listPoints.Items) {
+                  //tutti i punti non selezionati rossi
+                }*/
+
+
+                // Calcolo delle coordinate del punto scalate
+                float x = puntoSelezionato.CordinatePunti.X * scaleX - pointSize / 2;
+                float y = puntoSelezionato.CordinatePunti.Y * scaleY - pointSize / 2;
+
+                // Disegna il punto arancione come quadrato
+                g.FillRectangle(Brushes.Blue, x, y, pointSize, pointSize);
+            }
         }
     }
 }

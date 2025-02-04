@@ -8,11 +8,12 @@ namespace Mappa
 {
     public class Punto
     {
-        public string Name {  get; set; }
+        public string Name { get; set; }
 
         public Point CordinatePunti { get; set; }
 
-        public Punto(Point punto, string name) {
+        public Punto(Point punto, string name)
+        {
             CordinatePunti = punto;
             Name = name;
         }

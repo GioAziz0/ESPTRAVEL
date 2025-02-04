@@ -110,6 +110,7 @@
             listPoints.Name = "listPoints";
             listPoints.Size = new Size(175, 424);
             listPoints.TabIndex = 3;
+            listPoints.SelectedIndexChanged += listPoints_SelectedIndexChanged;
             // 
             // cmbModalita
             // 
