@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mappa Dinamica</title>
+    
+    <style>
+        body {
+            transform: scale(0.8);  /* Riduce la dimensione globale del 80% */
+            transform-origin: top left; /* Mantiene l'origine della scala nell'angolo in alto a sinistra */
+        }
+
+        #canva {
+            width: 80%;
+            height: auto;
+        }
+
+        #graphContainer {
+            margin-top: 20px;
+        }
+
+        #errorMessage {
+            color: red;
+            font-weight: bold;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Viaggia</h1>
+
+    <!-- Textbox e bottone per inserire l'ID della mappa -->
+    <label for="id">ID della Mappa:</label>
+    <input type="text" id="id" name="id" required>
+    <button onclick="loadMap()">Carica Mappa</button>
+
+    <br><br>
+
+    <label for="partenza">Seleziona la Partenza:</label>
+    <select id="partenza">
+        <!-- Le opzioni saranno caricate dinamicamente -->
+    </select>
+
+    <!-- Menu a tendina per selezionare la fine -->
+    <label for="arrivo">Seleziona la Fine:</label>
+    <select id="arrivo">
+        <!-- Le opzioni saranno caricate dinamicamente -->
+    </select>
+
+    <br><br>
+
+    <!-- Pulsante per tracciare il percorso -->
+    <button onclick="tracePath()">Traccia Percorso</button>
+
+    <br><br>
+
+    <!-- Canvas per la mappa dinamica -->
+    <canvas id="canva" style="border: 1px solid black;"></canvas>
+
+    <!-- Messaggio di errore -->
+    <div id="errorMessage">Errore: Immagine non trovata per l'ID specificato.</div>
+
+    <script>
+        const canvas = document.getElementById('canva');
+        const ctx = canvas.getContext('2d');
+
+        // Variabile per memorizzare i dati dei punti
+        let pointsData = [];
+        let mapImage = null;
+
+        // Funzione per caricare l'immagine in base all'ID
+        function loadMap() {
+            const id = document.getElementById('id').value;
+            mapImage = new Image();
+            mapImage.src = `/map_image/?id=${id}`;  // Carica l'immagine in base all'ID
+            
+            // Nasconde il messaggio di errore in caso di nuovo caricamento
+            document.getElementById('errorMessage').style.display = 'none';
+
+            // Quando l'immagine è caricata, imposta il canvas e disegna la mappa
+            mapImage.onload = function() {
+                // Imposta le dimensioni del canvas uguali a quelle dell'immagine
+                canvas.width = mapImage.width;
+                canvas.height = mapImage.height;
+                ctx.drawImage(mapImage, 0, 0, canvas.width, canvas.height);
+
+                // Carica i dati delle partenze e arrivi
+                loadDropdowns(id);
+            };
+
+            // Gestione errore nel caso in cui l'immagine non venga trovata
+            mapImage.onerror = function() {
+                // Mostra il messaggio di errore
+                document.getElementById('errorMessage').style.display = 'block';
+            };
+        }
+
+        // Funzione per caricare i dati nel menu a tendina
+        function loadDropdowns(id) {
+            fetch(`/pointsJson/?id=${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    const partenzaSelect = document.getElementById('partenza');
+                    const arrivoSelect = document.getElementById('arrivo');
+
+                    // Pulisce le opzioni esistenti
+                    partenzaSelect.innerHTML = '';
+                    arrivoSelect.innerHTML = '';
+
+                    // Aggiungi una voce vuota iniziale
+                    partenzaSelect.add(new Option("Seleziona Partenza", ""));
+                    arrivoSelect.add(new Option("Seleziona Arrivo", ""));
+
+                    // Carica le opzioni per il menu Partenza e Arrivo (solo i nomi)
+                    data.forEach(item => {
+                        // Aggiungi l'opzione di partenza
+                        partenzaSelect.add(new Option(item.Name, item.Name));
+                        // Aggiungi l'opzione di arrivo
+                        arrivoSelect.add(new Option(item.Name, item.Name));
+
+                        // Salva i dati dei punti
+                        pointsData.push(item);
+
+                        // Disegna il punto sulla mappa
+                        DisegnaPunti(item.CordinatePunti, item.Name, ctx);
+                    });
+                })
+                .catch(error => {
+                    console.error('Errore nel caricare i dati delle partenze e arrivi:', error);
+                });
+        }
+
+        // Funzione per tracciare il percorso tra i punti di partenza e arrivo
+        function tracePath() {
+            loadMap();
+            const partenza = document.getElementById('partenza').value;
+            const arrivo = document.getElementById('arrivo').value;
+            const id = document.getElementById('id').value;
+
+            if (!partenza || !arrivo) {
+                alert("Seleziona Partenza e Arrivo.");
+                return;
+            }
+
+            // Chiamata all'endpoint /travel/ per ottenere il percorso
+            fetch(`/travel/?IDmap=${id}&start=${partenza}&end=${arrivo}`)
+                .then(response => response.json())
+                .then(path => {
+                    // Disegna il percorso, senza cancellare la mappa
+                    for (let i = 0; i < path.length - 1; i++) {
+                        const startPoint = pointsData.find(p => p.Name === path[i]);
+                        const endPoint = pointsData.find(p => p.Name === path[i + 1]);
+
+                        if (startPoint && endPoint) {
+                            const [x1, y1] = startPoint.CordinatePunti.split(',').map(coord => parseInt(coord.trim()));
+                            const [x2, y2] = endPoint.CordinatePunti.split(',').map(coord => parseInt(coord.trim()));
+
+                            DisegnaLinea(x1, y1, x2, y2, ctx);
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Errore nel tracciare il percorso:', error);
+                });
+        }
+
+        // Funzione per disegnare un punto sulla mappa
+        function DisegnaPunti(coordinate, nome, ctx) {
+            const [x, y] = coordinate.split(',').map(coord => parseInt(coord.trim()));
+
+            // Disegna il punto
+            ctx.beginPath();
+            ctx.fillStyle = 'red';  
+            ctx.arc(x, y, 10, 0, Math.PI * 2);  // Disegna un cerchio per rappresentare il punto
+            ctx.fill();
+
+            // Scrive il nome vicino al punto
+            ctx.font = "14px Arial";
+            ctx.fillStyle = "black";
+            ctx.fillText(nome, x + 12, y - 12);  // Nome del punto accanto al cerchio
+        }
+
+        // Funzione per disegnare una linea
+        function DisegnaLinea(x1, y1, x2, y2, ctx) {
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);  
+            ctx.lineTo(x2, y2);  
+            ctx.strokeStyle = 'blue';  
+            ctx.lineWidth = 3;  
+            ctx.stroke();  
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mappa Dinamica</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        /* Ridimensiona tutto a 80% */
+        body {
+            transform: scale(0.8);  /* Riduce la dimensione globale del 80% */
+            transform-origin: top left; /* Mantiene l'origine della scala nell'angolo in alto a sinistra */
+            /*overflow: hidden; /* Rimuove la barra di scorrimento */
+        }
+
+        /* Se vuoi anche rendere l'immagine del canvas scalata al 80% */
+        #canva {
+            width: 80%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <img src="/images/map.png" alt="Mappa" id="mapImage" style="display:none;" />
+
+    <!-- Canvas con dimensioni dell'immagine -->
+    <canvas id="canva" style="border: 1px solid black;"></canvas>
+    
+    <script>
+        const canvas = document.getElementById('canva');
+        const ctx = canvas.getContext('2d');
+
+        // Funzione per disegnare un punto
+        function DisegnaPunti(x, y, id, ctx) {
+            ctx.beginPath();
+            // Disegna un rettangolo con angolo superiore sinistro in (x, y) e dimensione 10x10
+            ctx.fillStyle = 'red';  // Colore del punto (rettangolo)
+            ctx.rect(x - 10, y - 10, 20, 20); // Disegna il rettangolo
+            ctx.fill();  // Colora il rettangolo con rosso
+
+            // Disegna il testo ID accanto al punto
+            ctx.font = "20px Arial";
+            ctx.fillStyle = "black";
+            ctx.fillText(id, x + 15, y + 5);
+        }
+
+        // Funzione per disegnare una linea tra due punti
+        function DisegnaLinea(x1, y1, x2, y2, ctx) {
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);  // Punto di partenza
+            ctx.lineTo(x2, y2);  // Punto di arrivo
+            ctx.strokeStyle = 'blue';  // Colore della linea
+            ctx.lineWidth = 8;  // Spessore della linea
+            ctx.stroke();  // Disegna la linea
+        }
+
+        // Supponendo che 'punti' sia una variabile che contiene i dati dei punti
+        const punti = <%- JSON.stringify(punti) %>; //l'errore è da ignorare
+        const puntiDaCollegare = <%- JSON.stringify(puntiDaCollegare) %>;
+
+        // Imposta le dimensioni del canvas uguali a quelle dell'immagine
+        const mapImage = document.getElementById('mapImage');
+        mapImage.onload = function() {
+            // Imposta il canvas con le dimensioni dell'immagine
+            canvas.width = mapImage.width;
+            canvas.height = mapImage.height;
+
+            // Disegna l'immagine della mappa nel canvas
+            ctx.drawImage(mapImage, 0, 0, canvas.width, canvas.height);
+            
+            // Disegna i punti sul canvas
+            punti.forEach((punto) => {
+                DisegnaPunti(punto.x, punto.y, punto.id, ctx);
+            });
+
+            // Collega i punti nel canvas
+            for (let i = 0; i < puntiDaCollegare.length - 1; i++) {
+                const punto1 = puntiDaCollegare[i];
+                const punto2 = puntiDaCollegare[i + 1];
+
+                DisegnaLinea(punto1.x, punto1.y, punto2.x, punto2.y, ctx);
+            }
+        }
+
+    </script>
+</body>
+</html>

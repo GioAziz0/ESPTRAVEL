@@ -1,0 +1,7 @@
+[
+    {"punto1": "A", "punto2": "B", "distanza": 10},
+    {"punto1": "B", "punto2": "C", "distanza": 15},
+    {"punto1": "C", "punto2": "D", "distanza": 20},
+    {"punto1": "D", "punto2": "E", "distanza": 25},
+    {"punto1": "A", "punto2": "C", "distanza": 18}
+]

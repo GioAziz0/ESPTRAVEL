@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizza Mappa</title>
+    <script>
+        // Funzione per caricare l'immagine
+        function showImage(id) {
+            const imageContainer = document.getElementById('graphContainer');
+            imageContainer.innerHTML = '';  // Pulisce il contenuto esistente
+
+            const img = document.createElement('img');
+            img.src = `/map_image/?id=${id}`;  // Chiamata all'endpoint per l'immagine
+            img.alt = 'Mappa';
+            img.style.maxWidth = '100%';  // Per adattare l'immagine
+            img.style.height = 'auto';
+
+            imageContainer.appendChild(img);
+        }
+
+        // Funzione per caricare il grafo come testo
+        function showGraph(id) {
+            const graphContainer = document.getElementById('graphContainer');
+            graphContainer.innerHTML = '';  // Pulisce il contenuto esistente
+
+            fetch(`/graph/?id=${id}`)  // Chiamata all'endpoint per il grafo
+                .then(response => response.json())
+                .then(data => {
+                    // Visualizza solo il testo del grafo, senza formattazioni extra
+                    const graphText = JSON.stringify(data, null, 2);  // Formatta i dati in modo leggibile
+                    
+                    // Crea un elemento <pre> per mantenere i ritorni a capo
+                    const pre = document.createElement('pre');
+                    pre.textContent = graphText;  // Usa textContent per evitare la manipolazione HTML
+
+                    // Aggiungi il contenuto nel contenitore
+                    graphContainer.appendChild(pre);
+                })
+                .catch(error => {
+                    graphContainer.innerHTML = "Errore nel caricamento del grafo.";
+                });
+        }
+
+        // Funzione per gestire la visualizzazione (immagine o grafo)
+        function toggleView(id) {
+            const viewSelector = document.getElementById('viewSelector').value;
+            if (viewSelector === 'image') {
+                showImage(id);
+            } else if (viewSelector === 'graph') {
+                showGraph(id);
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Visualizza la Mappa</h1>
+
+    <label for="id">ID della Mappa:</label>
+    <input type="text" id="id" name="id" required>
+    <button onclick="toggleView(document.getElementById('id').value)">Carica</button>
+
+    <br><br>
+
+    <!-- Selettore per scegliere la visualizzazione -->
+    <label for="viewSelector">Seleziona visualizzazione:</label>
+    <select id="viewSelector" onchange="toggleView(document.getElementById('id').value)">
+        <option value="image">Immagine</option>
+        <option value="graph">Grafo</option>
+    </select>
+
+    <br><br>
+
+    <div id="graphContainer">
+        <!-- Qui verrà visualizzato l'immagine o il grafo -->
+    </div>
+</body>
+</html>
