@@ -36,18 +36,24 @@
             modalitaToolStripMenuItem = new ToolStripMenuItem();
             segmentoToolStripMenuItem = new ToolStripMenuItem();
             puntoToolStripMenuItem = new ToolStripMenuItem();
+            inserisciPianoToolStripMenuItem = new ToolStripMenuItem();
             listPoints = new ListBox();
             cmbModalita = new ComboBox();
             listPuntiSeg = new ListBox();
             pnlSegmenti = new Panel();
             listSegmenti = new ListBox();
+            lblNumeroPiani = new Label();
+            pictureBox1 = new PictureBox();
+            pictureBox2 = new PictureBox();
             menuStrip1.SuspendLayout();
             pnlSegmenti.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             SuspendLayout();
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { caricaToolStripMenuItem, salvaJSONToolStripMenuItem, apriJSONToolStripMenuItem, rimuoviToolStripMenuItem, modalitaToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { caricaToolStripMenuItem, salvaJSONToolStripMenuItem, apriJSONToolStripMenuItem, rimuoviToolStripMenuItem, modalitaToolStripMenuItem, inserisciPianoToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(984, 24);
@@ -102,6 +108,12 @@
             puntoToolStripMenuItem.Size = new Size(127, 22);
             puntoToolStripMenuItem.Text = "punto";
             // 
+            // inserisciPianoToolStripMenuItem
+            // 
+            inserisciPianoToolStripMenuItem.Name = "inserisciPianoToolStripMenuItem";
+            inserisciPianoToolStripMenuItem.Size = new Size(94, 20);
+            inserisciPianoToolStripMenuItem.Text = "Inserisci Piano";
+            // 
             // listPoints
             // 
             listPoints.FormattingEnabled = true;
@@ -145,16 +157,49 @@
             // 
             listSegmenti.FormattingEnabled = true;
             listSegmenti.ItemHeight = 15;
-            listSegmenti.Location = new Point(3, 72);
+            listSegmenti.Location = new Point(3, 75);
             listSegmenti.Name = "listSegmenti";
             listSegmenti.Size = new Size(124, 349);
             listSegmenti.TabIndex = 6;
+            // 
+            // lblNumeroPiani
+            // 
+            lblNumeroPiani.AutoSize = true;
+            lblNumeroPiani.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblNumeroPiani.Location = new Point(783, 91);
+            lblNumeroPiani.Name = "lblNumeroPiani";
+            lblNumeroPiani.Size = new Size(19, 21);
+            lblNumeroPiani.TabIndex = 9;
+            lblNumeroPiani.Text = "0";
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.BackgroundImage = Properties.Resources.frecciasu;
+            pictureBox1.Location = new Point(766, 38);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(50, 50);
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox1.TabIndex = 10;
+            pictureBox1.TabStop = false;
+            // 
+            // pictureBox2
+            // 
+            pictureBox2.BackgroundImage = Properties.Resources.frecciagiu;
+            pictureBox2.Location = new Point(766, 115);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new Size(50, 50);
+            pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox2.TabIndex = 11;
+            pictureBox2.TabStop = false;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(984, 561);
+            Controls.Add(pictureBox2);
+            Controls.Add(pictureBox1);
+            Controls.Add(lblNumeroPiani);
             Controls.Add(pnlSegmenti);
             Controls.Add(listPoints);
             Controls.Add(menuStrip1);
@@ -166,6 +211,8 @@
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             pnlSegmenti.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -184,5 +231,9 @@
         private ListBox listPuntiSeg;
         private Panel pnlSegmenti;
         private ListBox listSegmenti;
+        private ToolStripMenuItem inserisciPianoToolStripMenuItem;
+        private Label lblNumeroPiani;
+        private PictureBox pictureBox1;
+        private PictureBox pictureBox2;
     }
 }
