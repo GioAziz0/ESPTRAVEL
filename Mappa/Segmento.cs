@@ -20,6 +20,13 @@ namespace Mappa
             Peso = Math.Sqrt(Math.Pow(P1.CordinatePunti.X - P2.CordinatePunti.X, 2) + Math.Pow(P1.CordinatePunti.Y - P2.CordinatePunti.Y, 2));
         }
 
+        public Segmento(string nome1, string nome2, double peso)
+        {
+            Nome1 = nome1;
+            Nome2 = nome2;
+            Peso = peso;
+        }
+
         public override string ToString()
         {
             return $"Segmento {Nome1}-{Nome2}";

@@ -260,9 +260,8 @@ namespace Mappa
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string filePath = saveFileDialog.FileName;
-                    filePath = filePath.Remove(filePath.Length - 5);
-                    SavePointsGioAziz(filePath + "_GioAziz.json");
-                    SavePoints(filePath + "_ListaPunti.json");
+                    filePath = filePath.Remove(filePath.Length - 5); // Rimuove l'estensione ".json"
+                    SavePoints(filePath + "_ListaPunti.json"); // Salva punti e segmenti in un unico file
                 }
             }
             catch (Exception ex)
@@ -305,13 +304,16 @@ namespace Mappa
                 }
             }
 
-            // Serializza i punti in JSON
-            string stringJson = JsonConvert.SerializeObject(listPoints.Items);
-            File.WriteAllText(filePath, stringJson);
+            // Crea un oggetto contenitore per i punti e i segmenti
+            SaveData saveData = new SaveData
+            {
+                Punti = listPoints.Items.Cast<Punto>().ToList(),
+                Segmenti = listSegmenti.Items.Cast<Segmento>().ToList()
+            };
 
-            // Salva i segmenti in un file separato
-            string segmentFilePath = Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + "_GioAziz.json");
-            SavePointsGioAziz(segmentFilePath);
+            // Serializza l'oggetto contenitore in JSON
+            string stringJson = JsonConvert.SerializeObject(saveData, Formatting.Indented);
+            File.WriteAllText(filePath, stringJson);
         }
 
 
@@ -384,44 +386,40 @@ namespace Mappa
                 listPoints.Items.Clear();
                 listSegmenti.Items.Clear();
 
-                // Deserializza la lista di punti dal JSON
-                var pointsList = JsonConvert.DeserializeObject<List<Punto>>(json);
+                /*
+                 * 
+                 * 
+                         * // Crea un oggetto contenitore per i punti e i segmenti
+                            SaveData saveData = new SaveData
+                            {
+                                Punti = listPoints.Items.Cast<Punto>().ToList(),
+                                Segmenti = listSegmenti.Items.Cast<Segmento>().ToList()
+                            };
 
-                if (pointsList != null)
+                            // Serializza l'oggetto contenitore in JSON
+                            string stringJson = JsonConvert.SerializeObject(saveData, Formatting.Indented);
+                            File.WriteAllText(filePath, stringJson);
+                 * 
+                 * 
+                 * */
+
+                // Deserializza l'oggetto contenitore dal JSON
+                SaveData saveData = JsonConvert.DeserializeObject<SaveData>(json);
+
+                if (saveData != null)
                 {
-                    foreach (var point in pointsList)
+                    // Carica i punti
+                    foreach (var point in saveData.Punti)
                     {
                         listPoints.Items.Add(point);
+                        ListaPunti.Add(point); // Assicurati che i punti siano aggiunti anche a ListaPunti
                     }
-                }
 
-                // Carica i segmenti se presenti
-                string segmentFilePath = Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + "_GioAziz.json");
-                if (File.Exists(segmentFilePath))
-                {
-                    string segmentJson = File.ReadAllText(segmentFilePath);
-                    var segmentList = JsonConvert.DeserializeObject<List<List<string>>>(segmentJson);
-
-                    if (segmentList != null)
+                    // Carica i segmenti
+                    foreach (var segment in saveData.Segmenti)
                     {
-                        foreach (var segmentData in segmentList)
-                        {
-                            if (segmentData.Count == 3)
-                            {
-                                string nome1 = segmentData[0];
-                                string nome2 = segmentData[1];
-                                double peso = double.Parse(segmentData[2]);
-
-                                Punto p1 = ListaPunti.FirstOrDefault(p => p.Name == nome1);
-                                Punto p2 = ListaPunti.FirstOrDefault(p => p.Name == nome2);
-
-                                if (p1 != null && p2 != null)
-                                {
-                                    Segmento segmento = new Segmento(p1, p2);
-                                    listSegmenti.Items.Add(segmento);
-                                }
-                            }
-                        }
+                        Segmento s = new Segmento(segment.Nome1, segment.Nome2, segment.Peso);
+                        listSegmenti.Items.Add(segment);
                     }
                 }
 
@@ -430,6 +428,9 @@ namespace Mappa
                 refresh();
             }
         }
+
+
+
 
         private void rimuoviToolStripMenuItem_Click(object sender, EventArgs e)
         {
