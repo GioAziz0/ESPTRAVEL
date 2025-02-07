@@ -11,23 +11,26 @@ using Microsoft.VisualBasic.ApplicationServices;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Diagnostics;
 using System.Runtime.InteropServices.Marshalling;
+using System.Net.Mime;
+using System.Drawing.Configuration;
+
 
 namespace Mappa
 {
     public partial class Form1 : Form
     {
-        private PictureBox pictureBox;
-        private Image img;
-        private List<Punto> ListaPunti;
-        List<Punto> PuntiSegmento;
-
+        PictureBox pictureBox;
+        Image img;
+        Image Immagineoriginale;
+        List<Punto> ListaPunti;
+        List<Segmento> Segmenti;
 
         public Form1()
         {
             InitializeComponent();
             pictureBox = new PictureBox();
             ListaPunti = new List<Punto>();
-            PuntiSegmento = new List<Punto>();
+            Segmenti = new List<Segmento>();
             cmbModalita.SelectedIndex = 0;
             abilitazioneControlli(false);
         }
@@ -38,7 +41,6 @@ namespace Mappa
             {
                 img.Dispose();
                 ListaPunti = new List<Punto>();
-                PuntiSegmento = new List<Punto>();
                 listPoints.Items.Clear();
                 listPuntiSeg.Items.Clear();
                 listSegmenti.Items.Clear();
@@ -54,7 +56,7 @@ namespace Mappa
             {
                 string imgPath = fileDialog.FileName;
                 img = Image.FromFile(imgPath);
-
+                Immagineoriginale = Image.FromFile(imgPath);
 
                 int altezza = (int)(ClientSize.Height * 0.9);
                 int larghezza = (img.Width * altezza) / img.Height;
@@ -98,15 +100,6 @@ namespace Mappa
             {
                 ListaPunti.Add(PuntoClick);
                 listPoints.Items.Add(PuntoClick);
-                DisegnaPunti();
-            }
-            else if (cmbModalita.SelectedIndex == 1)
-            {
-                // Trova il punto più vicino
-                ListaPunti = ListaPunti.OrderBy(p => Distanza(p, PuntoClick)).ToList();
-                Punto puntoPiuVicino = ListaPunti.First();
-
-                // Disegna il punto arancione temporaneamente
                 using (Graphics g = pictureBox.CreateGraphics())
                 {
                     // Calcola la scala corrente per l'adattamento dell'immagine
@@ -118,53 +111,66 @@ namespace Mappa
                     int pointSize = (int)(basePointSize * Math.Min(scaleX1, scaleY1));
 
                     // Calcolo delle coordinate del punto scalate
-                    float x = puntoPiuVicino.CordinatePunti.X * scaleX1 - pointSize / 2;
-                    float y = puntoPiuVicino.CordinatePunti.Y * scaleY1 - pointSize / 2;
+                    float x = PuntoClick.CordinatePunti.X * scaleX1 - pointSize / 2;
+                    float y = PuntoClick.CordinatePunti.Y * scaleY1 - pointSize / 2;
 
                     // Disegna il punto arancione come quadrato
-                    g.FillRectangle(Brushes.Green, x - 1, y - 1, pointSize, pointSize);
+                    g.FillRectangle(Brushes.Red, x - 1, y - 1, pointSize, pointSize);
+                    Font font = new Font("Arial", 20, FontStyle.Bold);
+                    Brush brush = Brushes.Black;
+                    g.DrawString(PuntoClick.Name, font, brush, new PointF(x, y-10));
                 }
-
-
-
-
+                
+            }
+            else if (cmbModalita.SelectedIndex == 1)
+            { 
+                var ListaPuntiOrdinati = ListaPunti.OrderBy(p => Distanza(p, PuntoClick)).ToList();
+                Punto puntoPiuVicino = ListaPuntiOrdinati.First();
                 listPuntiSeg.Items.Add(puntoPiuVicino);
-                PuntiSegmento.Add(puntoPiuVicino);
-
-                // Disegna il segmento se ci sono due punti
-                if (PuntiSegmento.Count == 2)
+                
+                if (listPuntiSeg.Items.Count == 2)
                 {
-                    Segmento segTemp = new Segmento(PuntiSegmento[0], PuntiSegmento[1]);
-
-                    //verifica se il segmento collega lo stesso punto
-
-                    if (PuntiSegmento[0] == PuntiSegmento[1])
+                    if (listPuntiSeg.Items[0] == listPuntiSeg.Items[1])
                     {
-                        MessageBox.Show("I punti selezionati sono uguali", "Errore", MessageBoxButtons.OK);
+                        MessageBox.Show("I punti selezionti sono uguali");
                         listPuntiSeg.Items.Clear();
-                        PuntiSegmento.Clear();
-                        refresh();
                         return;
                     }
-
-                    // Verifica se il segmento è già presente
-                    foreach (Segmento s in listSegmenti.Items)
+                    Punto punto1 = listPuntiSeg.Items[0] as Punto;
+                    Punto punto2 = listPuntiSeg.Items[1] as Punto;
+                    bool esiste = Segmenti.Any(segmento => segmento.Nome1 + segmento.Nome2 == punto1.Name + punto2.Name);
+                    if (esiste)
                     {
-                        if (s.Equals(segTemp))
-                        {
-                            MessageBox.Show("Segmento già presente", "Errore", MessageBoxButtons.OK);
-                            listPuntiSeg.Items.Clear();
-                            PuntiSegmento.Clear();
-                            refresh();
-                            return;
-                        }
+                        MessageBox.Show("Esiste gia un segmento con questyi punti");
+                        listPuntiSeg.Items.Clear();
+                        return;
                     }
-
+                    Segmento segTemp = new Segmento(listPuntiSeg.Items[0] as Punto, listPuntiSeg.Items[1] as Punto);
                     // Aggiunge il nuovo segmento
                     drawSegment();
                     listSegmenti.Items.Add(segTemp);
+                    Segmenti.Add(segTemp);
                     listPuntiSeg.Items.Clear();
-                    PuntiSegmento.Clear();
+                }
+                else
+                {
+                    using (Graphics g = pictureBox.CreateGraphics())
+                    {
+                        // Calcola la scala corrente per l'adattamento dell'immagine
+                        float scaleX1 = (float)pictureBox.Width / img.Width;
+                        float scaleY1 = (float)pictureBox.Height / img.Height;
+
+                        // Dimensione adattata del punto
+                        int basePointSize = 30; // Dimensione base del punto
+                        int pointSize = (int)(basePointSize * Math.Min(scaleX1, scaleY1));
+
+                        // Calcolo delle coordinate del punto scalate
+                        float x = puntoPiuVicino.CordinatePunti.X * scaleX1 - pointSize / 2;
+                        float y = puntoPiuVicino.CordinatePunti.Y * scaleY1 - pointSize / 2;
+
+                        // Disegna il punto arancione come quadrato
+                        g.FillRectangle(Brushes.Green, x - 1, y - 1, pointSize, pointSize);
+                    }
                 }
 
             }
@@ -198,10 +204,12 @@ namespace Mappa
         {
             using (Graphics g = Graphics.FromImage(img))
             {
-                if (PuntiSegmento.Count == 2)
+                if (listPuntiSeg.Items.Count == 2)
                 {
+                    Punto punto1 = listPuntiSeg.Items[0] as Punto;
+                    Punto punto2 = listPuntiSeg.Items[1] as Punto;
                     Pen pen = new Pen(Color.FromArgb(0, 0, 255), 3);  // Dimensione penna adatta
-                    g.DrawLine(pen, PuntiSegmento[0].CordinatePunti, PuntiSegmento[1].CordinatePunti);
+                    g.DrawLine(pen, punto1.CordinatePunti, punto2.CordinatePunti);
                 }
             }
 
@@ -219,10 +227,28 @@ namespace Mappa
             using (Graphics gpr = Graphics.FromImage(img))
             {
                 // Disegna ogni punto dalla lista
-                foreach (Punto p in listPoints.Items)
+                foreach (Punto p in ListaPunti)
                 {
                     int pointSize = 30; // Dimensione del punto da disegnare
                     gpr.FillRectangle(Brushes.Red, p.CordinatePunti.X - pointSize / 2, p.CordinatePunti.Y - pointSize / 2, pointSize, pointSize);
+                    Font font = new Font("Arial", 20, FontStyle.Bold);
+                    Brush brush = Brushes.Black;
+                    gpr.DrawString(p.Name, font, brush, new PointF(p.CordinatePunti.X, p.CordinatePunti.Y - 10));
+                }
+            }
+
+            pictureBox.Image = img;
+            pictureBox.Refresh();
+        }
+        public void DisegnaSegmenti()
+        {
+            using (Graphics gpr = Graphics.FromImage(img))
+            {
+                // Disegna ogni punto dalla lista
+                foreach (Segmento segmento in Segmenti)
+                {
+                    Pen pen = new Pen(Color.FromArgb(0, 0, 255), 3);  // Dimensione penna adatta
+                    gpr.DrawLine(pen, segmento.punto1.CordinatePunti, segmento.punto2.CordinatePunti);
                 }
             }
 
@@ -365,10 +391,22 @@ namespace Mappa
             {
                 if (listPoints.SelectedItems.Count >= 1)
                 {
-                    // Rimuovi il punto dalla lista
                     int index = listPoints.SelectedIndex;
+                    Punto puntoRimuovere = listPoints.Items[index] as Punto;
+
                     listPoints.Items.RemoveAt(index);
+                    ListaPunti.Remove(puntoRimuovere);
+                    Segmenti.RemoveAll(seg => seg.Nome1 == puntoRimuovere.Name || seg.Nome2 == puntoRimuovere.Name);
+                    listSegmenti.Items.Clear();
+                    foreach(Segmento segmento in Segmenti)
+                    {
+                        listSegmenti.Items.Add(segmento);
+                    }
+                    Bitmap immagineOrg = new Bitmap(Immagineoriginale);
+                    img = immagineOrg;
+
                     DisegnaPunti();
+                    DisegnaSegmenti();
                 }
                 else
                 {
@@ -397,33 +435,6 @@ namespace Mappa
             cmbModalita.SelectedIndex = 0;
         }
 
-        private void listPoints_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Punto puntoSelezionato = (Punto)listPoints.SelectedItem;
-
-            using (Graphics g = pictureBox.CreateGraphics())
-            {
-                // Calcola la scala corrente per l'adattamento dell'immagine
-                float scaleX = (float)pictureBox.Width / img.Width;
-                float scaleY = (float)pictureBox.Height / img.Height;
-
-                // Dimensione adattata del punto
-                int basePointSize = 30; // Dimensione base del punto
-                int pointSize = (int)(basePointSize * Math.Min(scaleX, scaleY));
-
-                /*foreach (Point point in listPoints.Items) {
-                  //tutti i punti non selezionati rossi
-                }*/
-
-
-                // Calcolo delle coordinate del punto scalate
-                float x = puntoSelezionato.CordinatePunti.X * scaleX - pointSize / 2;
-                float y = puntoSelezionato.CordinatePunti.Y * scaleY - pointSize / 2;
-
-                // Disegna il punto arancione come quadrato
-                g.FillRectangle(Brushes.Blue, x, y, pointSize, pointSize);
-            }
-        }
     }
 }
 

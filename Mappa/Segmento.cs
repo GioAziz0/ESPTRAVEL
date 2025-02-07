@@ -12,9 +12,12 @@ namespace Mappa
         public string Nome1 { get; set; }
         public string Nome2 { get; set; }
         public double Peso { get; set; }
-
+        public Punto punto1 { get; set; }
+        public Punto punto2 { get; set; }
         public Segmento(Punto P1, Punto P2)
         {
+            punto1 = P1;
+            punto2 = P2;
             Nome1 = P1.Name;
             Nome2 = P2.Name;
             Peso = Math.Sqrt(Math.Pow(P1.CordinatePunti.X - P2.CordinatePunti.X, 2) + Math.Pow(P1.CordinatePunti.Y - P2.CordinatePunti.Y, 2));
