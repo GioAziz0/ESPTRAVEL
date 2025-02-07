@@ -94,7 +94,7 @@ namespace Mappa
             int positionX = (int)(e.X * scaleX);
             int positionY = (int)(e.Y * scaleY);
 
-            Punto PuntoClick = new Punto(new Point(positionX, positionY), TrovaNome(ListaPunti.Count()));
+            Punto PuntoClick = new Punto(new Point(positionX, positionY), TrovaNome());
 
             if (cmbModalita.SelectedIndex == 0)
             {
@@ -176,10 +176,10 @@ namespace Mappa
             }
         }
 
-        public string TrovaNome(int indice)
+        public string TrovaNome()
         {
             string nome;
-            indice++;
+            int indice = 1;
             do
             {
                 nome = string.Empty;
