@@ -20,6 +20,7 @@ namespace Mappa
         private Image img;
         private List<Punto> ListaPunti;
         List<Punto> PuntiSegmento;
+        List<int> piani;
 
 
         public Form1()
@@ -28,6 +29,7 @@ namespace Mappa
             pictureBox = new PictureBox();
             ListaPunti = new List<Punto>();
             PuntiSegmento = new List<Punto>();
+            piani = new List<int>();
             cmbModalita.SelectedIndex = 0;
             abilitazioneControlli(false);
         }
@@ -43,6 +45,7 @@ namespace Mappa
                 listPuntiSeg.Items.Clear();
                 listSegmenti.Items.Clear();
                 cmbModalita.SelectedIndex = 0;
+                piani.Add(0);
             }
 
 
@@ -68,6 +71,44 @@ namespace Mappa
                 abilitazioneControlli(true);
 
             }
+        }
+
+        private void nuovoPiano()
+        {
+            /*
+            if (img != null)
+            {
+                img.Dispose();
+                ListaPunti = new List<Punto>();
+                PuntiSegmento = new List<Punto>();
+                listPoints.Items.Clear();
+                listPuntiSeg.Items.Clear();
+                listSegmenti.Items.Clear();
+                cmbModalita.SelectedIndex = 0;
+                piani.Add(0);
+            }
+
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Filter = "Immagini|*.jpg;*.jpeg;*.png;*.bmp;*.gif";
+            fileDialog.Title = "Seleziona immagine";
+
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string imgPath = fileDialog.FileName;
+                img = Image.FromFile(imgPath);
+
+                int altezza = (int)(ClientSize.Height * 0.9);
+                int larghezza = (img.Width * altezza) / img.Height;
+                pictureBox.Size = new Size(larghezza, altezza);
+                pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                pictureBox.Image = img;
+                pictureBox.Location = new Point(ClientSize.Width / 2 - larghezza / 2, 44);
+                pictureBox.MouseClick += pctClick;
+                pictureBox.Visible = true;
+                Controls.Add(pictureBox);
+                abilitazioneControlli(true);
+            }
+            */
         }
 
         private void abilitazioneControlli(bool ablitazione)
@@ -423,6 +464,11 @@ namespace Mappa
                 // Disegna il punto arancione come quadrato
                 g.FillRectangle(Brushes.Blue, x, y, pointSize, pointSize);
             }
+        }
+
+        private void superioreToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }

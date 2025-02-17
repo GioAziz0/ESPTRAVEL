@@ -42,13 +42,19 @@
             listPuntiSeg = new ListBox();
             pnlSegmenti = new Panel();
             listSegmenti = new ListBox();
-            lblNumeroPiani = new Label();
-            pictureBox1 = new PictureBox();
-            pictureBox2 = new PictureBox();
+            lblPianoAttuale = new Label();
+            btnVaiAPianoSuperiore = new PictureBox();
+            btnVaiAPianoInferiore = new PictureBox();
+            panel1 = new Panel();
+            lblPianoMinimo = new Label();
+            lblPianoMassimo = new Label();
+            superioreToolStripMenuItem = new ToolStripMenuItem();
+            inferioreToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             pnlSegmenti.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)btnVaiAPianoSuperiore).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)btnVaiAPianoInferiore).BeginInit();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
@@ -110,6 +116,7 @@
             // 
             // inserisciPianoToolStripMenuItem
             // 
+            inserisciPianoToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { superioreToolStripMenuItem, inferioreToolStripMenuItem });
             inserisciPianoToolStripMenuItem.Name = "inserisciPianoToolStripMenuItem";
             inserisciPianoToolStripMenuItem.Size = new Size(94, 20);
             inserisciPianoToolStripMenuItem.Text = "Inserisci Piano";
@@ -162,44 +169,87 @@
             listSegmenti.Size = new Size(124, 349);
             listSegmenti.TabIndex = 6;
             // 
-            // lblNumeroPiani
+            // lblPianoAttuale
             // 
-            lblNumeroPiani.AutoSize = true;
-            lblNumeroPiani.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblNumeroPiani.Location = new Point(783, 91);
-            lblNumeroPiani.Name = "lblNumeroPiani";
-            lblNumeroPiani.Size = new Size(19, 21);
-            lblNumeroPiani.TabIndex = 9;
-            lblNumeroPiani.Text = "0";
+            lblPianoAttuale.AutoSize = true;
+            lblPianoAttuale.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblPianoAttuale.Location = new Point(20, 56);
+            lblPianoAttuale.Name = "lblPianoAttuale";
+            lblPianoAttuale.Size = new Size(19, 21);
+            lblPianoAttuale.TabIndex = 9;
+            lblPianoAttuale.Text = "0";
             // 
-            // pictureBox1
+            // btnVaiAPianoSuperiore
             // 
-            pictureBox1.BackgroundImage = Properties.Resources.frecciasu;
-            pictureBox1.Location = new Point(766, 38);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(50, 50);
-            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox1.TabIndex = 10;
-            pictureBox1.TabStop = false;
+            btnVaiAPianoSuperiore.BackgroundImage = Properties.Resources.frecciasu;
+            btnVaiAPianoSuperiore.Image = Properties.Resources.frecciasu;
+            btnVaiAPianoSuperiore.Location = new Point(3, 3);
+            btnVaiAPianoSuperiore.Name = "btnVaiAPianoSuperiore";
+            btnVaiAPianoSuperiore.Size = new Size(50, 50);
+            btnVaiAPianoSuperiore.SizeMode = PictureBoxSizeMode.StretchImage;
+            btnVaiAPianoSuperiore.TabIndex = 10;
+            btnVaiAPianoSuperiore.TabStop = false;
             // 
-            // pictureBox2
+            // btnVaiAPianoInferiore
             // 
-            pictureBox2.BackgroundImage = Properties.Resources.frecciagiu;
-            pictureBox2.Location = new Point(766, 115);
-            pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(50, 50);
-            pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox2.TabIndex = 11;
-            pictureBox2.TabStop = false;
+            btnVaiAPianoInferiore.BackgroundImage = Properties.Resources.frecciagiu;
+            btnVaiAPianoInferiore.Image = Properties.Resources.frecciagiu;
+            btnVaiAPianoInferiore.Location = new Point(3, 80);
+            btnVaiAPianoInferiore.Name = "btnVaiAPianoInferiore";
+            btnVaiAPianoInferiore.Size = new Size(50, 50);
+            btnVaiAPianoInferiore.SizeMode = PictureBoxSizeMode.StretchImage;
+            btnVaiAPianoInferiore.TabIndex = 11;
+            btnVaiAPianoInferiore.TabStop = false;
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(lblPianoMinimo);
+            panel1.Controls.Add(lblPianoMassimo);
+            panel1.Controls.Add(btnVaiAPianoSuperiore);
+            panel1.Controls.Add(lblPianoAttuale);
+            panel1.Controls.Add(btnVaiAPianoInferiore);
+            panel1.Location = new Point(750, 37);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(84, 138);
+            panel1.TabIndex = 13;
+            // 
+            // lblPianoMinimo
+            // 
+            lblPianoMinimo.AutoSize = true;
+            lblPianoMinimo.Location = new Point(59, 106);
+            lblPianoMinimo.Name = "lblPianoMinimo";
+            lblPianoMinimo.Size = new Size(13, 15);
+            lblPianoMinimo.TabIndex = 15;
+            lblPianoMinimo.Text = "0";
+            // 
+            // lblPianoMassimo
+            // 
+            lblPianoMassimo.AutoSize = true;
+            lblPianoMassimo.Location = new Point(59, 12);
+            lblPianoMassimo.Name = "lblPianoMassimo";
+            lblPianoMassimo.Size = new Size(13, 15);
+            lblPianoMassimo.TabIndex = 14;
+            lblPianoMassimo.Text = "0";
+            // 
+            // superioreToolStripMenuItem
+            // 
+            superioreToolStripMenuItem.Name = "superioreToolStripMenuItem";
+            superioreToolStripMenuItem.Size = new Size(180, 22);
+            superioreToolStripMenuItem.Text = "Superiore";
+            superioreToolStripMenuItem.Click += superioreToolStripMenuItem_Click;
+            // 
+            // inferioreToolStripMenuItem
+            // 
+            inferioreToolStripMenuItem.Name = "inferioreToolStripMenuItem";
+            inferioreToolStripMenuItem.Size = new Size(180, 22);
+            inferioreToolStripMenuItem.Text = "Inferiore";
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(984, 561);
-            Controls.Add(pictureBox2);
-            Controls.Add(pictureBox1);
-            Controls.Add(lblNumeroPiani);
+            Controls.Add(panel1);
             Controls.Add(pnlSegmenti);
             Controls.Add(listPoints);
             Controls.Add(menuStrip1);
@@ -211,8 +261,10 @@
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             pnlSegmenti.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)btnVaiAPianoSuperiore).EndInit();
+            ((System.ComponentModel.ISupportInitialize)btnVaiAPianoInferiore).EndInit();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -232,8 +284,13 @@
         private Panel pnlSegmenti;
         private ListBox listSegmenti;
         private ToolStripMenuItem inserisciPianoToolStripMenuItem;
-        private Label lblNumeroPiani;
-        private PictureBox pictureBox1;
-        private PictureBox pictureBox2;
+        private Label lblPianoAttuale;
+        private PictureBox btnVaiAPianoSuperiore;
+        private PictureBox btnVaiAPianoInferiore;
+        private Panel panel1;
+        private Label lblPianoMassimo;
+        private Label lblPianoMinimo;
+        private ToolStripMenuItem superioreToolStripMenuItem;
+        private ToolStripMenuItem inferioreToolStripMenuItem;
     }
 }
