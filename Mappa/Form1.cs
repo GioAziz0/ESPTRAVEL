@@ -433,6 +433,8 @@ namespace Mappa
         private void Form1_Load(object sender, EventArgs e)
         {
             cmbModalita.SelectedIndex = 0;
+            HomePage homePage = new HomePage();
+            homePage.ShowDialog();
         }
 
     }
