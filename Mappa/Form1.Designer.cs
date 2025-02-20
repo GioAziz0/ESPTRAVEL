@@ -33,6 +33,8 @@
             salvaJSONToolStripMenuItem = new ToolStripMenuItem();
             apriJSONToolStripMenuItem = new ToolStripMenuItem();
             rimuoviToolStripMenuItem = new ToolStripMenuItem();
+            rimuoviPuntoToolStripMenuItem = new ToolStripMenuItem();
+            rimuoviSegmentoToolStripMenuItem = new ToolStripMenuItem();
             modalitaToolStripMenuItem = new ToolStripMenuItem();
             segmentoToolStripMenuItem = new ToolStripMenuItem();
             puntoToolStripMenuItem = new ToolStripMenuItem();
@@ -77,10 +79,24 @@
             // 
             // rimuoviToolStripMenuItem
             // 
+            rimuoviToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { rimuoviPuntoToolStripMenuItem, rimuoviSegmentoToolStripMenuItem });
             rimuoviToolStripMenuItem.Name = "rimuoviToolStripMenuItem";
             rimuoviToolStripMenuItem.Size = new Size(63, 20);
             rimuoviToolStripMenuItem.Text = "Rimuovi";
-            rimuoviToolStripMenuItem.Click += rimuoviToolStripMenuItem_Click;
+            // 
+            // rimuoviPuntoToolStripMenuItem
+            // 
+            rimuoviPuntoToolStripMenuItem.Name = "rimuoviPuntoToolStripMenuItem";
+            rimuoviPuntoToolStripMenuItem.Size = new Size(180, 22);
+            rimuoviPuntoToolStripMenuItem.Text = "Rimuovi Punto";
+            rimuoviPuntoToolStripMenuItem.Click += rimuoviPuntoToolStripMenuItem_Click;
+            // 
+            // rimuoviSegmentoToolStripMenuItem
+            // 
+            rimuoviSegmentoToolStripMenuItem.Name = "rimuoviSegmentoToolStripMenuItem";
+            rimuoviSegmentoToolStripMenuItem.Size = new Size(180, 22);
+            rimuoviSegmentoToolStripMenuItem.Text = "Rimuovi Segmento";
+            rimuoviSegmentoToolStripMenuItem.Click += rimuoviSegmentoToolStripMenuItem_Click;
             // 
             // modalitaToolStripMenuItem
             // 
@@ -183,5 +199,7 @@
         private ListBox listPuntiSeg;
         private Panel pnlSegmenti;
         private ListBox listSegmenti;
+        private ToolStripMenuItem rimuoviPuntoToolStripMenuItem;
+        private ToolStripMenuItem rimuoviSegmentoToolStripMenuItem;
     }
 }

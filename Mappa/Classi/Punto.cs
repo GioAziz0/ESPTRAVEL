@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mappa
+namespace Mappa.Classi
 {
     public class Punto
     {

@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mappa
+namespace Mappa.Classi
 {
     public class Segmento
     {
-
         public string Nome1 { get; set; }
         public string Nome2 { get; set; }
         public double Peso { get; set; }
@@ -35,23 +34,6 @@ namespace Mappa
             ciao.Add(Nome2);
             ciao.Add(Peso.ToString());
             return ciao;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is Segmento other)
-            {
-                // Confronta i segmenti indipendentemente dall'ordine dei punti
-                return (Nome1 == other.Nome1 && Nome2 == other.Nome2) ||
-                       (Nome1 == other.Nome2 && Nome2 == other.Nome1);
-            }
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            // Genera un hash unico per il segmento indipendentemente dall'ordine
-            return (Nome1.GetHashCode() ^ Nome2.GetHashCode());
         }
     }
 }

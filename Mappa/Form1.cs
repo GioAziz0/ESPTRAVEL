@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices.Marshalling;
 using System.Net.Mime;
 using System.Drawing.Configuration;
+using Mappa.Classi;
 
 
 namespace Mappa
@@ -24,6 +25,7 @@ namespace Mappa
         Image Immagineoriginale;
         List<Punto> ListaPunti;
         List<Segmento> Segmenti;
+        string URL;
 
         public Form1()
         {
@@ -33,6 +35,7 @@ namespace Mappa
             Segmenti = new List<Segmento>();
             cmbModalita.SelectedIndex = 0;
             abilitazioneControlli(false);
+            DoubleBuffered = true;
         }
 
         private void caricaToolStripMenuItem_Click(object sender, EventArgs e)
@@ -55,6 +58,7 @@ namespace Mappa
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
                 string imgPath = fileDialog.FileName;
+                URL = imgPath;
                 img = Image.FromFile(imgPath);
                 Immagineoriginale = Image.FromFile(imgPath);
 
@@ -116,18 +120,18 @@ namespace Mappa
 
                     // Disegna il punto arancione come quadrato
                     g.FillRectangle(Brushes.Red, x - 1, y - 1, pointSize, pointSize);
-                    Font font = new Font("Arial", 20, FontStyle.Bold);
+                    Font font = new Font("Arial", 40, FontStyle.Bold);
                     Brush brush = Brushes.Black;
-                    g.DrawString(PuntoClick.Name, font, brush, new PointF(x, y-10));
+                    g.DrawString(PuntoClick.Name, font, brush, new PointF(x, y - 10));
                 }
-                
+
             }
             else if (cmbModalita.SelectedIndex == 1)
-            { 
+            {
                 var ListaPuntiOrdinati = ListaPunti.OrderBy(p => Distanza(p, PuntoClick)).ToList();
                 Punto puntoPiuVicino = ListaPuntiOrdinati.First();
                 listPuntiSeg.Items.Add(puntoPiuVicino);
-                
+
                 if (listPuntiSeg.Items.Count == 2)
                 {
                     if (listPuntiSeg.Items[0] == listPuntiSeg.Items[1])
@@ -231,7 +235,7 @@ namespace Mappa
                 {
                     int pointSize = 30; // Dimensione del punto da disegnare
                     gpr.FillRectangle(Brushes.Red, p.CordinatePunti.X - pointSize / 2, p.CordinatePunti.Y - pointSize / 2, pointSize, pointSize);
-                    Font font = new Font("Arial", 20, FontStyle.Bold);
+                    Font font = new Font("Arial", 40, FontStyle.Bold);
                     Brush brush = Brushes.Black;
                     gpr.DrawString(p.Name, font, brush, new PointF(p.CordinatePunti.X, p.CordinatePunti.Y - 10));
                 }
@@ -274,8 +278,7 @@ namespace Mappa
                 {
                     string filePath = saveFileDialog.FileName;
                     filePath = filePath.Remove(filePath.Length - 5);
-                    SavePointsGioAziz(filePath + "_GioAziz.json");
-                    SavePoints(filePath + "_ListaPunti.json");
+                    CreaJson(filePath+".json");
                 }
             }
             catch (Exception ex)
@@ -283,43 +286,27 @@ namespace Mappa
                 MessageBox.Show(ex.Message);
             }
         }
-
-        private void SavePointsGioAziz(string filePath)
+        private void CreaJson(string filePath)
         {
-            if (!File.Exists(filePath))
+            try
             {
-                File.Create(filePath).Close();
-            }
-            // Serializza i punti in JSON
-            List<List<string>> temp = new List<List<string>>();
-            foreach (Segmento segmento in listSegmenti.Items)
-            {
-                temp.Add(segmento.ToList());
-            }
-            string stringJson = JsonConvert.SerializeObject(temp);
-            File.WriteAllText(filePath, stringJson);
-        }
-
-        private void SavePoints(string filePath)
-        {
-            if (!File.Exists(filePath))
-            {
-                File.Create(filePath).Close();
-            }
-            else
-            {
-                //avvisa l'utente che il file esiste già e chiede se vuole sovrascriverlo
-                DialogResult dialogResult = MessageBox.Show("Il file esiste già, vuoi sovrascriverlo?", "Attenzione", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.No)
+                SaveJson Salvataggio = new SaveJson(URL);
+                foreach(var punto in ListaPunti)
                 {
-                    //richiama la funzione per salvare (può scegliere un'altro nome
-                    salvaJSONToolStripMenuItem_Click(null, null);
-                    return;
+                    Salvataggio.points.Add(punto);
                 }
+                foreach(var segmento in Segmenti)
+                {
+                    Salvataggio.arcs.Add(segmento);
+                }
+
+                string stringJson = JsonConvert.SerializeObject(Salvataggio);
+                File.WriteAllText(filePath, stringJson);
             }
-            // Serializza i punti in JSON
-            string stringJson = JsonConvert.SerializeObject(listPoints.Items);
-            File.WriteAllText(filePath, stringJson);
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void apriJSONToolStripMenuItem_Click(object sender, EventArgs e)
@@ -385,40 +372,6 @@ namespace Mappa
             }*/
         }
 
-        private void rimuoviToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (listPoints.SelectedItems.Count >= 1)
-                {
-                    int index = listPoints.SelectedIndex;
-                    Punto puntoRimuovere = listPoints.Items[index] as Punto;
-
-                    listPoints.Items.RemoveAt(index);
-                    ListaPunti.Remove(puntoRimuovere);
-                    Segmenti.RemoveAll(seg => seg.Nome1 == puntoRimuovere.Name || seg.Nome2 == puntoRimuovere.Name);
-                    listSegmenti.Items.Clear();
-                    foreach(Segmento segmento in Segmenti)
-                    {
-                        listSegmenti.Items.Add(segmento);
-                    }
-                    Bitmap immagineOrg = new Bitmap(Immagineoriginale);
-                    img = immagineOrg;
-
-                    DisegnaPunti();
-                    DisegnaSegmenti();
-                }
-                else
-                {
-                    throw new Exception("Seleziona almeno un punto da rimuovere");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Errore nella rimozione dalla lista. Errore: " + ex.Message, "Error", MessageBoxButtons.OK);
-            }
-        }
-
         private void refresh()
         {
             int altezza = (int)(ClientSize.Height * 0.9);
@@ -435,6 +388,66 @@ namespace Mappa
             cmbModalita.SelectedIndex = 0;
         }
 
+        private void rimuoviPuntoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (listPoints.SelectedItems.Count >= 1)
+                {
+                    int index = listPoints.SelectedIndex;
+                    Punto puntoRimuovere = listPoints.Items[index] as Punto;
+
+                    listPoints.Items.RemoveAt(index);
+                    ListaPunti.Remove(puntoRimuovere);
+                    Segmenti.RemoveAll(seg => seg.Nome1 == puntoRimuovere.Name || seg.Nome2 == puntoRimuovere.Name);
+                    listSegmenti.Items.Clear();
+                    foreach (Segmento segmento in Segmenti)
+                    {
+                        listSegmenti.Items.Add(segmento);
+                    }
+                    Bitmap immagineOrg = new Bitmap(Immagineoriginale);
+                    img = immagineOrg;
+
+                    DisegnaPunti();
+                    DisegnaSegmenti();
+                }
+                else
+                {
+                    throw new Exception("Seleziona almeno un punto da rimuovere");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Errore nella rimozione dalla punto. Errore: " + ex.Message, "Error", MessageBoxButtons.OK);
+            }
+        }
+
+        private void rimuoviSegmentoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (listSegmenti.SelectedItems.Count > 0)
+                {
+                    Segmento segmentoSelezionato = (Segmento)listSegmenti.SelectedItem;
+                    Segmenti.Remove(segmentoSelezionato);
+                    listSegmenti.Items.RemoveAt(listSegmenti.SelectedIndex);
+
+                    Bitmap immagineOrg = new Bitmap(Immagineoriginale);
+                    img = immagineOrg;
+
+                    DisegnaPunti();
+                    DisegnaSegmenti();
+                }
+                else
+                {
+                    throw new Exception("Seleziona almeno un segmento da rimuovere");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Errore nella rimozione del segmento. Errore: " + ex.Message, "Error", MessageBoxButtons.OK);
+            }
+        }
     }
 }
 
