@@ -252,7 +252,7 @@ namespace Mappa
                 foreach (Segmento segmento in Segmenti)
                 {
                     Pen pen = new Pen(Color.FromArgb(0, 0, 255), 3);  // Dimensione penna adatta
-                    gpr.DrawLine(pen, segmento.punto1.CordinatePunti, segmento.punto2.CordinatePunti);
+                    gpr.DrawLine(pen, segmento.Punto1.CordinatePunti, segmento.Punto2.CordinatePunti);
                 }
             }
 
