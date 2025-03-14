@@ -1,6 +1,6 @@
 ﻿namespace Mappa
 {
-    partial class Form1
+    partial class Mappatura
     {
         /// <summary>
         ///  Required designer variable.
@@ -38,6 +38,7 @@
             modalitaToolStripMenuItem = new ToolStripMenuItem();
             segmentoToolStripMenuItem = new ToolStripMenuItem();
             puntoToolStripMenuItem = new ToolStripMenuItem();
+            saveConfigToolStripMenuItem = new ToolStripMenuItem();
             listPoints = new ListBox();
             cmbModalita = new ComboBox();
             listPuntiSeg = new ListBox();
@@ -49,7 +50,7 @@
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { caricaToolStripMenuItem, salvaJSONToolStripMenuItem, apriJSONToolStripMenuItem, rimuoviToolStripMenuItem, modalitaToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { caricaToolStripMenuItem, salvaJSONToolStripMenuItem, apriJSONToolStripMenuItem, rimuoviToolStripMenuItem, modalitaToolStripMenuItem, saveConfigToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(984, 24);
@@ -87,14 +88,14 @@
             // rimuoviPuntoToolStripMenuItem
             // 
             rimuoviPuntoToolStripMenuItem.Name = "rimuoviPuntoToolStripMenuItem";
-            rimuoviPuntoToolStripMenuItem.Size = new Size(180, 22);
+            rimuoviPuntoToolStripMenuItem.Size = new Size(175, 22);
             rimuoviPuntoToolStripMenuItem.Text = "Rimuovi Punto";
             rimuoviPuntoToolStripMenuItem.Click += rimuoviPuntoToolStripMenuItem_Click;
             // 
             // rimuoviSegmentoToolStripMenuItem
             // 
             rimuoviSegmentoToolStripMenuItem.Name = "rimuoviSegmentoToolStripMenuItem";
-            rimuoviSegmentoToolStripMenuItem.Size = new Size(180, 22);
+            rimuoviSegmentoToolStripMenuItem.Size = new Size(175, 22);
             rimuoviSegmentoToolStripMenuItem.Text = "Rimuovi Segmento";
             rimuoviSegmentoToolStripMenuItem.Click += rimuoviSegmentoToolStripMenuItem_Click;
             // 
@@ -117,6 +118,13 @@
             puntoToolStripMenuItem.Name = "puntoToolStripMenuItem";
             puntoToolStripMenuItem.Size = new Size(127, 22);
             puntoToolStripMenuItem.Text = "punto";
+            // 
+            // saveConfigToolStripMenuItem
+            // 
+            saveConfigToolStripMenuItem.Name = "saveConfigToolStripMenuItem";
+            saveConfigToolStripMenuItem.Size = new Size(130, 20);
+            saveConfigToolStripMenuItem.Text = "Salva Configurazione";
+            saveConfigToolStripMenuItem.Click += sToolStripMenuItem_Click;
             // 
             // listPoints
             // 
@@ -165,7 +173,7 @@
             listSegmenti.Size = new Size(124, 349);
             listSegmenti.TabIndex = 6;
             // 
-            // Form1
+            // Mappatura
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -174,7 +182,7 @@
             Controls.Add(listPoints);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
-            Name = "Form1";
+            Name = "Mappatura";
             Text = "Form1";
             Load += Form1_Load;
             ClientSizeChanged += Form1_ClientSizeChanged;
@@ -201,5 +209,6 @@
         private ListBox listSegmenti;
         private ToolStripMenuItem rimuoviPuntoToolStripMenuItem;
         private ToolStripMenuItem rimuoviSegmentoToolStripMenuItem;
+        private ToolStripMenuItem saveConfigToolStripMenuItem;
     }
 }

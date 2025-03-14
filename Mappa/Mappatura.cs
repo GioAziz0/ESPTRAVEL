@@ -18,7 +18,7 @@ using Mappa.Classi;
 
 namespace Mappa
 {
-    public partial class Form1 : Form
+    public partial class Mappatura : Form
     {
         PictureBox pictureBox;
         Image img;
@@ -27,7 +27,7 @@ namespace Mappa
         List<Segmento> Segmenti;
         string URL;
 
-        public Form1()
+        public Mappatura()
         {
             InitializeComponent();
             pictureBox = new PictureBox();
@@ -82,6 +82,7 @@ namespace Mappa
             apriJSONToolStripMenuItem.Enabled = ablitazione;
             rimuoviToolStripMenuItem.Enabled = ablitazione;
             modalitaToolStripMenuItem.Enabled = ablitazione;
+            saveConfigToolStripMenuItem.Enabled = ablitazione;
             pnlSegmenti.Visible = ablitazione;
             MaximizeBox = ablitazione;
             MinimizeBox = ablitazione;
@@ -278,7 +279,7 @@ namespace Mappa
                 {
                     string filePath = saveFileDialog.FileName;
                     filePath = filePath.Remove(filePath.Length - 5);
-                    CreaJson(filePath+".json");
+                    CreaJson(filePath + ".json");
                 }
             }
             catch (Exception ex)
@@ -291,11 +292,11 @@ namespace Mappa
             try
             {
                 SaveJson Salvataggio = new SaveJson(URL);
-                foreach(var punto in ListaPunti)
+                foreach (var punto in ListaPunti)
                 {
                     Salvataggio.points.Add(punto);
                 }
-                foreach(var segmento in Segmenti)
+                foreach (var segmento in Segmenti)
                 {
                     Salvataggio.arcs.Add(segmento);
                 }
@@ -374,13 +375,17 @@ namespace Mappa
 
         private void refresh()
         {
-            int altezza = (int)(ClientSize.Height * 0.9);
-            int larghezza = (img.Width * altezza) / img.Height;
-            pictureBox.Size = new Size(larghezza, altezza);
-            pictureBox.Location = new Point(ClientSize.Width / 2 - larghezza / 2, 44);
-            pnlSegmenti.Location = new Point(ClientSize.Width - 160, 37);
+            try
+            {
+                int altezza = (int)(ClientSize.Height * 0.9);
+                int larghezza = (img.Width * altezza) / img.Height;
+                pictureBox.Size = new Size(larghezza, altezza);
+                pictureBox.Location = new Point(ClientSize.Width / 2 - larghezza / 2, 44);
+                pnlSegmenti.Location = new Point(ClientSize.Width - 160, 37);
 
-            DisegnaPunti(); // Ridisegna i punti quando la finestra viene ridimensionata
+                DisegnaPunti(); // Ridisegna i punti quando la finestra viene ridimensionata
+            }
+            catch { }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -448,6 +453,30 @@ namespace Mappa
                 MessageBox.Show("Errore nella rimozione del segmento. Errore: " + ex.Message, "Error", MessageBoxButtons.OK);
             }
         }
+
+        private void sToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //CreajsonSalvataggio()
+
+            //invia alla homepage un'immagine dello stato della mappa con i punti
+
+            PictureBoxToImage(pictureBox);
+
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private void PictureBoxToImage(PictureBox pictureBox)
+        {
+            Bitmap bitmap = new Bitmap(pictureBox.Width, pictureBox.Height);
+            pictureBox.DrawToBitmap(bitmap, new Rectangle(0, 0, pictureBox.Width, pictureBox.Height));
+            //return bitmap;
+
+            //Bitmap img = PictureBoxToImage(pictureBox);
+            bitmap.Save("immagine.png", System.Drawing.Imaging.ImageFormat.Png);
+
+        }
+
     }
 }
 
