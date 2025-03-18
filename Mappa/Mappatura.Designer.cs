@@ -45,13 +45,14 @@
             pnlSegmenti = new Panel();
             listSegmenti = new ListBox();
             txtNomePiano = new TextBox();
+            cancellaConfiguToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             pnlSegmenti.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { caricaToolStripMenuItem, salvaJSONToolStripMenuItem, apriJSONToolStripMenuItem, rimuoviToolStripMenuItem, modalitaToolStripMenuItem, saveConfigToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { caricaToolStripMenuItem, salvaJSONToolStripMenuItem, apriJSONToolStripMenuItem, rimuoviToolStripMenuItem, modalitaToolStripMenuItem, saveConfigToolStripMenuItem, cancellaConfiguToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(984, 24);
@@ -125,7 +126,7 @@
             saveConfigToolStripMenuItem.Name = "saveConfigToolStripMenuItem";
             saveConfigToolStripMenuItem.Size = new Size(130, 20);
             saveConfigToolStripMenuItem.Text = "Salva Configurazione";
-            saveConfigToolStripMenuItem.Click += sToolStripMenuItem_Click;
+            saveConfigToolStripMenuItem.Click += salvaConfigurazioneToolStripMenuItem_Click;
             // 
             // listPoints
             // 
@@ -135,6 +136,7 @@
             listPoints.Name = "listPoints";
             listPoints.Size = new Size(175, 424);
             listPoints.TabIndex = 3;
+            listPoints.SelectedIndexChanged += listPoints_SelectedIndexChanged;
             // 
             // cmbModalita
             // 
@@ -182,6 +184,13 @@
             txtNomePiano.Size = new Size(124, 23);
             txtNomePiano.TabIndex = 7;
             // 
+            // cancellaConfiguToolStripMenuItem
+            // 
+            cancellaConfiguToolStripMenuItem.Name = "cancellaConfiguToolStripMenuItem";
+            cancellaConfiguToolStripMenuItem.Size = new Size(149, 20);
+            cancellaConfiguToolStripMenuItem.Text = "Cancellla configurazione";
+            cancellaConfiguToolStripMenuItem.Click += cancellaConfiguToolStripMenuItem_Click;
+            // 
             // Mappatura
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -221,5 +230,6 @@
         private ToolStripMenuItem rimuoviSegmentoToolStripMenuItem;
         private ToolStripMenuItem saveConfigToolStripMenuItem;
         private TextBox txtNomePiano;
+        private ToolStripMenuItem cancellaConfiguToolStripMenuItem;
     }
 }

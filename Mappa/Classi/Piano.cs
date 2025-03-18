@@ -11,11 +11,13 @@ namespace Mappa.Classi
         public string Name { get; set; }
         public List<Segmento> Segmenti { get; set; }
         public List<Punto> Punti { get; set; }
+        public Image Img { get; set; }
 
-        public Piano(string name, List<Segmento> segmenti, List<Punto> punti) {
+        public Piano(string name, List<Segmento> segmenti, List<Punto> punti, Image img) {
             Name = name;
             Segmenti = segmenti;
             Punti = punti;
+            Img = img;
         }
         public override string ToString()
         {

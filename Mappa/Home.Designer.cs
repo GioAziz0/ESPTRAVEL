@@ -35,6 +35,7 @@
             aggiungiPianoToolStripMenuItem = new ToolStripMenuItem();
             eliminaPianoToolStripMenuItem = new ToolStripMenuItem();
             listBox1 = new ListBox();
+            aPToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -47,7 +48,7 @@
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { aggiungiPianoToolStripMenuItem, eliminaPianoToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { aggiungiPianoToolStripMenuItem, eliminaPianoToolStripMenuItem, aPToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(800, 24);
@@ -76,6 +77,13 @@
             listBox1.Size = new Size(275, 259);
             listBox1.TabIndex = 2;
             // 
+            // aPToolStripMenuItem
+            // 
+            aPToolStripMenuItem.Name = "aPToolStripMenuItem";
+            aPToolStripMenuItem.Size = new Size(74, 20);
+            aPToolStripMenuItem.Text = "Apri Piano";
+            aPToolStripMenuItem.Click += aPToolStripMenuItem_Click;
+            // 
             // Home
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -98,5 +106,6 @@
         private ToolStripMenuItem aggiungiPianoToolStripMenuItem;
         private ToolStripMenuItem eliminaPianoToolStripMenuItem;
         private ListBox listBox1;
+        private ToolStripMenuItem aPToolStripMenuItem;
     }
 }

@@ -20,13 +20,45 @@ namespace Mappa
 
         private void aggiungiPianoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Mappatura form = new Mappatura();
-            DialogResult dialog = form.ShowDialog();
 
-            if (dialog == DialogResult.OK)
+            Mappatura form = new Mappatura();
+            DialogResult result = form.ShowDialog();
+
+            if (result == DialogResult.OK)
             {
                 Piano piano = form.piano;
                 listBox1.Items.Add(piano);
+            }
+        }
+
+        private void aPToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if(listBox1.SelectedItems.Count > 0)
+                {
+                    if (listBox1.SelectedItem is Piano piano)
+                    {
+                        Mappatura form = new Mappatura(piano);
+                        DialogResult result = form.ShowDialog();
+
+                        if (result == DialogResult.OK)
+                        {
+                            Piano newPiano = form.piano;
+                            listBox1.Items.Remove(piano);
+                            listBox1.Items.Add(newPiano);
+                        } else if (result == DialogResult.Cancel)
+                        {
+                            
+                        }
+                    }
+                }
+                else
+                    throw new Exception("Selezionare un piano");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
     }

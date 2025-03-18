@@ -39,9 +39,52 @@ namespace Mappa
             DoubleBuffered = true;
         }
 
+        public Mappatura(Piano piano)
+        {
+            this.piano = piano;
+            InitializeComponent();
+            pictureBox = new PictureBox();
+            listaPunti = new List<Punto>();
+            listaSegmenti = new List<Segmento>();
+            cmbModalita.SelectedIndex = 0;
+            CaricaPiano();
+            DoubleBuffered = true;
+        }
+        private void CaricaPiano()
+        {
+            img = piano.Img;
+            immagineOriginale = piano.Img;
+
+            int altezza = (int)(ClientSize.Height * 0.9);
+            int larghezza = (img.Width * altezza) / img.Height;
+            pictureBox.Size = new Size(larghezza, altezza);
+            pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox.Image = img;
+            pictureBox.Location = new Point(ClientSize.Width / 2 - larghezza / 2, 44);
+            pictureBox.MouseClick += pctClick;
+            pictureBox.Visible = true;
+            Controls.Add(pictureBox);
+            abilitazioneControlli(true);
+
+            txtNomePiano.Text = piano.Name;
+            listaPunti = piano.Punti;
+            foreach (var punto in listaPunti)
+            {
+                listPoints.Items.Add(punto);
+            }
+            listaSegmenti = piano.Segmenti;
+            foreach (var segmento in listaSegmenti)
+            {
+                listSegmenti.Items.Add(segmento);
+            }
+
+            DisegnaPunti();
+            DisegnaSegmenti();
+        }
+
         private void caricaToolStripMenuItem_Click(object sender, EventArgs e)  //carica immagine della mappa
         {
-            if (img != null)
+            if (img != null)    //se è gia stata caricata un'immagine (resetta la mappa)
             {
                 img.Dispose();
                 listaPunti = new List<Punto>();
@@ -51,10 +94,13 @@ namespace Mappa
                 cmbModalita.SelectedIndex = 0;
             }
 
+            // Apre la finestra di dialogo per selezionare l'immagine
 
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.Filter = "Immagini|*.jpg;*.jpeg;*.png;*.bmp;*.gif";
             fileDialog.Title = "Seleziona immagine";
+
+            // Se l'utente seleziona un'immagine, viene renderizzata nel PictureBox
 
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -106,27 +152,11 @@ namespace Mappa
             {
                 listaPunti.Add(PuntoClick);
                 listPoints.Items.Add(PuntoClick);
-                using (Graphics g = pictureBox.CreateGraphics())
-                {
-                    // Calcola la scala corrente per l'adattamento dell'immagine
-                    float scaleX1 = (float)pictureBox.Width / img.Width;
-                    float scaleY1 = (float)pictureBox.Height / img.Height;
 
-                    // Dimensione adattata del punto
-                    int basePointSize = 30; // Dimensione base del punto
-                    int pointSize = (int)(basePointSize * Math.Min(scaleX1, scaleY1));
+                DisegnaPunto(PuntoClick.CordinatePunti.X, PuntoClick.CordinatePunti.Y, PuntoClick.Name, Brushes.Red);
 
-                    // Calcolo delle coordinate del punto scalate
-                    float x = PuntoClick.CordinatePunti.X * scaleX1 - pointSize / 2;
-                    float y = PuntoClick.CordinatePunti.Y * scaleY1 - pointSize / 2;
-
-                    // Disegna il punto arancione come quadrato
-                    g.FillRectangle(Brushes.Red, x - 1, y - 1, pointSize, pointSize);
-                    Font font = new Font("Arial", 40, FontStyle.Bold);
-                    Brush brush = Brushes.Black;
-                    g.DrawString(PuntoClick.Name, font, brush, new PointF(x, y - 10));
-                }
-
+                //pictureBox.Image = img;
+                pictureBox.Refresh();
             }
             else if (cmbModalita.SelectedIndex == 1)
             {
@@ -140,15 +170,20 @@ namespace Mappa
                     {
                         MessageBox.Show("I punti selezionti sono uguali");
                         listPuntiSeg.Items.Clear();
+                        DisegnaPunti();
                         return;
                     }
                     Punto punto1 = listPuntiSeg.Items[0] as Punto;
                     Punto punto2 = listPuntiSeg.Items[1] as Punto;
-                    bool esiste = listaSegmenti.Any(segmento => segmento.Nome1 + segmento.Nome2 == punto1.Name + punto2.Name);
+                    bool esiste = listaSegmenti.Any(segmento =>
+                        (segmento.Nome1 + segmento.Nome2 == punto1.Name + punto2.Name) ||
+                        (segmento.Nome1 + segmento.Nome2 == punto2.Name + punto1.Name));
+
                     if (esiste)
                     {
-                        MessageBox.Show("Esiste gia un segmento con questyi punti");
+                        MessageBox.Show("Esiste gia un segmento con questi punti");
                         listPuntiSeg.Items.Clear();
+                        DisegnaPunti();
                         return;
                     }
                     Segmento segTemp = new Segmento(listPuntiSeg.Items[0] as Punto, listPuntiSeg.Items[1] as Punto);
@@ -160,23 +195,9 @@ namespace Mappa
                 }
                 else
                 {
-                    using (Graphics g = pictureBox.CreateGraphics())
-                    {
-                        // Calcola la scala corrente per l'adattamento dell'immagine
-                        float scaleX1 = (float)pictureBox.Width / img.Width;
-                        float scaleY1 = (float)pictureBox.Height / img.Height;
+                    DisegnaPunto(puntoPiuVicino.CordinatePunti.X, puntoPiuVicino.CordinatePunti.Y, puntoPiuVicino.Name, Brushes.Green);
+                    pictureBox.Refresh();
 
-                        // Dimensione adattata del punto
-                        int basePointSize = 30; // Dimensione base del punto
-                        int pointSize = (int)(basePointSize * Math.Min(scaleX1, scaleY1));
-
-                        // Calcolo delle coordinate del punto scalate
-                        float x = puntoPiuVicino.CordinatePunti.X * scaleX1 - pointSize / 2;
-                        float y = puntoPiuVicino.CordinatePunti.Y * scaleY1 - pointSize / 2;
-
-                        // Disegna il punto arancione come quadrato
-                        g.FillRectangle(Brushes.Green, x - 1, y - 1, pointSize, pointSize);
-                    }
                 }
 
             }
@@ -205,6 +226,17 @@ namespace Mappa
 
             return nome;
         }
+        private void DisegnaPunto(int x_, int y_, string nome, Brush colore)
+        {
+            using (Graphics gpr = Graphics.FromImage(img))
+            {
+                int pointSize = 70; // Dimensione del punto da disegnare
+                gpr.FillRectangle(colore, x_ - pointSize / 2, y_ - pointSize / 2, pointSize, pointSize);
+                Font font = new Font("Arial", 40, FontStyle.Bold);
+                Brush brush = Brushes.Black;
+                gpr.DrawString(nome, font, brush, new PointF(x_, y_ - 10));
+            }
+        }
 
         private void drawSegment()
         {
@@ -219,7 +251,7 @@ namespace Mappa
                 }
             }
 
-            pictureBox.Image = img;
+            //pictureBox.Image = img;
             DisegnaPunti();
         }
 
@@ -235,15 +267,11 @@ namespace Mappa
                 // Disegna ogni punto dalla lista
                 foreach (Punto p in listaPunti)
                 {
-                    int pointSize = 30; // Dimensione del punto da disegnare
-                    gpr.FillRectangle(Brushes.Red, p.CordinatePunti.X - pointSize / 2, p.CordinatePunti.Y - pointSize / 2, pointSize, pointSize);
-                    Font font = new Font("Arial", 40, FontStyle.Bold);
-                    Brush brush = Brushes.Black;
-                    gpr.DrawString(p.Name, font, brush, new PointF(p.CordinatePunti.X, p.CordinatePunti.Y - 10));
+                    DisegnaPunto(p.CordinatePunti.X, p.CordinatePunti.Y, p.Name, Brushes.Red);
                 }
             }
 
-            pictureBox.Image = img;
+            //pictureBox.Image = img;
             pictureBox.Refresh();
         }
         public void DisegnaSegmenti()
@@ -258,7 +286,7 @@ namespace Mappa
                 }
             }
 
-            pictureBox.Image = img;
+            //pictureBox.Image = img;
             pictureBox.Refresh();
         }
 
@@ -451,17 +479,19 @@ namespace Mappa
             }
             catch (Exception ex)
             {
-                
+
             }
         }
 
-        private void sToolStripMenuItem_Click(object sender, EventArgs e)
+        private void salvaConfigurazioneToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
                 if (txtNomePiano.Text.Length > 0)
                 {
-                    piano = new Piano(txtNomePiano.Text, listaSegmenti, listaPunti);
+                    piano = new Piano(txtNomePiano.Text, listaSegmenti, listaPunti, img);
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
                 }
                 else
                     throw new Exception("Inserisci il nome del piano");
@@ -470,7 +500,25 @@ namespace Mappa
             {
                 MessageBox.Show("Errore nella salvataggio della configurazione. Errore: " + ex.Message, "Error", MessageBoxButtons.OK);
             }
-            
+
+        }
+
+        private void listPoints_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Punto puntoSelezionato = listPoints.SelectedItem as Punto;
+
+            if (puntoSelezionato != null)
+            {
+                DisegnaPunti();
+                DisegnaPunto(puntoSelezionato.CordinatePunti.X, puntoSelezionato.CordinatePunti.Y, puntoSelezionato.Name, Brushes.Blue);
+                pictureBox.Refresh();
+            }
+        }
+
+        private void cancellaConfiguToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
         }
     }
 }
