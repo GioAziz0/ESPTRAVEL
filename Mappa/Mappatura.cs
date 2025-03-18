@@ -20,30 +20,31 @@ namespace Mappa
 {
     public partial class Mappatura : Form
     {
+        internal Piano piano { get; set; }
         PictureBox pictureBox;
         Image img;
-        Image Immagineoriginale;
-        List<Punto> ListaPunti;
-        List<Segmento> Segmenti;
+        Image immagineOriginale;
+        List<Punto> listaPunti;
+        List<Segmento> listaSegmenti;
         string URL;
 
         public Mappatura()
         {
             InitializeComponent();
             pictureBox = new PictureBox();
-            ListaPunti = new List<Punto>();
-            Segmenti = new List<Segmento>();
+            listaPunti = new List<Punto>();
+            listaSegmenti = new List<Segmento>();
             cmbModalita.SelectedIndex = 0;
             abilitazioneControlli(false);
             DoubleBuffered = true;
         }
 
-        private void caricaToolStripMenuItem_Click(object sender, EventArgs e)
+        private void caricaToolStripMenuItem_Click(object sender, EventArgs e)  //carica immagine della mappa
         {
             if (img != null)
             {
                 img.Dispose();
-                ListaPunti = new List<Punto>();
+                listaPunti = new List<Punto>();
                 listPoints.Items.Clear();
                 listPuntiSeg.Items.Clear();
                 listSegmenti.Items.Clear();
@@ -60,7 +61,7 @@ namespace Mappa
                 string imgPath = fileDialog.FileName;
                 URL = imgPath;
                 img = Image.FromFile(imgPath);
-                Immagineoriginale = Image.FromFile(imgPath);
+                immagineOriginale = Image.FromFile(imgPath);
 
                 int altezza = (int)(ClientSize.Height * 0.9);
                 int larghezza = (img.Width * altezza) / img.Height;
@@ -103,7 +104,7 @@ namespace Mappa
 
             if (cmbModalita.SelectedIndex == 0)
             {
-                ListaPunti.Add(PuntoClick);
+                listaPunti.Add(PuntoClick);
                 listPoints.Items.Add(PuntoClick);
                 using (Graphics g = pictureBox.CreateGraphics())
                 {
@@ -129,8 +130,8 @@ namespace Mappa
             }
             else if (cmbModalita.SelectedIndex == 1)
             {
-                var ListaPuntiOrdinati = ListaPunti.OrderBy(p => Distanza(p, PuntoClick)).ToList();
-                Punto puntoPiuVicino = ListaPuntiOrdinati.First();
+                var listaPuntiOrdinati = listaPunti.OrderBy(p => Distanza(p, PuntoClick)).ToList();
+                Punto puntoPiuVicino = listaPuntiOrdinati.First();
                 listPuntiSeg.Items.Add(puntoPiuVicino);
 
                 if (listPuntiSeg.Items.Count == 2)
@@ -143,7 +144,7 @@ namespace Mappa
                     }
                     Punto punto1 = listPuntiSeg.Items[0] as Punto;
                     Punto punto2 = listPuntiSeg.Items[1] as Punto;
-                    bool esiste = Segmenti.Any(segmento => segmento.Nome1 + segmento.Nome2 == punto1.Name + punto2.Name);
+                    bool esiste = listaSegmenti.Any(segmento => segmento.Nome1 + segmento.Nome2 == punto1.Name + punto2.Name);
                     if (esiste)
                     {
                         MessageBox.Show("Esiste gia un segmento con questyi punti");
@@ -154,7 +155,7 @@ namespace Mappa
                     // Aggiunge il nuovo segmento
                     drawSegment();
                     listSegmenti.Items.Add(segTemp);
-                    Segmenti.Add(segTemp);
+                    listaSegmenti.Add(segTemp);
                     listPuntiSeg.Items.Clear();
                 }
                 else
@@ -200,7 +201,7 @@ namespace Mappa
 
                 indice++;
             }
-            while (ListaPunti.Any(x => x.Name == nome));
+            while (listaPunti.Any(x => x.Name == nome));
 
             return nome;
         }
@@ -232,7 +233,7 @@ namespace Mappa
             using (Graphics gpr = Graphics.FromImage(img))
             {
                 // Disegna ogni punto dalla lista
-                foreach (Punto p in ListaPunti)
+                foreach (Punto p in listaPunti)
                 {
                     int pointSize = 30; // Dimensione del punto da disegnare
                     gpr.FillRectangle(Brushes.Red, p.CordinatePunti.X - pointSize / 2, p.CordinatePunti.Y - pointSize / 2, pointSize, pointSize);
@@ -250,7 +251,7 @@ namespace Mappa
             using (Graphics gpr = Graphics.FromImage(img))
             {
                 // Disegna ogni punto dalla lista
-                foreach (Segmento segmento in Segmenti)
+                foreach (Segmento segmento in listaSegmenti)
                 {
                     Pen pen = new Pen(Color.FromArgb(0, 0, 255), 3);  // Dimensione penna adatta
                     gpr.DrawLine(pen, segmento.punto1.CordinatePunti, segmento.punto2.CordinatePunti);
@@ -292,11 +293,11 @@ namespace Mappa
             try
             {
                 SaveJson Salvataggio = new SaveJson(URL);
-                foreach (var punto in ListaPunti)
+                foreach (var punto in listaPunti)
                 {
                     Salvataggio.points.Add(punto);
                 }
-                foreach (var segmento in Segmenti)
+                foreach (var segmento in listaSegmenti)
                 {
                     Salvataggio.arcs.Add(segmento);
                 }
@@ -403,14 +404,14 @@ namespace Mappa
                     Punto puntoRimuovere = listPoints.Items[index] as Punto;
 
                     listPoints.Items.RemoveAt(index);
-                    ListaPunti.Remove(puntoRimuovere);
-                    Segmenti.RemoveAll(seg => seg.Nome1 == puntoRimuovere.Name || seg.Nome2 == puntoRimuovere.Name);
+                    listaPunti.Remove(puntoRimuovere);
+                    listaSegmenti.RemoveAll(seg => seg.Nome1 == puntoRimuovere.Name || seg.Nome2 == puntoRimuovere.Name);
                     listSegmenti.Items.Clear();
-                    foreach (Segmento segmento in Segmenti)
+                    foreach (Segmento segmento in listaSegmenti)
                     {
                         listSegmenti.Items.Add(segmento);
                     }
-                    Bitmap immagineOrg = new Bitmap(Immagineoriginale);
+                    Bitmap immagineOrg = new Bitmap(immagineOriginale);
                     img = immagineOrg;
 
                     DisegnaPunti();
@@ -434,10 +435,10 @@ namespace Mappa
                 if (listSegmenti.SelectedItems.Count > 0)
                 {
                     Segmento segmentoSelezionato = (Segmento)listSegmenti.SelectedItem;
-                    Segmenti.Remove(segmentoSelezionato);
+                    listaSegmenti.Remove(segmentoSelezionato);
                     listSegmenti.Items.RemoveAt(listSegmenti.SelectedIndex);
 
-                    Bitmap immagineOrg = new Bitmap(Immagineoriginale);
+                    Bitmap immagineOrg = new Bitmap(immagineOriginale);
                     img = immagineOrg;
 
                     DisegnaPunti();
@@ -450,33 +451,27 @@ namespace Mappa
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Errore nella rimozione del segmento. Errore: " + ex.Message, "Error", MessageBoxButtons.OK);
+                
             }
         }
 
         private void sToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //CreajsonSalvataggio()
-
-            //invia alla homepage un'immagine dello stato della mappa con i punti
-
-            PictureBoxToImage(pictureBox);
-
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            try
+            {
+                if (txtNomePiano.Text.Length > 0)
+                {
+                    piano = new Piano(txtNomePiano.Text, listaSegmenti, listaPunti);
+                }
+                else
+                    throw new Exception("Inserisci il nome del piano");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Errore nella salvataggio della configurazione. Errore: " + ex.Message, "Error", MessageBoxButtons.OK);
+            }
+            
         }
-
-        private void PictureBoxToImage(PictureBox pictureBox)
-        {
-            Bitmap bitmap = new Bitmap(pictureBox.Width, pictureBox.Height);
-            pictureBox.DrawToBitmap(bitmap, new Rectangle(0, 0, pictureBox.Width, pictureBox.Height));
-            //return bitmap;
-
-            //Bitmap img = PictureBoxToImage(pictureBox);
-            bitmap.Save("immagine.png", System.Drawing.Imaging.ImageFormat.Png);
-
-        }
-
     }
 }
 

@@ -44,6 +44,7 @@
             listPuntiSeg = new ListBox();
             pnlSegmenti = new Panel();
             listSegmenti = new ListBox();
+            txtNomePiano = new TextBox();
             menuStrip1.SuspendLayout();
             pnlSegmenti.SuspendLayout();
             SuspendLayout();
@@ -159,7 +160,7 @@
             pnlSegmenti.Controls.Add(listSegmenti);
             pnlSegmenti.Controls.Add(cmbModalita);
             pnlSegmenti.Controls.Add(listPuntiSeg);
-            pnlSegmenti.Location = new Point(840, 37);
+            pnlSegmenti.Location = new Point(841, 64);
             pnlSegmenti.Name = "pnlSegmenti";
             pnlSegmenti.Size = new Size(131, 424);
             pnlSegmenti.TabIndex = 6;
@@ -168,16 +169,25 @@
             // 
             listSegmenti.FormattingEnabled = true;
             listSegmenti.ItemHeight = 15;
-            listSegmenti.Location = new Point(3, 72);
+            listSegmenti.Location = new Point(4, 72);
             listSegmenti.Name = "listSegmenti";
             listSegmenti.Size = new Size(124, 349);
             listSegmenti.TabIndex = 6;
+            // 
+            // txtNomePiano
+            // 
+            txtNomePiano.Location = new Point(844, 35);
+            txtNomePiano.Name = "txtNomePiano";
+            txtNomePiano.PlaceholderText = "Nome piano";
+            txtNomePiano.Size = new Size(124, 23);
+            txtNomePiano.TabIndex = 7;
             // 
             // Mappatura
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(984, 561);
+            Controls.Add(txtNomePiano);
             Controls.Add(pnlSegmenti);
             Controls.Add(listPoints);
             Controls.Add(menuStrip1);
@@ -210,5 +220,6 @@
         private ToolStripMenuItem rimuoviPuntoToolStripMenuItem;
         private ToolStripMenuItem rimuoviSegmentoToolStripMenuItem;
         private ToolStripMenuItem saveConfigToolStripMenuItem;
+        private TextBox txtNomePiano;
     }
 }

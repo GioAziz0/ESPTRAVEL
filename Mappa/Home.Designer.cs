@@ -30,21 +30,13 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Home));
-            lstViewPiani = new ListView();
             ImgPiani = new ImageList(components);
             menuStrip1 = new MenuStrip();
             aggiungiPianoToolStripMenuItem = new ToolStripMenuItem();
             eliminaPianoToolStripMenuItem = new ToolStripMenuItem();
+            listBox1 = new ListBox();
             menuStrip1.SuspendLayout();
             SuspendLayout();
-            // 
-            // lstViewPiani
-            // 
-            lstViewPiani.Location = new Point(73, 57);
-            lstViewPiani.Name = "lstViewPiani";
-            lstViewPiani.Size = new Size(595, 342);
-            lstViewPiani.TabIndex = 0;
-            lstViewPiani.UseCompatibleStateImageBehavior = false;
             // 
             // ImgPiani
             // 
@@ -75,12 +67,21 @@
             eliminaPianoToolStripMenuItem.Size = new Size(91, 20);
             eliminaPianoToolStripMenuItem.Text = "Elimina Piano";
             // 
+            // listBox1
+            // 
+            listBox1.FormattingEnabled = true;
+            listBox1.ItemHeight = 15;
+            listBox1.Location = new Point(12, 37);
+            listBox1.Name = "listBox1";
+            listBox1.Size = new Size(275, 259);
+            listBox1.TabIndex = 2;
+            // 
             // Home
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(lstViewPiani);
+            Controls.Add(listBox1);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
             Name = "Home";
@@ -92,11 +93,10 @@
         }
 
         #endregion
-
-        private ListView lstViewPiani;
         private ImageList ImgPiani;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem aggiungiPianoToolStripMenuItem;
         private ToolStripMenuItem eliminaPianoToolStripMenuItem;
+        private ListBox listBox1;
     }
 }
