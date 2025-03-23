@@ -271,7 +271,7 @@ namespace Mappa
                 }
             }
 
-            //pictureBox.Image = img;
+            pictureBox.Image = img;
             pictureBox.Refresh();
         }
         public void DisegnaSegmenti()
@@ -286,7 +286,7 @@ namespace Mappa
                 }
             }
 
-            //pictureBox.Image = img;
+            pictureBox.Image = img;
             pictureBox.Refresh();
         }
 
