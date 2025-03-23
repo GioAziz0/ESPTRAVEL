@@ -20,7 +20,7 @@ namespace Mappa
 {
     public partial class Mappatura : Form
     {
-        internal Piano piano { get; set; }
+        public Piano piano { get; private set; }
         PictureBox pictureBox;
         Image img;
         Image immagineOriginale;
@@ -31,6 +31,7 @@ namespace Mappa
         public Mappatura()
         {
             InitializeComponent();
+            piano = new Piano("", new List<Segmento>(), new List<Punto>(), null);
             pictureBox = new PictureBox();
             listaPunti = new List<Punto>();
             listaSegmenti = new List<Segmento>();
@@ -39,10 +40,13 @@ namespace Mappa
             DoubleBuffered = true;
         }
 
-        public Mappatura(Piano piano)
+        public Mappatura(Piano pianoOriginale)
         {
-            this.piano = piano;
             InitializeComponent();
+            piano = new Piano(pianoOriginale.Name,
+                     new List<Segmento>(pianoOriginale.Segmenti),
+                     new List<Punto>(pianoOriginale.Punti),
+                     pianoOriginale.Img);
             pictureBox = new PictureBox();
             listaPunti = new List<Punto>();
             listaSegmenti = new List<Segmento>();
@@ -68,14 +72,14 @@ namespace Mappa
 
             txtNomePiano.Text = piano.Name;
             listaPunti = piano.Punti;
-            foreach (var punto in listaPunti)
+            foreach (var punto in piano.Punti)
             {
-                listPoints.Items.Add(punto);
+                listBoxPunti.Items.Add(punto);
             }
             listaSegmenti = piano.Segmenti;
             foreach (var segmento in listaSegmenti)
             {
-                listSegmenti.Items.Add(segmento);
+                listBoxSegmenti.Items.Add(segmento);
             }
 
             DisegnaPunti();
@@ -88,9 +92,9 @@ namespace Mappa
             {
                 img.Dispose();
                 listaPunti = new List<Punto>();
-                listPoints.Items.Clear();
-                listPuntiSeg.Items.Clear();
-                listSegmenti.Items.Clear();
+                listBoxPunti.Items.Clear();
+                listBoxPuntiSeg.Items.Clear();
+                listBoxSegmenti.Items.Clear();
                 cmbModalita.SelectedIndex = 0;
             }
 
@@ -151,7 +155,7 @@ namespace Mappa
             if (cmbModalita.SelectedIndex == 0)
             {
                 listaPunti.Add(PuntoClick);
-                listPoints.Items.Add(PuntoClick);
+                listBoxPunti.Items.Add(PuntoClick);
 
                 DisegnaPunto(PuntoClick.CordinatePunti.X, PuntoClick.CordinatePunti.Y, PuntoClick.Name, Brushes.Red);
 
@@ -162,19 +166,19 @@ namespace Mappa
             {
                 var listaPuntiOrdinati = listaPunti.OrderBy(p => Distanza(p, PuntoClick)).ToList();
                 Punto puntoPiuVicino = listaPuntiOrdinati.First();
-                listPuntiSeg.Items.Add(puntoPiuVicino);
+                listBoxPuntiSeg.Items.Add(puntoPiuVicino);
 
-                if (listPuntiSeg.Items.Count == 2)
+                if (listBoxPuntiSeg.Items.Count == 2)
                 {
-                    if (listPuntiSeg.Items[0] == listPuntiSeg.Items[1])
+                    if (listBoxPuntiSeg.Items[0] == listBoxPuntiSeg.Items[1])
                     {
                         MessageBox.Show("I punti selezionti sono uguali");
-                        listPuntiSeg.Items.Clear();
+                        listBoxPuntiSeg.Items.Clear();
                         DisegnaPunti();
                         return;
                     }
-                    Punto punto1 = listPuntiSeg.Items[0] as Punto;
-                    Punto punto2 = listPuntiSeg.Items[1] as Punto;
+                    Punto punto1 = listBoxPuntiSeg.Items[0] as Punto;
+                    Punto punto2 = listBoxPuntiSeg.Items[1] as Punto;
                     bool esiste = listaSegmenti.Any(segmento =>
                         (segmento.Nome1 + segmento.Nome2 == punto1.Name + punto2.Name) ||
                         (segmento.Nome1 + segmento.Nome2 == punto2.Name + punto1.Name));
@@ -182,16 +186,16 @@ namespace Mappa
                     if (esiste)
                     {
                         MessageBox.Show("Esiste gia un segmento con questi punti");
-                        listPuntiSeg.Items.Clear();
+                        listBoxPuntiSeg.Items.Clear();
                         DisegnaPunti();
                         return;
                     }
-                    Segmento segTemp = new Segmento(listPuntiSeg.Items[0] as Punto, listPuntiSeg.Items[1] as Punto);
+                    Segmento segTemp = new Segmento(listBoxPuntiSeg.Items[0] as Punto, listBoxPuntiSeg.Items[1] as Punto);
                     // Aggiunge il nuovo segmento
                     drawSegment();
-                    listSegmenti.Items.Add(segTemp);
+                    listBoxSegmenti.Items.Add(segTemp);
                     listaSegmenti.Add(segTemp);
-                    listPuntiSeg.Items.Clear();
+                    listBoxPuntiSeg.Items.Clear();
                 }
                 else
                 {
@@ -242,10 +246,10 @@ namespace Mappa
         {
             using (Graphics g = Graphics.FromImage(img))
             {
-                if (listPuntiSeg.Items.Count == 2)
+                if (listBoxPuntiSeg.Items.Count == 2)
                 {
-                    Punto punto1 = listPuntiSeg.Items[0] as Punto;
-                    Punto punto2 = listPuntiSeg.Items[1] as Punto;
+                    Punto punto1 = listBoxPuntiSeg.Items[0] as Punto;
+                    Punto punto2 = listBoxPuntiSeg.Items[1] as Punto;
                     Pen pen = new Pen(Color.FromArgb(0, 0, 255), 3);  // Dimensione penna adatta
                     g.DrawLine(pen, punto1.CordinatePunti, punto2.CordinatePunti);
                 }
@@ -426,18 +430,18 @@ namespace Mappa
         {
             try
             {
-                if (listPoints.SelectedItems.Count >= 1)
+                if (listBoxPunti.SelectedItems.Count >= 1)
                 {
-                    int index = listPoints.SelectedIndex;
-                    Punto puntoRimuovere = listPoints.Items[index] as Punto;
+                    int index = listBoxPunti.SelectedIndex;
+                    Punto puntoRimuovere = listBoxPunti.Items[index] as Punto;
 
-                    listPoints.Items.RemoveAt(index);
+                    listBoxPunti.Items.RemoveAt(index);
                     listaPunti.Remove(puntoRimuovere);
                     listaSegmenti.RemoveAll(seg => seg.Nome1 == puntoRimuovere.Name || seg.Nome2 == puntoRimuovere.Name);
-                    listSegmenti.Items.Clear();
+                    listBoxSegmenti.Items.Clear();
                     foreach (Segmento segmento in listaSegmenti)
                     {
-                        listSegmenti.Items.Add(segmento);
+                        listBoxSegmenti.Items.Add(segmento);
                     }
                     Bitmap immagineOrg = new Bitmap(immagineOriginale);
                     img = immagineOrg;
@@ -460,11 +464,11 @@ namespace Mappa
         {
             try
             {
-                if (listSegmenti.SelectedItems.Count > 0)
+                if (listBoxSegmenti.SelectedItems.Count > 0)
                 {
-                    Segmento segmentoSelezionato = (Segmento)listSegmenti.SelectedItem;
+                    Segmento segmentoSelezionato = (Segmento)listBoxSegmenti.SelectedItem;
                     listaSegmenti.Remove(segmentoSelezionato);
-                    listSegmenti.Items.RemoveAt(listSegmenti.SelectedIndex);
+                    listBoxSegmenti.Items.RemoveAt(listBoxSegmenti.SelectedIndex);
 
                     Bitmap immagineOrg = new Bitmap(immagineOriginale);
                     img = immagineOrg;
@@ -489,7 +493,10 @@ namespace Mappa
             {
                 if (txtNomePiano.Text.Length > 0)
                 {
-                    piano = new Piano(txtNomePiano.Text, listaSegmenti, listaPunti, img);
+                    piano.Name = txtNomePiano.Text;
+                    piano.Punti = new List<Punto>(listaPunti);
+                    piano.Segmenti = new List<Segmento>(listaSegmenti);
+                    piano.Img = immagineOriginale;
                     this.DialogResult = DialogResult.OK;
                     this.Close();
                 }
@@ -505,7 +512,7 @@ namespace Mappa
 
         private void listPoints_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Punto puntoSelezionato = listPoints.SelectedItem as Punto;
+            Punto puntoSelezionato = listBoxPunti.SelectedItem as Punto;
 
             if (puntoSelezionato != null)
             {
@@ -519,6 +526,15 @@ namespace Mappa
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+        private void Mappatura_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            listaPunti.Clear();
+            listaSegmenti.Clear();
+            listBoxPunti.Items.Clear();
+            listBoxPuntiSeg.Items.Clear();
+            listBoxSegmenti.Items.Clear();
         }
     }
 }

@@ -39,13 +39,13 @@
             segmentoToolStripMenuItem = new ToolStripMenuItem();
             puntoToolStripMenuItem = new ToolStripMenuItem();
             saveConfigToolStripMenuItem = new ToolStripMenuItem();
-            listPoints = new ListBox();
-            cmbModalita = new ComboBox();
-            listPuntiSeg = new ListBox();
-            pnlSegmenti = new Panel();
-            listSegmenti = new ListBox();
-            txtNomePiano = new TextBox();
             cancellaConfiguToolStripMenuItem = new ToolStripMenuItem();
+            listBoxPunti = new ListBox();
+            cmbModalita = new ComboBox();
+            listBoxPuntiSeg = new ListBox();
+            pnlSegmenti = new Panel();
+            listBoxSegmenti = new ListBox();
+            txtNomePiano = new TextBox();
             menuStrip1.SuspendLayout();
             pnlSegmenti.SuspendLayout();
             SuspendLayout();
@@ -128,15 +128,22 @@
             saveConfigToolStripMenuItem.Text = "Salva Configurazione";
             saveConfigToolStripMenuItem.Click += salvaConfigurazioneToolStripMenuItem_Click;
             // 
-            // listPoints
+            // cancellaConfiguToolStripMenuItem
             // 
-            listPoints.FormattingEnabled = true;
-            listPoints.ItemHeight = 15;
-            listPoints.Location = new Point(12, 37);
-            listPoints.Name = "listPoints";
-            listPoints.Size = new Size(175, 424);
-            listPoints.TabIndex = 3;
-            listPoints.SelectedIndexChanged += listPoints_SelectedIndexChanged;
+            cancellaConfiguToolStripMenuItem.Name = "cancellaConfiguToolStripMenuItem";
+            cancellaConfiguToolStripMenuItem.Size = new Size(149, 20);
+            cancellaConfiguToolStripMenuItem.Text = "Cancellla configurazione";
+            cancellaConfiguToolStripMenuItem.Click += cancellaConfiguToolStripMenuItem_Click;
+            // 
+            // listBoxPunti
+            // 
+            listBoxPunti.FormattingEnabled = true;
+            listBoxPunti.ItemHeight = 15;
+            listBoxPunti.Location = new Point(12, 37);
+            listBoxPunti.Name = "listBoxPunti";
+            listBoxPunti.Size = new Size(175, 424);
+            listBoxPunti.TabIndex = 3;
+            listBoxPunti.SelectedIndexChanged += listPoints_SelectedIndexChanged;
             // 
             // cmbModalita
             // 
@@ -148,33 +155,33 @@
             cmbModalita.Size = new Size(124, 23);
             cmbModalita.TabIndex = 4;
             // 
-            // listPuntiSeg
+            // listBoxPuntiSeg
             // 
-            listPuntiSeg.FormattingEnabled = true;
-            listPuntiSeg.ItemHeight = 15;
-            listPuntiSeg.Location = new Point(3, 35);
-            listPuntiSeg.Name = "listPuntiSeg";
-            listPuntiSeg.Size = new Size(124, 34);
-            listPuntiSeg.TabIndex = 5;
+            listBoxPuntiSeg.FormattingEnabled = true;
+            listBoxPuntiSeg.ItemHeight = 15;
+            listBoxPuntiSeg.Location = new Point(3, 35);
+            listBoxPuntiSeg.Name = "listBoxPuntiSeg";
+            listBoxPuntiSeg.Size = new Size(124, 34);
+            listBoxPuntiSeg.TabIndex = 5;
             // 
             // pnlSegmenti
             // 
-            pnlSegmenti.Controls.Add(listSegmenti);
+            pnlSegmenti.Controls.Add(listBoxSegmenti);
             pnlSegmenti.Controls.Add(cmbModalita);
-            pnlSegmenti.Controls.Add(listPuntiSeg);
+            pnlSegmenti.Controls.Add(listBoxPuntiSeg);
             pnlSegmenti.Location = new Point(841, 64);
             pnlSegmenti.Name = "pnlSegmenti";
             pnlSegmenti.Size = new Size(131, 424);
             pnlSegmenti.TabIndex = 6;
             // 
-            // listSegmenti
+            // listBoxSegmenti
             // 
-            listSegmenti.FormattingEnabled = true;
-            listSegmenti.ItemHeight = 15;
-            listSegmenti.Location = new Point(4, 72);
-            listSegmenti.Name = "listSegmenti";
-            listSegmenti.Size = new Size(124, 349);
-            listSegmenti.TabIndex = 6;
+            listBoxSegmenti.FormattingEnabled = true;
+            listBoxSegmenti.ItemHeight = 15;
+            listBoxSegmenti.Location = new Point(4, 72);
+            listBoxSegmenti.Name = "listBoxSegmenti";
+            listBoxSegmenti.Size = new Size(124, 349);
+            listBoxSegmenti.TabIndex = 6;
             // 
             // txtNomePiano
             // 
@@ -184,13 +191,6 @@
             txtNomePiano.Size = new Size(124, 23);
             txtNomePiano.TabIndex = 7;
             // 
-            // cancellaConfiguToolStripMenuItem
-            // 
-            cancellaConfiguToolStripMenuItem.Name = "cancellaConfiguToolStripMenuItem";
-            cancellaConfiguToolStripMenuItem.Size = new Size(149, 20);
-            cancellaConfiguToolStripMenuItem.Text = "Cancellla configurazione";
-            cancellaConfiguToolStripMenuItem.Click += cancellaConfiguToolStripMenuItem_Click;
-            // 
             // Mappatura
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -198,11 +198,12 @@
             ClientSize = new Size(984, 561);
             Controls.Add(txtNomePiano);
             Controls.Add(pnlSegmenti);
-            Controls.Add(listPoints);
+            Controls.Add(listBoxPunti);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
             Name = "Mappatura";
             Text = "Form1";
+            FormClosed += Mappatura_FormClosed;
             Load += Form1_Load;
             ClientSizeChanged += Form1_ClientSizeChanged;
             menuStrip1.ResumeLayout(false);
@@ -216,16 +217,16 @@
         private MenuStrip menuStrip1;
         private ToolStripMenuItem caricaToolStripMenuItem;
         private ToolStripMenuItem salvaJSONToolStripMenuItem;
-        private ListBox listPoints;
+        private ListBox listBoxPunti;
         private ToolStripMenuItem apriJSONToolStripMenuItem;
         private ToolStripMenuItem rimuoviToolStripMenuItem;
         private ToolStripMenuItem modalitaToolStripMenuItem;
         private ToolStripMenuItem segmentoToolStripMenuItem;
         private ToolStripMenuItem puntoToolStripMenuItem;
         private ComboBox cmbModalita;
-        private ListBox listPuntiSeg;
+        private ListBox listBoxPuntiSeg;
         private Panel pnlSegmenti;
-        private ListBox listSegmenti;
+        private ListBox listBoxSegmenti;
         private ToolStripMenuItem rimuoviPuntoToolStripMenuItem;
         private ToolStripMenuItem rimuoviSegmentoToolStripMenuItem;
         private ToolStripMenuItem saveConfigToolStripMenuItem;

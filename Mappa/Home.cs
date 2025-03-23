@@ -37,19 +37,19 @@ namespace Mappa
             {
                 if(listBox1.SelectedItems.Count > 0)
                 {
-                    if (listBox1.SelectedItem is Piano piano)
+                    if (listBox1.SelectedItem is Piano)
                     {
-                        Mappatura form = new Mappatura(piano);
+                        Mappatura form = new Mappatura(listBox1.SelectedItem as Piano);
                         DialogResult result = form.ShowDialog();
 
                         if (result == DialogResult.OK)
                         {
                             Piano newPiano = form.piano;
-                            listBox1.Items.Remove(piano);
+                            listBox1.Items.Remove(listBox1.SelectedItem);
                             listBox1.Items.Add(newPiano);
                         } else if (result == DialogResult.Cancel)
                         {
-                            
+                            MessageBox.Show("Operazione cancellata");
                         }
                     }
                 }
