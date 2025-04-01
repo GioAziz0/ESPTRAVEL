@@ -71,7 +71,6 @@
             salvaJSONToolStripMenuItem.Name = "salvaJSONToolStripMenuItem";
             salvaJSONToolStripMenuItem.Size = new Size(77, 20);
             salvaJSONToolStripMenuItem.Text = "Salva JSON";
-            salvaJSONToolStripMenuItem.Click += salvaJSONToolStripMenuItem_Click;
             // 
             // apriJSONToolStripMenuItem
             // 

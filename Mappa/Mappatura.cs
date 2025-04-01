@@ -56,7 +56,7 @@ namespace Mappa
         }
         private void CaricaPiano()
         {
-            img = piano.Img;
+            img =  new Bitmap(piano.Img);
             immagineOriginale = piano.Img;
 
             int altezza = (int)(ClientSize.Height * 0.9);
@@ -72,7 +72,7 @@ namespace Mappa
 
             txtNomePiano.Text = piano.Name;
             listaPunti = piano.Punti;
-            foreach (var punto in piano.Punti)
+            foreach (var punto in piano.Punti)  
             {
                 listBoxPunti.Items.Add(punto);
             }
@@ -298,51 +298,6 @@ namespace Mappa
         {
             refresh();
         }
-
-        private void salvaJSONToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.Filter = "JSON|*.json";
-                saveFileDialog.Title = "Salva punti in JSON";
-                saveFileDialog.FileName = "ListaPunti";
-
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    string filePath = saveFileDialog.FileName;
-                    filePath = filePath.Remove(filePath.Length - 5);
-                    CreaJson(filePath + ".json");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-        private void CreaJson(string filePath)
-        {
-            try
-            {
-                SaveJson Salvataggio = new SaveJson(URL);
-                foreach (var punto in listaPunti)
-                {
-                    Salvataggio.points.Add(punto);
-                }
-                foreach (var segmento in listaSegmenti)
-                {
-                    Salvataggio.arcs.Add(segmento);
-                }
-
-                string stringJson = JsonConvert.SerializeObject(Salvataggio);
-                File.WriteAllText(filePath, stringJson);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
         private void apriJSONToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try

@@ -8,25 +8,24 @@ namespace Mappa.Classi
 {
     public class SaveJson
     {
+        public List<SavePiano> piani { get; set; } = new List<SavePiano>();
+        
+    }
+
+    public class SavePiano()
+    {
+
+        public string Name { get; set; }
         public string image { get; set; }
         public List<Segmento> arcs { get; set; } = new List<Segmento>();
         public List<Punto> points { get; set; } = new List<Punto>();
-
-        public SaveJson(string imageUrl)
+        public string ConvertImageToBase64(Image image)
         {
-            image = ConvertImageToBase64(imageUrl);
-        }
-
-        public string ConvertImageToBase64(string imagePath)
-        {
-            using (Image image = Image.FromFile(imagePath))
+            using (MemoryStream ms = new MemoryStream())
             {
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    image.Save(ms, image.RawFormat); // Salva l'immagine nel MemoryStream
-                    byte[] imageBytes = ms.ToArray(); // Converte l'immagine in byte[]
-                    return Convert.ToBase64String(imageBytes); // Codifica in Base64
-                }
+                image.Save(ms, image.RawFormat); // Salva l'immagine nel MemoryStream
+                byte[] imageBytes = ms.ToArray(); // Converte l'immagine in byte[]
+                return Convert.ToBase64String(imageBytes); // Codifica in Base64
             }
         }
     }

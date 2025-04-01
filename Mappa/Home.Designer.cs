@@ -34,8 +34,10 @@
             menuStrip1 = new MenuStrip();
             aggiungiPianoToolStripMenuItem = new ToolStripMenuItem();
             eliminaPianoToolStripMenuItem = new ToolStripMenuItem();
-            listBox1 = new ListBox();
             aPToolStripMenuItem = new ToolStripMenuItem();
+            listBox1 = new ListBox();
+            salvaJsonToolStripMenuItem = new ToolStripMenuItem();
+            apriJsonToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -48,7 +50,7 @@
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { aggiungiPianoToolStripMenuItem, eliminaPianoToolStripMenuItem, aPToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { aggiungiPianoToolStripMenuItem, eliminaPianoToolStripMenuItem, aPToolStripMenuItem, salvaJsonToolStripMenuItem, apriJsonToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(800, 24);
@@ -68,6 +70,13 @@
             eliminaPianoToolStripMenuItem.Size = new Size(91, 20);
             eliminaPianoToolStripMenuItem.Text = "Elimina Piano";
             // 
+            // aPToolStripMenuItem
+            // 
+            aPToolStripMenuItem.Name = "aPToolStripMenuItem";
+            aPToolStripMenuItem.Size = new Size(74, 20);
+            aPToolStripMenuItem.Text = "Apri Piano";
+            aPToolStripMenuItem.Click += aPToolStripMenuItem_Click;
+            // 
             // listBox1
             // 
             listBox1.FormattingEnabled = true;
@@ -77,12 +86,18 @@
             listBox1.Size = new Size(275, 259);
             listBox1.TabIndex = 2;
             // 
-            // aPToolStripMenuItem
+            // salvaJsonToolStripMenuItem
             // 
-            aPToolStripMenuItem.Name = "aPToolStripMenuItem";
-            aPToolStripMenuItem.Size = new Size(74, 20);
-            aPToolStripMenuItem.Text = "Apri Piano";
-            aPToolStripMenuItem.Click += aPToolStripMenuItem_Click;
+            salvaJsonToolStripMenuItem.Name = "salvaJsonToolStripMenuItem";
+            salvaJsonToolStripMenuItem.Size = new Size(72, 20);
+            salvaJsonToolStripMenuItem.Text = "Salva Json";
+            salvaJsonToolStripMenuItem.Click += salvaJsonToolStripMenuItem_Click;
+            // 
+            // apriJsonToolStripMenuItem
+            // 
+            apriJsonToolStripMenuItem.Name = "apriJsonToolStripMenuItem";
+            apriJsonToolStripMenuItem.Size = new Size(67, 20);
+            apriJsonToolStripMenuItem.Text = "Apri Json";
             // 
             // Home
             // 
@@ -107,5 +122,7 @@
         private ToolStripMenuItem eliminaPianoToolStripMenuItem;
         private ListBox listBox1;
         private ToolStripMenuItem aPToolStripMenuItem;
+        private ToolStripMenuItem salvaJsonToolStripMenuItem;
+        private ToolStripMenuItem apriJsonToolStripMenuItem;
     }
 }
