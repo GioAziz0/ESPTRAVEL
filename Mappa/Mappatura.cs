@@ -27,32 +27,38 @@ namespace Mappa
         List<Punto> listaPunti;
         List<Segmento> listaSegmenti;
         string URL;
+        List<int> livelliUtilizzati;
 
-        public Mappatura()
+        public Mappatura(List<int> livelliUtilizzati)
         {
             InitializeComponent();
-            piano = new Piano("", new List<Segmento>(), new List<Punto>(), null);
+            piano = new Piano("", new List<Segmento>(), new List<Punto>(), null, int.MinValue);
             pictureBox = new PictureBox();
             listaPunti = new List<Punto>();
             listaSegmenti = new List<Segmento>();
             cmbModalita.SelectedIndex = 0;
             abilitazioneControlli(false);
             DoubleBuffered = true;
+            this.livelliUtilizzati = new List<int>();
+            this.livelliUtilizzati = livelliUtilizzati;
         }
 
-        public Mappatura(Piano pianoOriginale)
+        public Mappatura(Piano pianoOriginale, List<int> livelliUtilizzati)
         {
             InitializeComponent();
             piano = new Piano(pianoOriginale.Name,
                      new List<Segmento>(pianoOriginale.Segmenti),
                      new List<Punto>(pianoOriginale.Punti),
-                     pianoOriginale.Img);
+                     pianoOriginale.Img, pianoOriginale.Level);
             pictureBox = new PictureBox();
             listaPunti = new List<Punto>();
             listaSegmenti = new List<Segmento>();
             cmbModalita.SelectedIndex = 0;
             CaricaPiano();
             DoubleBuffered = true;
+            this.livelliUtilizzati = new List<int>();
+            this.livelliUtilizzati = livelliUtilizzati;
+            txtLevel.Text = piano.Level.ToString();
         }
         private void CaricaPiano()
         {
@@ -448,12 +454,24 @@ namespace Mappa
             {
                 if (txtNomePiano.Text.Length > 0)
                 {
-                    piano.Name = txtNomePiano.Text;
-                    piano.Punti = new List<Punto>(listaPunti);
-                    piano.Segmenti = new List<Segmento>(listaSegmenti);
-                    piano.Img = immagineOriginale;
-                    this.DialogResult = DialogResult.OK;
-                    this.Close();
+                    if (!string.IsNullOrEmpty(txtLevel.Text))
+                    {
+                        int livelloPiano = Convert.ToInt32(txtLevel.Text);
+
+                        if (!livelliUtilizzati.Contains(livelloPiano))
+                        {
+                            piano.Name = txtNomePiano.Text;
+                            piano.Punti = new List<Punto>(listaPunti);
+                            piano.Segmenti = new List<Segmento>(listaSegmenti);
+                            piano.Img = immagineOriginale;
+                            piano.Level = Convert.ToInt32(txtLevel.Text);
+                            Mappatura_FormClosed(null, null);
+                            this.DialogResult = DialogResult.OK;
+                            this.Close();
+                        }
+                        else throw new Exception("Piano già utlizzato cambiare il valore.");  
+                    }
+                    else throw new Exception("INserisci il livello del piano");
                 }
                 else
                     throw new Exception("Inserisci il nome del piano");
@@ -490,6 +508,11 @@ namespace Mappa
             listBoxPunti.Items.Clear();
             listBoxPuntiSeg.Items.Clear();
             listBoxSegmenti.Items.Clear();
+            if (img != null)
+            {
+                img.Dispose();
+                immagineOriginale.Dispose();
+            }
         }
     }
 }

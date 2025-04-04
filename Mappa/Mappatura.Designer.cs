@@ -46,6 +46,7 @@
             pnlSegmenti = new Panel();
             listBoxSegmenti = new ListBox();
             txtNomePiano = new TextBox();
+            txtLevel = new TextBox();
             menuStrip1.SuspendLayout();
             pnlSegmenti.SuspendLayout();
             SuspendLayout();
@@ -190,11 +191,20 @@
             txtNomePiano.Size = new Size(124, 23);
             txtNomePiano.TabIndex = 7;
             // 
+            // txtLevel
+            // 
+            txtLevel.Location = new Point(714, 35);
+            txtLevel.Name = "txtLevel";
+            txtLevel.PlaceholderText = "Livello Piano";
+            txtLevel.Size = new Size(124, 23);
+            txtLevel.TabIndex = 8;
+            // 
             // Mappatura
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(984, 561);
+            Controls.Add(txtLevel);
             Controls.Add(txtNomePiano);
             Controls.Add(pnlSegmenti);
             Controls.Add(listBoxPunti);
@@ -231,5 +241,6 @@
         private ToolStripMenuItem saveConfigToolStripMenuItem;
         private TextBox txtNomePiano;
         private ToolStripMenuItem cancellaConfiguToolStripMenuItem;
+        private TextBox txtLevel;
     }
 }
