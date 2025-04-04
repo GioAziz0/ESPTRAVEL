@@ -35,9 +35,9 @@
             aggiungiPianoToolStripMenuItem = new ToolStripMenuItem();
             eliminaPianoToolStripMenuItem = new ToolStripMenuItem();
             aPToolStripMenuItem = new ToolStripMenuItem();
-            listBox1 = new ListBox();
             salvaJsonToolStripMenuItem = new ToolStripMenuItem();
             apriJsonToolStripMenuItem = new ToolStripMenuItem();
+            listBox1 = new ListBox();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -77,15 +77,6 @@
             aPToolStripMenuItem.Text = "Apri Piano";
             aPToolStripMenuItem.Click += aPToolStripMenuItem_Click;
             // 
-            // listBox1
-            // 
-            listBox1.FormattingEnabled = true;
-            listBox1.ItemHeight = 15;
-            listBox1.Location = new Point(12, 37);
-            listBox1.Name = "listBox1";
-            listBox1.Size = new Size(275, 259);
-            listBox1.TabIndex = 2;
-            // 
             // salvaJsonToolStripMenuItem
             // 
             salvaJsonToolStripMenuItem.Name = "salvaJsonToolStripMenuItem";
@@ -98,6 +89,15 @@
             apriJsonToolStripMenuItem.Name = "apriJsonToolStripMenuItem";
             apriJsonToolStripMenuItem.Size = new Size(67, 20);
             apriJsonToolStripMenuItem.Text = "Apri Json";
+            // 
+            // listBox1
+            // 
+            listBox1.FormattingEnabled = true;
+            listBox1.ItemHeight = 15;
+            listBox1.Location = new Point(12, 37);
+            listBox1.Name = "listBox1";
+            listBox1.Size = new Size(285, 259);
+            listBox1.TabIndex = 2;
             // 
             // Home
             // 

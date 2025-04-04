@@ -48,6 +48,7 @@
             btnPuntoMode = new RadioButton();
             btnSegmentoMode = new RadioButton();
             txtNomePiano = new TextBox();
+            txtLevel = new TextBox();
             listBoxSegmenti = new ListBox();
             menuStrip1.SuspendLayout();
             pnlSegmenti.SuspendLayout();
@@ -225,6 +226,13 @@
             txtNomePiano.Size = new Size(124, 23);
             txtNomePiano.TabIndex = 7;
             // 
+            // txtLevel
+            // 
+            txtLevel.Location = new Point(714, 35);
+            txtLevel.Name = "txtLevel";
+            txtLevel.PlaceholderText = "Livello Piano";
+            txtLevel.Size = new Size(124, 23);
+            txtLevel.TabIndex = 8;
             // listBoxSegmenti
             // 
             listBoxSegmenti.FormattingEnabled = true;
@@ -239,6 +247,8 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(984, 561);
+            Controls.Add(txtLevel);
+            Controls.Add(txtNomePiano);
             Controls.Add(pnlSegmenti);
             Controls.Add(listBoxPunti);
             Controls.Add(menuStrip1);
@@ -275,6 +285,7 @@
         private ToolStripMenuItem saveConfigToolStripMenuItem;
         private TextBox txtNomePiano;
         private ToolStripMenuItem cancellaConfiguToolStripMenuItem;
+        private TextBox txtLevel;
         private RadioButton btnPuntoMode;
         private RadioButton btnSegmentoMode;
         private Panel panel1;
