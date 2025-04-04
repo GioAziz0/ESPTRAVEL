@@ -40,8 +40,6 @@ namespace Mappa
             ////cmbModalita.SelectedIndex = 0;
             abilitazioneControlli(false);
             //DoubleBuffered = true;
-            this.livelliUtilizzati = new List<int>();
-            this.livelliUtilizzati = livelliUtilizzati;
 
         }
 
@@ -59,6 +57,7 @@ namespace Mappa
             ////cmbModalita.SelectedIndex = 0;
             CaricaPiano();
             //DoubleBuffered = true;
+            txtLevel.Text = piano.Level.ToString();
         }
 
         private void inizializzazioneInComune()
@@ -71,7 +70,6 @@ namespace Mappa
             DoubleBuffered = true;
             this.livelliUtilizzati = new List<int>();
             this.livelliUtilizzati = livelliUtilizzati;
-            txtLevel.Text = piano.Level.ToString();
         }
 
         private void CaricaPiano()
