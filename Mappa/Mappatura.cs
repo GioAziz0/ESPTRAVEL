@@ -32,37 +32,51 @@ namespace Mappa
         public Mappatura(List<int> livelliUtilizzati)
         {
             InitializeComponent();
+            inizializzazioneInComune();
             piano = new Piano("", new List<Segmento>(), new List<Punto>(), null, int.MinValue);
-            pictureBox = new PictureBox();
-            listaPunti = new List<Punto>();
-            listaSegmenti = new List<Segmento>();
-            cmbModalita.SelectedIndex = 0;
+            //pictureBox = new PictureBox();
+            //listaPunti = new List<Punto>();
+            //listaSegmenti = new List<Segmento>();
+            ////cmbModalita.SelectedIndex = 0;
             abilitazioneControlli(false);
-            DoubleBuffered = true;
+            //DoubleBuffered = true;
             this.livelliUtilizzati = new List<int>();
             this.livelliUtilizzati = livelliUtilizzati;
+
         }
 
         public Mappatura(Piano pianoOriginale, List<int> livelliUtilizzati)
         {
             InitializeComponent();
+            inizializzazioneInComune();
             piano = new Piano(pianoOriginale.Name,
                      new List<Segmento>(pianoOriginale.Segmenti),
                      new List<Punto>(pianoOriginale.Punti),
                      pianoOriginale.Img, pianoOriginale.Level);
+            //pictureBox = new PictureBox();
+            //listaPunti = new List<Punto>();
+            //listaSegmenti = new List<Segmento>();
+            ////cmbModalita.SelectedIndex = 0;
+            CaricaPiano();
+            //DoubleBuffered = true;
+        }
+
+        private void inizializzazioneInComune()
+        {
+            this.KeyPreview = true; // Abilita la cattura degli eventi da tastiera da parte del form
             pictureBox = new PictureBox();
             listaPunti = new List<Punto>();
             listaSegmenti = new List<Segmento>();
-            cmbModalita.SelectedIndex = 0;
-            CaricaPiano();
+            //cmbModalita.SelectedIndex = 0;
             DoubleBuffered = true;
             this.livelliUtilizzati = new List<int>();
             this.livelliUtilizzati = livelliUtilizzati;
             txtLevel.Text = piano.Level.ToString();
         }
+
         private void CaricaPiano()
         {
-            img =  new Bitmap(piano.Img);
+            img = new Bitmap(piano.Img);
             immagineOriginale = piano.Img;
 
             int altezza = (int)(ClientSize.Height * 0.9);
@@ -78,7 +92,7 @@ namespace Mappa
 
             txtNomePiano.Text = piano.Name;
             listaPunti = piano.Punti;
-            foreach (var punto in piano.Punti)  
+            foreach (var punto in piano.Punti)
             {
                 listBoxPunti.Items.Add(punto);
             }
@@ -94,14 +108,15 @@ namespace Mappa
 
         private void caricaToolStripMenuItem_Click(object sender, EventArgs e)  //carica immagine della mappa
         {
-            if (img != null)    //se Ë gia stata caricata un'immagine (resetta la mappa)
+            if (img != null)    //se √® gia stata caricata un'immagine (resetta la mappa)
             {
                 img.Dispose();
                 listaPunti = new List<Punto>();
                 listBoxPunti.Items.Clear();
                 listBoxPuntiSeg.Items.Clear();
                 listBoxSegmenti.Items.Clear();
-                cmbModalita.SelectedIndex = 0;
+                //cmbModalita.SelectedIndex = 0;
+                btnPuntoMode.Checked = true;
             }
 
             // Apre la finestra di dialogo per selezionare l'immagine
@@ -135,8 +150,8 @@ namespace Mappa
 
         private void abilitazioneControlli(bool ablitazione)
         {
-            salvaJSONToolStripMenuItem.Enabled = ablitazione;
-            apriJSONToolStripMenuItem.Enabled = ablitazione;
+            //salvaJSONToolStripMenuItem.Enabled = ablitazione;
+            //apriJSONToolStripMenuItem.Enabled = ablitazione;
             rimuoviToolStripMenuItem.Enabled = ablitazione;
             modalitaToolStripMenuItem.Enabled = ablitazione;
             saveConfigToolStripMenuItem.Enabled = ablitazione;
@@ -158,7 +173,7 @@ namespace Mappa
 
             Punto PuntoClick = new Punto(new Point(positionX, positionY), TrovaNome());
 
-            if (cmbModalita.SelectedIndex == 0)
+            if (/*cmbModalita.SelectedIndex == 0*/btnPuntoMode.Checked)
             {
                 listaPunti.Add(PuntoClick);
                 listBoxPunti.Items.Add(PuntoClick);
@@ -168,7 +183,7 @@ namespace Mappa
                 //pictureBox.Image = img;
                 pictureBox.Refresh();
             }
-            else if (cmbModalita.SelectedIndex == 1)
+            else if (/*cmbModalita.SelectedIndex == 1*/btnSegmentoMode.Checked)
             {
                 var listaPuntiOrdinati = listaPunti.OrderBy(p => Distanza(p, PuntoClick)).ToList();
                 Punto puntoPiuVicino = listaPuntiOrdinati.First();
@@ -202,6 +217,13 @@ namespace Mappa
                     listBoxSegmenti.Items.Add(segTemp);
                     listaSegmenti.Add(segTemp);
                     listBoxPuntiSeg.Items.Clear();
+
+                    if (chSegmentiContinui.Checked)
+                    {
+                        listBoxPuntiSeg.Items.Add(punto2);
+                        DisegnaPunto(punto2.CordinatePunti.X, punto2.CordinatePunti.Y, punto2.Name, Brushes.Green);
+                        pictureBox.Refresh();
+                    }
                 }
                 else
                 {
@@ -384,7 +406,7 @@ namespace Mappa
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            cmbModalita.SelectedIndex = 0;
+            //cmbModalita.SelectedIndex = 0;
         }
 
         private void rimuoviPuntoToolStripMenuItem_Click(object sender, EventArgs e)
@@ -469,7 +491,7 @@ namespace Mappa
                             this.DialogResult = DialogResult.OK;
                             this.Close();
                         }
-                        else throw new Exception("Piano gi‡ utlizzato cambiare il valore.");  
+                        else throw new Exception("Piano gi√† utlizzato cambiare il valore.");  
                     }
                     else throw new Exception("INserisci il livello del piano");
                 }
@@ -512,6 +534,25 @@ namespace Mappa
             {
                 img.Dispose();
                 immagineOriginale.Dispose();
+            }
+        }
+
+        private void chSegmentiContinui_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!chSegmentiContinui.Checked)
+            {
+                listBoxPuntiSeg.Items.Clear();
+                DisegnaPunti();
+                pictureBox.Refresh();
+            }
+        }
+
+        private void Mappatura_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Escape)
+            {
+                listBoxPuntiSeg.Items.Clear();
+                refresh();
             }
         }
     }
