@@ -131,7 +131,7 @@
             listBoxPunti.ItemHeight = 15;
             listBoxPunti.Location = new Point(12, 37);
             listBoxPunti.Name = "listBoxPunti";
-            listBoxPunti.Size = new Size(175, 424);
+            listBoxPunti.Size = new Size(197, 424);
             listBoxPunti.TabIndex = 3;
             listBoxPunti.SelectedIndexChanged += listPoints_SelectedIndexChanged;
             // 

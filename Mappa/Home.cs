@@ -47,6 +47,7 @@ namespace Mappa
             {
                 Piano piano = form.piano;
                 listBox1.Items.Add(piano);
+                MessageBox.Show(piano.Level.ToString());
                 piani.Add(piano);
                 SistemaPiani();
             }
@@ -65,6 +66,7 @@ namespace Mappa
                         foreach (Piano piano in listBox1.Items)
                         {
                             livelli.Add(piano.Level);
+                            MessageBox.Show(piano.Level.ToString());
                         }
                         livelli.RemoveAt(listBox1.SelectedIndex);
 

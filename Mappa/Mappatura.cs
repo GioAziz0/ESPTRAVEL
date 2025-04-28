@@ -34,6 +34,7 @@ namespace Mappa
             InitializeComponent();
             inizializzazioneInComune();
             piano = new Piano("", new List<Segmento>(), new List<Punto>(), null, int.MinValue);
+            this.livelliUtilizzati = new List<int>(livelliUtilizzati);
             //pictureBox = new PictureBox();
             //listaPunti = new List<Punto>();
             //listaSegmenti = new List<Segmento>();
