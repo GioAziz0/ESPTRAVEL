@@ -22,12 +22,11 @@ namespace Mappa
         }
 
         void SistemaPiani()
-        {        
-            if (listBox1.Items.Count > 0)
+        {
+            listBox1.Items.Clear();
+            foreach (Piano p in piani.OrderBy(p => p.Level))
             {
-                piani = piani.OrderBy(piano => piano.Level).ToList();
-                listBox1.Items.Clear();
-                foreach (Piano p in piani) { listBox1.Items.Add(p); }
+                listBox1.Items.Add(p);
             }
         }
 
@@ -96,33 +95,91 @@ namespace Mappa
             }
         }
 
-        private void salvaJsonToolStripMenuItem_Click(object sender, EventArgs e)
+        private void salvaJsonLocale(object sender, EventArgs e)
+{
+    try
+    {
+        SaveFileDialog saveFileDialog = new SaveFileDialog();
+        saveFileDialog.Filter = "JSON|*.json";
+        saveFileDialog.Title = "Salva punti in JSON";
+
+        if (saveFileDialog.ShowDialog() == DialogResult.OK)
         {
-            SaveJson fileSalvataggio = new SaveJson();
-            foreach (Piano piano in listBox1.Items)
+            string filePath = saveFileDialog.FileName;
+            SaveJson listaPiani = new SaveJson();
+            
+            // Usa la lista piani come sorgente principale invece di listBox1.Items
+            foreach (Piano piano in piani)
             {
                 SavePiano savePiano = new SavePiano();
                 savePiano.points = piano.Punti;
-                foreach(Segmento segmento in piano.Segmenti)
-                {
-                    List<string> list = segmento.ToList();
-                    savePiano.arcs.Add(list);
-                }
+                savePiano.arcs = piano.Segmenti;
                 savePiano.image = savePiano.ConvertImageToBase64(piano.Img);
                 savePiano.Name = piano.Name;
                 savePiano.Level = piano.Level;
-                fileSalvataggio.piani.Add(savePiano);
+                listaPiani.piani.Add(savePiano);
             }
 
-            string downloadPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
-
-            string filePath = Path.Combine(downloadPath, "dati.json");
-
-            string stringJson = JsonConvert.SerializeObject(fileSalvataggio);
+            string stringJson = JsonConvert.SerializeObject(listaPiani, Formatting.Indented);
             File.WriteAllText(filePath, stringJson);
 
-            MessageBox.Show("File Salvato");
+            MessageBox.Show("File Salvato con successo", "Salvataggio completato", 
+                          MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+    }
+    catch (Exception ex)
+    {
+        MessageBox.Show($"Errore durante il salvataggio: {ex.Message}", "Errore", 
+                       MessageBoxButtons.OK, MessageBoxIcon.Error);
+    }
+}
 
+        private void SalvaJsonCluod(object sender, EventArgs e)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void apriJsonToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
+            openFileDialog.Title = "Scegli il file json da aprire";
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    string filePath = openFileDialog.FileName;
+                    string jsonString = File.ReadAllText(filePath);
+
+                    LoaderPiani caricaPiani = new LoaderPiani();
+                    piani.AddRange(caricaPiani.LoadFromJson(jsonString));
+
+                    if (piani.Count > 0)
+                    {
+                        foreach(Piano piano in piani)
+                        {
+                            listBox1.Items.Add(piano);  
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception($"Nessun piano trovato in {filePath}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Errore nell'apertura del file json. " + ex.Message, "error", MessageBoxButtons.OK);
+                }
+            }
         }
     }
 }
+

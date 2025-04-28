@@ -36,6 +36,9 @@
             eliminaPianoToolStripMenuItem = new ToolStripMenuItem();
             aPToolStripMenuItem = new ToolStripMenuItem();
             salvaJsonToolStripMenuItem = new ToolStripMenuItem();
+            localeToolStripMenuItem = new ToolStripMenuItem();
+            cluodToolStripMenuItem = new ToolStripMenuItem();
+            entrambiToolStripMenuItem = new ToolStripMenuItem();
             apriJsonToolStripMenuItem = new ToolStripMenuItem();
             listBox1 = new ListBox();
             menuStrip1.SuspendLayout();
@@ -79,16 +82,36 @@
             // 
             // salvaJsonToolStripMenuItem
             // 
+            salvaJsonToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { localeToolStripMenuItem, cluodToolStripMenuItem, entrambiToolStripMenuItem });
             salvaJsonToolStripMenuItem.Name = "salvaJsonToolStripMenuItem";
             salvaJsonToolStripMenuItem.Size = new Size(72, 20);
             salvaJsonToolStripMenuItem.Text = "Salva Json";
-            salvaJsonToolStripMenuItem.Click += salvaJsonToolStripMenuItem_Click;
+            // 
+            // localeToolStripMenuItem
+            // 
+            localeToolStripMenuItem.Name = "localeToolStripMenuItem";
+            localeToolStripMenuItem.Size = new Size(180, 22);
+            localeToolStripMenuItem.Text = "Locale";
+            localeToolStripMenuItem.Click += salvaJsonLocale;
+            // 
+            // cluodToolStripMenuItem
+            // 
+            cluodToolStripMenuItem.Name = "cluodToolStripMenuItem";
+            cluodToolStripMenuItem.Size = new Size(180, 22);
+            cluodToolStripMenuItem.Text = "Cluod";
+            // 
+            // entrambiToolStripMenuItem
+            // 
+            entrambiToolStripMenuItem.Name = "entrambiToolStripMenuItem";
+            entrambiToolStripMenuItem.Size = new Size(180, 22);
+            entrambiToolStripMenuItem.Text = "Entrambi";
             // 
             // apriJsonToolStripMenuItem
             // 
             apriJsonToolStripMenuItem.Name = "apriJsonToolStripMenuItem";
             apriJsonToolStripMenuItem.Size = new Size(67, 20);
             apriJsonToolStripMenuItem.Text = "Apri Json";
+            apriJsonToolStripMenuItem.Click += apriJsonToolStripMenuItem_Click;
             // 
             // listBox1
             // 
@@ -124,5 +147,8 @@
         private ToolStripMenuItem aPToolStripMenuItem;
         private ToolStripMenuItem salvaJsonToolStripMenuItem;
         private ToolStripMenuItem apriJsonToolStripMenuItem;
+        private ToolStripMenuItem localeToolStripMenuItem;
+        private ToolStripMenuItem cluodToolStripMenuItem;
+        private ToolStripMenuItem entrambiToolStripMenuItem;
     }
 }

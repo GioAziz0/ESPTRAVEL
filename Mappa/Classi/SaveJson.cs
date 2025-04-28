@@ -9,7 +9,6 @@ namespace Mappa.Classi
     public class SaveJson
     {
         public List<SavePiano> piani { get; set; } = new List<SavePiano>();
-        
     }
 
     public class SavePiano()
@@ -18,7 +17,7 @@ namespace Mappa.Classi
         public string Name { get; set; }
         public int Level { get; set; } 
         public string image { get; set; }
-        public List<List<string>> arcs { get; set; } = new List<List<string>>();
+        public List<Segmento> arcs { get; set; } = new List<Segmento>();
         public List<Punto> points { get; set; } = new List<Punto>();
         public string ConvertImageToBase64(Image image)
         {
