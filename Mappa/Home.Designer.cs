@@ -38,7 +38,13 @@
             salvaJsonToolStripMenuItem = new ToolStripMenuItem();
             apriJsonToolStripMenuItem = new ToolStripMenuItem();
             listBox1 = new ListBox();
+            panel1 = new Panel();
+            button1 = new Button();
+            checkedListBox1 = new CheckedListBox();
+            label1 = new Label();
+            button2 = new Button();
             menuStrip1.SuspendLayout();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // ImgPiani
@@ -99,11 +105,60 @@
             listBox1.Size = new Size(285, 259);
             listBox1.TabIndex = 2;
             // 
+            // panel1
+            // 
+            panel1.Controls.Add(button2);
+            panel1.Controls.Add(button1);
+            panel1.Controls.Add(checkedListBox1);
+            panel1.Controls.Add(label1);
+            panel1.Location = new Point(303, 37);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(485, 259);
+            panel1.TabIndex = 3;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(9, 3);
+            button1.Name = "button1";
+            button1.Size = new Size(93, 23);
+            button1.TabIndex = 2;
+            button1.Text = "Unisci piani";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
+            // checkedListBox1
+            // 
+            checkedListBox1.FormattingEnabled = true;
+            checkedListBox1.Location = new Point(9, 47);
+            checkedListBox1.Name = "checkedListBox1";
+            checkedListBox1.Size = new Size(204, 202);
+            checkedListBox1.TabIndex = 1;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(9, 29);
+            label1.Name = "label1";
+            label1.Size = new Size(154, 15);
+            label1.TabIndex = 0;
+            label1.Text = "Seleziona due piani da unire";
+            // 
+            // button2
+            // 
+            button2.Location = new Point(250, 123);
+            button2.Name = "button2";
+            button2.Size = new Size(75, 23);
+            button2.TabIndex = 3;
+            button2.Text = "Vai";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
+            // 
             // Home
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(panel1);
             Controls.Add(listBox1);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
@@ -111,6 +166,8 @@
             Text = "Homecs";
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -124,5 +181,10 @@
         private ToolStripMenuItem aPToolStripMenuItem;
         private ToolStripMenuItem salvaJsonToolStripMenuItem;
         private ToolStripMenuItem apriJsonToolStripMenuItem;
+        private Panel panel1;
+        private Label label1;
+        private CheckedListBox checkedListBox1;
+        private Button button1;
+        private Button button2;
     }
 }

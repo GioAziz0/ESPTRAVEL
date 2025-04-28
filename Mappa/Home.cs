@@ -22,7 +22,7 @@ namespace Mappa
         }
 
         void SistemaPiani()
-        {        
+        {
             if (listBox1.Items.Count > 0)
             {
                 piani = piani.OrderBy(piano => piano.Level).ToList();
@@ -103,7 +103,7 @@ namespace Mappa
             {
                 SavePiano savePiano = new SavePiano();
                 savePiano.points = piano.Punti;
-                foreach(Segmento segmento in piano.Segmenti)
+                foreach (Segmento segmento in piano.Segmenti)
                 {
                     List<string> list = segmento.ToList();
                     savePiano.arcs.Add(list);
@@ -123,6 +123,38 @@ namespace Mappa
 
             MessageBox.Show("File Salvato");
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            foreach (var s in listBox1.Items)
+            {
+                checkedListBox1.Items.Add(s);
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            //apre le due mappe selezionate nella checkedListBox e permette all'utente di selezionare i punti (uno per mappa) che rappresentano il segmento della scala (collegamento verticale tra i piani)
+            /*if (checkedListBox1.CheckedItems.Count == 2)
+            {
+                Mappatura form = new Mappatura(checkedListBox1.CheckedItems[0] as Piano, checkedListBox1.CheckedItems[1] as Piano);
+                DialogResult result = form.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    Segmento segmento = form.segmento;
+                    Piano piano1 = checkedListBox1.CheckedItems[0] as Piano;
+                    Piano piano2 = checkedListBox1.CheckedItems[1] as Piano;
+
+                    piano1.Segmenti.Add(segmento);
+                    piano2.Segmenti.Add(segmento);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Selezionare due piani");
+            }*/
         }
     }
 }
