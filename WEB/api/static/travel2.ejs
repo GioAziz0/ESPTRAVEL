@@ -36,13 +36,11 @@
 
     <h1>Viaggia</h1>
 
-    <!-- Aggiunto selettore di piano -->
     <div class="floor-selector">
         <label for="floor">Piano:</label>
         <select id="floor" onchange="loadFloorData()"></select>
     </div>
 
-    <!-- Textbox e bottone per inserire l'ID della mappa -->
     <label for="id">ID della Mappa:</label>
     <input type="text" id="id" name="id" required>
     <button onclick="loadMap()">Carica Mappa</button>
@@ -67,6 +65,7 @@
     <script>
         const canvas = document.getElementById('canva');
         const ctx = canvas.getContext('2d');
+        let currentImage = null;
         let currentMapData = {
             points: [],
             arcs: [],
@@ -74,7 +73,6 @@
             currentFloor: null
         };
 
-        // Modificata per caricare i piani
         async function loadMap() {
             const id = document.getElementById('id').value;
             try {
@@ -105,13 +103,13 @@
             currentMapData.currentFloor = currentMapData.floors[0]?.floor;
         }
 
-        // Nuova funzione per caricare i dati del piano selezionato
         async function loadFloorData() {
             const floor = document.getElementById('floor').value;
             currentMapData.currentFloor = floor;
             
             const imageUrl = `/map_image/?id=${document.getElementById('id').value}&floor=${floor}`;
-            await drawMapImage(imageUrl);
+            currentImage = await loadImage(imageUrl);
+            drawImage(currentImage);
             
             const filteredPoints = currentMapData.points.filter(p => p.floor == floor);
             const filteredArcs = currentMapData.arcs.filter(a => 
@@ -123,18 +121,19 @@
             drawArcs(filteredArcs, filteredPoints);
         }
 
-        async function drawMapImage(imageUrl) {
+        async function loadImage(url) {
             return new Promise((resolve, reject) => {
                 const img = new Image();
-                img.onload = () => {
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    ctx.drawImage(img, 0, 0);
-                    resolve();
-                };
+                img.onload = () => resolve(img);
                 img.onerror = reject;
-                img.src = imageUrl;
+                img.src = url;
             });
+        }
+
+        function drawImage(img) {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
         }
 
         function updateDropdowns(points) {
@@ -144,6 +143,7 @@
             partenzaSelect.innerHTML = '';
             arrivoSelect.innerHTML = '';
 
+            // MODIFICA PRINCIPALE: Utilizziamo name come valore
             points.forEach(point => {
                 partenzaSelect.add(new Option(point.name, point.name));
                 arrivoSelect.add(new Option(point.name, point.name));
@@ -178,8 +178,63 @@
             });
         }
 
-        // Resto del codice rimane simile...
-    </script>
+        async function tracePath() {
+            const idMap = document.getElementById('id').value;
+            const start = document.getElementById('partenza').value;
+            const end = document.getElementById('arrivo').value;
+            const floor = currentMapData.currentFloor;
 
+            if (!idMap || !start || !end) {
+                alert('Per favore, inserisci ID mappa e seleziona partenza e arrivo.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/travel/?IDmap=${idMap}&start=${start}&end=${end}`);
+                if (!response.ok) throw new Error('Errore nella richiesta del percorso');
+                const path = await response.json();
+
+                const currentFloorPoints = currentMapData.points.filter(p => p.floor == floor);
+                drawPath(path, currentFloorPoints);
+            } catch (error) {
+                console.error('Errore:', error);
+                alert('Impossibile tracciare il percorso.');
+            }
+        }
+
+        function drawPath(path, points) {
+            clearPath();
+
+            ctx.beginPath();
+            ctx.strokeStyle = 'green';
+            ctx.lineWidth = 5;
+            ctx.lineJoin = 'round';
+
+            for (let i = 0; i < path.length; i++) {
+                const point = points.find(p => p.name === path[i]);
+                if (!point) {
+                    console.error('Punto non trovato:', path[i]);
+                    return;
+                }
+                const [x, y] = point.cordinatepunti.split(',').map(coord => parseInt(coord.trim()));
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+
+            ctx.stroke();
+        }
+
+        function clearPath() {
+            if (currentImage) {
+                drawImage(currentImage);
+                const filteredPoints = currentMapData.points.filter(p => p.floor == currentMapData.currentFloor);
+                const filteredArcs = currentMapData.arcs.filter(a => 
+                    a.floorA == currentMapData.currentFloor && a.floorB == currentMapData.currentFloor
+                );
+                drawPoints(filteredPoints);
+                drawArcs(filteredArcs, filteredPoints);
+            }
+        }
+    </script>
 </body>
 </html>

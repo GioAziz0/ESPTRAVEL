@@ -208,8 +208,11 @@ def trv(IDmap: str = None, start: str = None, end: str = None):
     conn.close()
    
     m = travel.Graph()
+    m.MakeMap(arcs)
+    '''
     for arc in arcs:
         labelA, labelB, weight = arc
         m.addArc(labelA, labelB, weight)
-   
+    '''
+    print(m.Travel(start, end))
     return m.Travel(start, end)
