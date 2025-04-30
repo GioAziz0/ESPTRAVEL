@@ -184,6 +184,7 @@ namespace Mappa
             }
             else if (/*cmbModalita.SelectedIndex == 1*/btnSegmentoMode.Checked)
             {
+                if (listaPunti.Count == 0) { return; }
                 var listaPuntiOrdinati = listaPunti.OrderBy(p => Distanza(p, PuntoClick)).ToList();
                 Punto puntoPiuVicino = listaPuntiOrdinati.First();
                 listBoxPuntiSeg.Items.Add(puntoPiuVicino);

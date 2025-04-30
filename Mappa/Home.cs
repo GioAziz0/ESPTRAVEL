@@ -135,26 +135,43 @@ namespace Mappa
 
         private void button2_Click(object sender, EventArgs e)
         {
-            //apre le due mappe selezionate nella checkedListBox e permette all'utente di selezionare i punti (uno per mappa) che rappresentano il segmento della scala (collegamento verticale tra i piani)
-            /*if (checkedListBox1.CheckedItems.Count == 2)
+            //apre le due mappe selezionate  e permette all'utente di selezionare i punti (uno per mappa) che rappresentano il segmento della scala (collegamento verticale tra i piani)
+            if (listBox1.Items.Count == 2)
             {
-                Mappatura form = new Mappatura(checkedListBox1.CheckedItems[0] as Piano, checkedListBox1.CheckedItems[1] as Piano);
-                DialogResult result = form.ShowDialog();
+                Piano uno = listBox1.Items[0] as Piano;
+                Piano due = listBox1.Items[1] as Piano;
 
-                if (result == DialogResult.OK)
-                {
-                    Segmento segmento = form.segmento;
-                    Piano piano1 = checkedListBox1.CheckedItems[0] as Piano;
-                    Piano piano2 = checkedListBox1.CheckedItems[1] as Piano;
-
-                    piano1.Segmenti.Add(segmento);
-                    piano2.Segmenti.Add(segmento);
-                }
+                checkedListBox1.Items.Clear();
+                checkedListBox1.Items.Add(uno.Punti);
+                checkedListBox2.Items.Clear();
+                checkedListBox2.Items.Add(due.Punti);
             }
             else
             {
                 MessageBox.Show("Selezionare due piani");
-            }*/
+            }
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnUnisci_Click(object sender, EventArgs e)
+        {
+            if (checkedListBox1.CheckedItems.Count != 1 || checkedListBox2.CheckedItems.Count != 1)
+            {
+                MessageBox.Show("Selezionare un punto per mappa");
+                return;
+            }
+
+            Punto punto1 = (Punto)checkedListBox1.CheckedItems[0];
+            Punto punto2 = (Punto)checkedListBox2.CheckedItems[0];
+
+            Segmento segmento = new Segmento(punto1, punto2);
+
+            
+
         }
     }
 }

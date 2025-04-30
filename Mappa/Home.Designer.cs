@@ -39,10 +39,12 @@
             apriJsonToolStripMenuItem = new ToolStripMenuItem();
             listBox1 = new ListBox();
             panel1 = new Panel();
+            btnUnisci = new Button();
+            checkedListBox2 = new CheckedListBox();
+            button2 = new Button();
             button1 = new Button();
             checkedListBox1 = new CheckedListBox();
             label1 = new Label();
-            button2 = new Button();
             menuStrip1.SuspendLayout();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -107,6 +109,8 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(btnUnisci);
+            panel1.Controls.Add(checkedListBox2);
             panel1.Controls.Add(button2);
             panel1.Controls.Add(button1);
             panel1.Controls.Add(checkedListBox1);
@@ -116,9 +120,38 @@
             panel1.Size = new Size(485, 259);
             panel1.TabIndex = 3;
             // 
+            // btnUnisci
+            // 
+            btnUnisci.Location = new Point(369, 155);
+            btnUnisci.Name = "btnUnisci";
+            btnUnisci.Size = new Size(75, 23);
+            btnUnisci.TabIndex = 5;
+            btnUnisci.Text = "Unisci";
+            btnUnisci.UseVisualStyleBackColor = true;
+            btnUnisci.Click += btnUnisci_Click;
+            // 
+            // checkedListBox2
+            // 
+            checkedListBox2.FormattingEnabled = true;
+            checkedListBox2.Location = new Point(189, 47);
+            checkedListBox2.Name = "checkedListBox2";
+            checkedListBox2.Size = new Size(174, 202);
+            checkedListBox2.TabIndex = 4;
+            checkedListBox2.TabStop = false;
+            // 
+            // button2
+            // 
+            button2.Location = new Point(9, 18);
+            button2.Name = "button2";
+            button2.Size = new Size(75, 23);
+            button2.TabIndex = 3;
+            button2.Text = "Vai";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
+            // 
             // button1
             // 
-            button1.Location = new Point(9, 3);
+            button1.Location = new Point(419, 226);
             button1.Name = "button1";
             button1.Size = new Size(93, 23);
             button1.TabIndex = 2;
@@ -131,27 +164,19 @@
             checkedListBox1.FormattingEnabled = true;
             checkedListBox1.Location = new Point(9, 47);
             checkedListBox1.Name = "checkedListBox1";
-            checkedListBox1.Size = new Size(204, 202);
+            checkedListBox1.Size = new Size(174, 202);
             checkedListBox1.TabIndex = 1;
+            checkedListBox1.TabStop = false;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(9, 29);
+            label1.Location = new Point(9, 0);
             label1.Name = "label1";
             label1.Size = new Size(154, 15);
             label1.TabIndex = 0;
             label1.Text = "Seleziona due piani da unire";
-            // 
-            // button2
-            // 
-            button2.Location = new Point(250, 123);
-            button2.Name = "button2";
-            button2.Size = new Size(75, 23);
-            button2.TabIndex = 3;
-            button2.Text = "Vai";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
+            label1.Click += label1_Click;
             // 
             // Home
             // 
@@ -186,5 +211,7 @@
         private CheckedListBox checkedListBox1;
         private Button button1;
         private Button button2;
+        private CheckedListBox checkedListBox2;
+        private Button btnUnisci;
     }
 }
