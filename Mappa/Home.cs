@@ -2,10 +2,10 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,172 +14,184 @@ namespace Mappa
 {
     public partial class Home : Form
     {
-        List<Piano> piani;
+        private readonly List<Piano> _piani = new List<Piano>();
+        private const string JsonFilter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
+
         public Home()
         {
             InitializeComponent();
-            piani = new List<Piano>();
+            ConfigureListView();
         }
 
-        void SistemaPiani()
+        private void ConfigureListView()
         {
-            listBox1.Items.Clear();
-            foreach (Piano p in piani.OrderBy(p => p.Level))
+            listView1.View = View.Details;
+            listView1.FullRowSelect = true;
+            listView1.GridLines = true;
+            listView1.Columns.Add("Livello", 100);
+            listView1.Columns.Add("Nome", 200);
+        }
+
+        private void RefreshPianiList()
+        {
+            listView1.Items.Clear();
+            foreach (var piano in _piani.OrderBy(p => p.Level))
             {
-                listBox1.Items.Add(p);
+                var item = new ListViewItem(piano.Level.ToString());
+                item.SubItems.Add(piano.Name);
+                item.Tag = piano;
+                listView1.Items.Add(item);
             }
         }
 
         private void aggiungiPianoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            List<int> livelli = new List<int>();
-
-            foreach (Piano piano in listBox1.Items)
+            var existingLevels = _piani.Select(p => p.Level).ToList();
+            using (var form = new Mappatura(existingLevels))
             {
-                livelli.Add(piano.Level);
-            }
-
-            Mappatura form = new Mappatura(livelli);
-            DialogResult result = form.ShowDialog();
-
-            if (result == DialogResult.OK)
-            {
-                Piano piano = form.piano;
-                listBox1.Items.Add(piano);
-                MessageBox.Show(piano.Level.ToString());
-                piani.Add(piano);
-                SistemaPiani();
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    _piani.Add(form.piano);
+                    RefreshPianiList();
+                }
             }
         }
 
         private void aPToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            try
+            if (listView1.SelectedItems.Count == 0)
             {
-                if (listBox1.SelectedItems.Count > 0)
-                {
-                    if (listBox1.SelectedItem is Piano)
-                    {
-                        List<int> livelli = new List<int>();
-
-                        foreach (Piano piano in listBox1.Items)
-                        {
-                            livelli.Add(piano.Level);
-                            MessageBox.Show(piano.Level.ToString());
-                        }
-                        livelli.RemoveAt(listBox1.SelectedIndex);
-
-                        Mappatura form = new Mappatura(listBox1.SelectedItem as Piano, livelli);
-                        DialogResult result = form.ShowDialog();
-
-                        if (result == DialogResult.OK)
-                        {
-                            Piano newPiano = form.piano;
-                            listBox1.Items.Remove(listBox1.SelectedItem);
-                            piani.Remove(listBox1.SelectedItem as Piano);
-                            piani.Add((Piano)newPiano);
-                            listBox1.Items.Add(newPiano);
-                        }
-                        else if (result == DialogResult.Cancel)
-                        {
-                            MessageBox.Show("Operazione cancellata");
-                        }
-                    }
-                }
-                else
-                    throw new Exception("Selezionare un piano");
+                MessageBox.Show("Selezionare un piano", "Attenzione", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
-            catch (Exception ex)
+
+            var selectedItem = listView1.SelectedItems[0];
+            if (!(selectedItem.Tag is Piano pianoSelezionato)) return;
+
+            var otherLevels = _piani.Where(p => p.Level != pianoSelezionato.Level)
+                                   .Select(p => p.Level)
+                                   .ToList();
+
+            using (var form = new Mappatura(pianoSelezionato, otherLevels))
             {
-                MessageBox.Show(ex.Message);
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    _piani.Remove(pianoSelezionato);
+                    _piani.Add(form.piano);
+                    RefreshPianiList();
+                }
             }
         }
 
         private void salvaJsonLocale(object sender, EventArgs e)
-{
-    try
-    {
-        SaveFileDialog saveFileDialog = new SaveFileDialog();
-        saveFileDialog.Filter = "JSON|*.json";
-        saveFileDialog.Title = "Salva punti in JSON";
-
-        if (saveFileDialog.ShowDialog() == DialogResult.OK)
-        {
-            string filePath = saveFileDialog.FileName;
-            SaveJson listaPiani = new SaveJson();
-            
-            // Usa la lista piani come sorgente principale invece di listBox1.Items
-            foreach (Piano piano in piani)
-            {
-                SavePiano savePiano = new SavePiano();
-                savePiano.points = piano.Punti;
-                savePiano.arcs = piano.Segmenti;
-                savePiano.image = savePiano.ConvertImageToBase64(piano.Img);
-                savePiano.Name = piano.Name;
-                savePiano.Level = piano.Level;
-                listaPiani.piani.Add(savePiano);
-            }
-
-            string stringJson = JsonConvert.SerializeObject(listaPiani, Formatting.Indented);
-            File.WriteAllText(filePath, stringJson);
-
-            MessageBox.Show("File Salvato con successo", "Salvataggio completato", 
-                          MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-    }
-    catch (Exception ex)
-    {
-        MessageBox.Show($"Errore durante il salvataggio: {ex.Message}", "Errore", 
-                       MessageBoxButtons.OK, MessageBoxIcon.Error);
-    }
-}
-
-        private void SalvaJsonCluod(object sender, EventArgs e)
         {
             try
             {
+                using (var saveFileDialog = new SaveFileDialog())
+                {
+                    saveFileDialog.Filter = JsonFilter;
+                    saveFileDialog.Title = "Salva punti in JSON";
 
+                    if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
+
+                    var listaPiani = new SalvaJson();
+                    listaPiani.piani.AddRange(_piani.Select(piano => new SavePiano
+                    {
+                        points = piano.Punti,
+                        arcs = piano.Segmenti,
+                        image = piano.ConvertImageToBase64(piano.Img),
+                        Name = piano.Name,
+                        Level = piano.Level
+                    }));
+
+                    var jsonString = JsonConvert.SerializeObject(listaPiani, Formatting.Indented);
+                    File.WriteAllText(saveFileDialog.FileName, jsonString);
+
+                    MessageBox.Show("File salvato con successo", "Operazione completata",MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                HandleError("Errore durante il salvataggio", ex);
+            }
+        }
+
+        private async void SalvaJsonCluod(object sender, EventArgs e)
+        {
+            try
+            {
+                using (var saveFileDialog = new SaveFileDialog())
+                {
+                    saveFileDialog.Filter = JsonFilter;
+                    saveFileDialog.Title = "Salva punti in JSON";
+
+                    if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
+
+                    var listaPiani = new SalvaJson();
+                    listaPiani.piani.AddRange(_piani.Select(piano => new SavePiano
+                    {
+                        points = piano.Punti,
+                        arcs = piano.Segmenti,
+                        image = piano.ConvertImageToBase64(piano.Img),
+                        Name = piano.Name,
+                        Level = piano.Level
+                    }));
+
+                    var jsonContent = JsonConvert.SerializeObject(listaPiani, Formatting.Indented);
+
+                    using (var client = new HttpClient())
+                    using (var request = new HttpRequestMessage(HttpMethod.Post, "https://127.0.0.1:8000/laod?id=prova4"))
+                    {
+                        request.Content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                        var response = await client.SendAsync(request);
+                        response.EnsureSuccessStatusCode();
+
+                        MessageBox.Show("Dati salvati con successo sul server", "Operazione completata",MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError("Errore durante il salvataggio sul server", ex);
             }
         }
 
         private void apriJsonToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
-            openFileDialog.Title = "Scegli il file json da aprire";
-
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            try
             {
-                try
+                using (var openFileDialog = new OpenFileDialog())
                 {
-                    string filePath = openFileDialog.FileName;
-                    string jsonString = File.ReadAllText(filePath);
+                    openFileDialog.Filter = JsonFilter;
+                    openFileDialog.Title = "Scegli il file JSON da aprire";
 
-                    LoaderPiani caricaPiani = new LoaderPiani();
-                    piani.AddRange(caricaPiani.LoadFromJson(jsonString));
+                    if (openFileDialog.ShowDialog() != DialogResult.OK) return;
 
-                    if (piani.Count > 0)
+                    var jsonString = File.ReadAllText(openFileDialog.FileName);
+                    var caricaPiani = new LoaderPiani();
+                    var pianiCaricati = caricaPiani.LoadFromJson(jsonString);
+
+                    if (!pianiCaricati.Any())
                     {
-                        foreach(Piano piano in piani)
-                        {
-                            listBox1.Items.Add(piano);  
-                        }
+                        MessageBox.Show($"Nessun piano trovato nel file selezionato", "Attenzione",
+                                      MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
                     }
-                    else
-                    {
-                        throw new Exception($"Nessun piano trovato in {filePath}");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Errore nell'apertura del file json. " + ex.Message, "error", MessageBoxButtons.OK);
+
+                    _piani.Clear();
+                    _piani.AddRange(pianiCaricati);
+                    RefreshPianiList();
                 }
             }
+            catch (Exception ex)
+            {
+                HandleError("Errore nell'apertura del file JSON", ex);
+            }
+        }
+
+        private void HandleError(string message, Exception ex)
+        {
+            MessageBox.Show($"{message}: {ex.Message}", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }
-

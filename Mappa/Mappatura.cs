@@ -35,12 +35,7 @@ namespace Mappa
             inizializzazioneInComune();
             piano = new Piano("", new List<Segmento>(), new List<Punto>(), null, int.MinValue);
             this.livelliUtilizzati = new List<int>(livelliUtilizzati);
-            //pictureBox = new PictureBox();
-            //listaPunti = new List<Punto>();
-            //listaSegmenti = new List<Segmento>();
-            ////cmbModalita.SelectedIndex = 0;
             abilitazioneControlli(false);
-            //DoubleBuffered = true;
 
         }
 
@@ -52,12 +47,7 @@ namespace Mappa
                      new List<Segmento>(pianoOriginale.Segmenti),
                      new List<Punto>(pianoOriginale.Punti),
                      pianoOriginale.Img, pianoOriginale.Level);
-            //pictureBox = new PictureBox();
-            //listaPunti = new List<Punto>();
-            //listaSegmenti = new List<Segmento>();
-            ////cmbModalita.SelectedIndex = 0;
             CaricaPiano();
-            //DoubleBuffered = true;
             txtLevel.Text = piano.Level.ToString();
         }
 
@@ -362,30 +352,6 @@ namespace Mappa
             {
                 MessageBox.Show(ex.Message);
             }
-        }
-
-        private void LoadPoints()
-        {
-            /*if (File.Exists(filePath))
-            {
-                string json = File.ReadAllText(filePath);
-                listPoints.Items.Clear();
-
-                // Deserializza la lista di punti dal JSON
-                var pointsList = JsonConvert.DeserializeObject<List<Point>>(json);
-
-                if (pointsList != null)
-                {
-                    foreach (var point in pointsList)
-                    {
-                        listPoints.Items.Add(point);
-                    }
-                }
-
-                // Dopo aver caricato i punti, ridisegnali
-                DisegnaPunti();
-                refresh();
-            }*/
         }
 
         private void refresh()

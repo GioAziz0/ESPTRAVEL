@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Mappa.Classi
 {
-    public class SaveJson
+    public class SalvaJson
     {
         public List<SavePiano> piani { get; set; } = new List<SavePiano>();
     }

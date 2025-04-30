@@ -12,7 +12,7 @@ namespace Mappa.Classi
         public List<Piano> LoadFromJson(string jsonContent)
         {
             // Deserializza il JSON nella struttura SaveJson
-            SaveJson savedData = JsonConvert.DeserializeObject<SaveJson>(jsonContent);
+            SalvaJson savedData = JsonConvert.DeserializeObject<SalvaJson>(jsonContent);
 
             List<Piano> piani = new List<Piano>();
 

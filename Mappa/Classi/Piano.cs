@@ -71,5 +71,15 @@ namespace Mappa.Classi
             var ms = new MemoryStream(_imgData);
             return Image.FromStream(ms);
         }
+
+        public string ConvertImageToBase64(Image image)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                image.Save(ms, image.RawFormat); // Salva l'immagine nel MemoryStream
+                byte[] imageBytes = ms.ToArray(); // Converte l'immagine in byte[]
+                return Convert.ToBase64String(imageBytes); // Codifica in Base64
+            }
+        }
     }
 }

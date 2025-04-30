@@ -40,7 +40,7 @@
             cluodToolStripMenuItem = new ToolStripMenuItem();
             entrambiToolStripMenuItem = new ToolStripMenuItem();
             apriJsonToolStripMenuItem = new ToolStripMenuItem();
-            listBox1 = new ListBox();
+            listView1 = new ListView();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -90,20 +90,21 @@
             // localeToolStripMenuItem
             // 
             localeToolStripMenuItem.Name = "localeToolStripMenuItem";
-            localeToolStripMenuItem.Size = new Size(180, 22);
+            localeToolStripMenuItem.Size = new Size(122, 22);
             localeToolStripMenuItem.Text = "Locale";
             localeToolStripMenuItem.Click += salvaJsonLocale;
             // 
             // cluodToolStripMenuItem
             // 
             cluodToolStripMenuItem.Name = "cluodToolStripMenuItem";
-            cluodToolStripMenuItem.Size = new Size(180, 22);
+            cluodToolStripMenuItem.Size = new Size(122, 22);
             cluodToolStripMenuItem.Text = "Cluod";
+            cluodToolStripMenuItem.Click += SalvaJsonCluod;
             // 
             // entrambiToolStripMenuItem
             // 
             entrambiToolStripMenuItem.Name = "entrambiToolStripMenuItem";
-            entrambiToolStripMenuItem.Size = new Size(180, 22);
+            entrambiToolStripMenuItem.Size = new Size(122, 22);
             entrambiToolStripMenuItem.Text = "Entrambi";
             // 
             // apriJsonToolStripMenuItem
@@ -113,21 +114,21 @@
             apriJsonToolStripMenuItem.Text = "Apri Json";
             apriJsonToolStripMenuItem.Click += apriJsonToolStripMenuItem_Click;
             // 
-            // listBox1
+            // listView1
             // 
-            listBox1.FormattingEnabled = true;
-            listBox1.ItemHeight = 15;
-            listBox1.Location = new Point(12, 37);
-            listBox1.Name = "listBox1";
-            listBox1.Size = new Size(285, 259);
-            listBox1.TabIndex = 2;
+            listView1.HeaderStyle = ColumnHeaderStyle.Nonclickable;
+            listView1.Location = new Point(12, 27);
+            listView1.Name = "listView1";
+            listView1.Size = new Size(300, 375);
+            listView1.TabIndex = 2;
+            listView1.UseCompatibleStateImageBehavior = false;
             // 
             // Home
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(listBox1);
+            Controls.Add(listView1);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
             Name = "Home";
@@ -143,12 +144,12 @@
         private MenuStrip menuStrip1;
         private ToolStripMenuItem aggiungiPianoToolStripMenuItem;
         private ToolStripMenuItem eliminaPianoToolStripMenuItem;
-        private ListBox listBox1;
         private ToolStripMenuItem aPToolStripMenuItem;
         private ToolStripMenuItem salvaJsonToolStripMenuItem;
         private ToolStripMenuItem apriJsonToolStripMenuItem;
         private ToolStripMenuItem localeToolStripMenuItem;
         private ToolStripMenuItem cluodToolStripMenuItem;
         private ToolStripMenuItem entrambiToolStripMenuItem;
+        private ListView listView1;
     }
 }
