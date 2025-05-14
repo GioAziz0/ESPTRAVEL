@@ -29,10 +29,13 @@ namespace Mappa.Classi
                     }
                 }
 
+                List<Segmento> segmenti  = savePiano.CreaSegmenti(savePiano.arcs);
+
                 // Crea un nuovo Piano con i dati convertiti
                 Piano piano = new Piano(
                     name: savePiano.Name,
-                    segmenti: savePiano.arcs,  // Nota: arcs nel SavePiano corrisponde a Segmenti in Piano
+                    collegapunti: savePiano.CollegaPunti,
+                    segmenti: segmenti,  // Nota: arcs nel SavePiano corrisponde a Segmenti in Piano
                     punti: savePiano.points,    // points nel SavePiano corrisponde a Punti in Piano
                     img: img,
                     lv: savePiano.Level

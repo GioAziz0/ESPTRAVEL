@@ -33,7 +33,7 @@ namespace Mappa
         {
             InitializeComponent();
             inizializzazioneInComune();
-            piano = new Piano("", new List<Segmento>(), new List<Punto>(), null, int.MinValue);
+            piano = new Piano("", new List<Segmento>(), new List<Punto>(), null, int.MinValue, new List<CollegaPunti>());
             this.livelliUtilizzati = new List<int>(livelliUtilizzati);
             abilitazioneControlli(false);
 
@@ -46,7 +46,8 @@ namespace Mappa
             piano = new Piano(pianoOriginale.Name,
                      new List<Segmento>(pianoOriginale.Segmenti),
                      new List<Punto>(pianoOriginale.Punti),
-                     pianoOriginale.Img, pianoOriginale.Level);
+                     pianoOriginale.Img, pianoOriginale.Level,
+                     pianoOriginale.CollegaPunti);
             CaricaPiano();
             txtLevel.Text = piano.Level.ToString();
         }

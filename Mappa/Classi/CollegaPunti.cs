@@ -14,6 +14,6 @@ namespace Mappa.Classi
         public Punto Punto1 { get; set; }
         public Punto Punto2 { get; set; }
 
-        public Segmento Segmento { get; set; }
+        public int Peso { get; set; }
     }
 }

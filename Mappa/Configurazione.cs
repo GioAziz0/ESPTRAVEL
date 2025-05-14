@@ -79,10 +79,7 @@ namespace Mappa
                             Name2 = piano2.Name,
                             Punto1 = (Punto)lstPuntiPiano1.SelectedItem,
                             Punto2 = (Punto)lstPuntiPiano2.SelectedItem,
-                            Segmento = new Segmento((Punto)lstPuntiPiano1.SelectedItem, (Punto)lstPuntiPiano2.SelectedItem)
-                            {
-                                Peso = peso
-                            }
+                            Peso = peso
                         });
 
                         piano2.CollegaPunti.Add(new CollegaPunti()
@@ -91,10 +88,7 @@ namespace Mappa
                             Name2 = piano1.Name,
                             Punto1 = (Punto)lstPuntiPiano2.SelectedItem,
                             Punto2 = (Punto)lstPuntiPiano1.SelectedItem,
-                            Segmento = new Segmento((Punto)lstPuntiPiano1.SelectedItem, (Punto)lstPuntiPiano2.SelectedItem)
-                            {
-                                Peso = peso
-                            }
+                            Peso = peso    
                         });
 
                         this.DialogResult = DialogResult.OK;

@@ -104,11 +104,13 @@ namespace Mappa
                     listaPiani.piani.AddRange(_piani.Select(piano => new SavePiano
                     {
                         points = piano.Punti,
-                        arcs = piano.Segmenti,
                         image = piano.ConvertImageToBase64(piano.Img),
                         Name = piano.Name,
-                        Level = piano.Level
+                        Level = piano.Level,
+                        arcs = piano.CreaSegmenti(piano.Segmenti),
+                        CollegaPunti = piano.CollegaPunti
                     }));
+                    
 
                     var jsonString = JsonConvert.SerializeObject(listaPiani, Formatting.Indented);
                     File.WriteAllText(saveFileDialog.FileName, jsonString);
@@ -137,10 +139,12 @@ namespace Mappa
                     listaPiani.piani.AddRange(_piani.Select(piano => new SavePiano
                     {
                         points = piano.Punti,
-                        arcs = piano.Segmenti,
+                        arcs = piano.CreaSegmenti(piano.Segmenti),
                         image = piano.ConvertImageToBase64(piano.Img),
                         Name = piano.Name,
-                        Level = piano.Level
+                        Level = piano.Level,
+                        CollegaPunti = piano.CollegaPunti   
+
                     }));
 
                     var jsonContent = JsonConvert.SerializeObject(listaPiani, Formatting.Indented);

@@ -31,12 +31,13 @@ namespace Mappa.Classi
             }
         }
 
-        public Piano(string name, List<Segmento> segmenti, List<Punto> punti, Image img, int lv) {
+        public Piano(string name, List<Segmento> segmenti, List<Punto> punti, Image img, int lv, List<CollegaPunti> collegapunti) {
             Name = name;
             Segmenti = segmenti;
             Punti = punti;
             Level = lv;
             Img = img;
+            CollegaPunti = collegapunti;
         }
         public override string ToString()
         {
@@ -81,6 +82,16 @@ namespace Mappa.Classi
                 byte[] imageBytes = ms.ToArray(); // Converte l'immagine in byte[]
                 return Convert.ToBase64String(imageBytes); // Codifica in Base64
             }
+        }
+
+        public List<List<string>> CreaSegmenti(List<Segmento> segmenti)
+        {
+            List<List<string>> arcs = new List<List<string>>();
+            foreach (var segmento in segmenti)
+            {
+                arcs.Add(segmento.ToList());
+            }
+            return arcs;
         }
     }
 }
