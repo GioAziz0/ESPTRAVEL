@@ -40,8 +40,13 @@
             cluodToolStripMenuItem = new ToolStripMenuItem();
             entrambiToolStripMenuItem = new ToolStripMenuItem();
             apriJsonToolStripMenuItem = new ToolStripMenuItem();
+            apriCollegaPianiToolStripMenuItem = new ToolStripMenuItem();
             listView1 = new ListView();
+            pnlCollegaPiani = new Panel();
+            listView2 = new ListView();
+            btnVaiConfigurazione = new Button();
             menuStrip1.SuspendLayout();
+            pnlCollegaPiani.SuspendLayout();
             SuspendLayout();
             // 
             // ImgPiani
@@ -53,7 +58,7 @@
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { aggiungiPianoToolStripMenuItem, eliminaPianoToolStripMenuItem, aPToolStripMenuItem, salvaJsonToolStripMenuItem, apriJsonToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { aggiungiPianoToolStripMenuItem, eliminaPianoToolStripMenuItem, aPToolStripMenuItem, salvaJsonToolStripMenuItem, apriJsonToolStripMenuItem, apriCollegaPianiToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(800, 24);
@@ -114,6 +119,12 @@
             apriJsonToolStripMenuItem.Text = "Apri Json";
             apriJsonToolStripMenuItem.Click += apriJsonToolStripMenuItem_Click;
             // 
+            // apriCollegaPianiToolStripMenuItem
+            // 
+            apriCollegaPianiToolStripMenuItem.Name = "apriCollegaPianiToolStripMenuItem";
+            apriCollegaPianiToolStripMenuItem.Size = new Size(113, 20);
+            apriCollegaPianiToolStripMenuItem.Text = "Apri Collega Piani";
+            // 
             // listView1
             // 
             listView1.HeaderStyle = ColumnHeaderStyle.Nonclickable;
@@ -123,11 +134,39 @@
             listView1.TabIndex = 2;
             listView1.UseCompatibleStateImageBehavior = false;
             // 
+            // pnlCollegaPiani
+            // 
+            pnlCollegaPiani.Controls.Add(btnVaiConfigurazione);
+            pnlCollegaPiani.Controls.Add(listView2);
+            pnlCollegaPiani.Location = new Point(318, 27);
+            pnlCollegaPiani.Name = "pnlCollegaPiani";
+            pnlCollegaPiani.Size = new Size(402, 242);
+            pnlCollegaPiani.TabIndex = 3;
+            // 
+            // listView2
+            // 
+            listView2.HeaderStyle = ColumnHeaderStyle.Nonclickable;
+            listView2.Location = new Point(3, 28);
+            listView2.Name = "listView2";
+            listView2.Size = new Size(189, 81);
+            listView2.TabIndex = 4;
+            listView2.UseCompatibleStateImageBehavior = false;
+            // 
+            // btnVaiConfigurazione
+            // 
+            btnVaiConfigurazione.Location = new Point(268, 98);
+            btnVaiConfigurazione.Name = "btnVaiConfigurazione";
+            btnVaiConfigurazione.Size = new Size(75, 23);
+            btnVaiConfigurazione.TabIndex = 5;
+            btnVaiConfigurazione.Text = "Vai";
+            btnVaiConfigurazione.UseVisualStyleBackColor = true;
+            // 
             // Home
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(pnlCollegaPiani);
             Controls.Add(listView1);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
@@ -135,6 +174,7 @@
             Text = "Homecs";
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
+            pnlCollegaPiani.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -151,5 +191,9 @@
         private ToolStripMenuItem cluodToolStripMenuItem;
         private ToolStripMenuItem entrambiToolStripMenuItem;
         private ListView listView1;
+        private ToolStripMenuItem apriCollegaPianiToolStripMenuItem;
+        private Panel pnlCollegaPiani;
+        private ListView listView2;
+        private Button btnVaiConfigurazione;
     }
 }

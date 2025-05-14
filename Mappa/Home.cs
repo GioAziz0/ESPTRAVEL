@@ -30,6 +30,12 @@ namespace Mappa
             listView1.GridLines = true;
             listView1.Columns.Add("Livello", 100);
             listView1.Columns.Add("Nome", 200);
+
+            listView2.View = View.Details;
+            listView2.FullRowSelect = true;
+            listView2.GridLines = true;
+            listView2.Columns.Add("Livello", 100);
+            listView2.Columns.Add("Nome", 200);
         }
 
         private void RefreshPianiList()
@@ -186,6 +192,73 @@ namespace Mappa
             catch (Exception ex)
             {
                 HandleError("Errore nell'apertura del file JSON", ex);
+            }
+        }
+
+        public void AggiungiPianoConfigurazione()
+        {
+            try
+            {
+                if (listView2.Items.Count > 1)
+                {
+                    if (listView1.SelectedItems.Count == 0)
+                    {
+                        MessageBox.Show("Selezionare un piano", "Attenzione", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    var selectedItem = listView1.SelectedItems[0];
+                    if (!(selectedItem.Tag is Piano pianoSelezionato)) return;
+                    Piano piano = (Piano)selectedItem.Tag;
+
+                    var item = new ListViewItem(piano.Level.ToString());
+                    item.SubItems.Add(piano.Name);
+                    item.Tag = piano;
+                    listView2.Items.Add(item);
+                }
+                else MessageBox.Show("Soo già stati inseriti due piani"); 
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        public void ApriConfigurazione(object sender, EventArgs e)
+        {
+            try
+            {
+                if (listView2.Items.Count == 2)
+                {
+                    Piano piano1 = listView2.Items[0].Tag as Piano;
+                    Piano piano2 = listView2.Items[1].Tag as Piano;
+                    using (Configurazione form = new Configurazione(piano1, piano2))
+                    {
+                        if (form.ShowDialog() == DialogResult.OK)
+                        {
+                            var newPiano1 = form.piano1;
+                            var newPiano2 = form.piano2;
+
+                            foreach(ListViewItem item in listView1.Items)
+                            {
+                                Piano p = item.Tag as Piano;
+
+                                int index = _piani.FindIndex(x => x.Level == p.Level);
+                                if (index != -1)
+                                {
+                                    _piani[index] = p; // sostituisce l'elemento trovato con 'p'
+                                }
+                            }
+
+                            RefreshPianiList();
+                        }
+                    }
+                }
+                else MessageBox.Show("Inserire due piani prima di aprire la configurazione");
+            }
+            catch (Exception ex)
+            {
+                HandleError("Errore nell'apertura della configurazione", ex);
             }
         }
 
