@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Mappa.Classi
+{
+    public class CollegaPunti
+    {
+        public string Name1 { get; set; }
+
+        public string Name2 { get; set; }
+        public Punto Punto1 { get; set; }
+        public Punto Punto2 { get; set; }
+
+        public Segmento Segmento { get; set; }
+    }
+}

@@ -23,17 +23,17 @@ namespace Mappa
             InitializeComponent();
             ConfigureListView();
             AggiungiPunti();
-            lblPiano1.Name = piano1.Name;
-            lblPiano2.Name = piano1.Name;
+            lblPiano1.Text = piano1.Name;
+            lblPiano2.Text = piano2.Name;
         }
 
         private void ConfigureListView()
         {
-            listView1.View = View.Details;
-            listView1.FullRowSelect = true;
-            listView1.GridLines = true;
-            listView1.Columns.Add(piano1.Name, 75);
-            listView1.Columns.Add(piano2.Name, 75);
+            listvPianiCollegati.View = View.Details;
+            listvPianiCollegati.FullRowSelect = true;
+            listvPianiCollegati.GridLines = true;
+            listvPianiCollegati.Columns.Add(piano1.Name, 75);
+            listvPianiCollegati.Columns.Add(piano2.Name, 75);
         }
 
         private void AggiungiPunti()
@@ -46,26 +46,80 @@ namespace Mappa
             {
                 lstPuntiPiano2.Items.Add(punto);
             }
+
+            List<CollegaPunti> collegamenti = piano1.CollegaPunti.Where(x => x.Name2 == piano2.Name).ToList();
+            MessageBox.Show($"Collegamenti trovati: {collegamenti.Count}");
+            foreach (var collegamento in collegamenti)
+            {
+                ListViewItem item = new ListViewItem(collegamento.Punto1.Name);
+                item.SubItems.Add(collegamento.Punto2.Name);
+                listvPianiCollegati.Items.Add(item);
+            }
+
         }
 
-        private void Configura()
+        private void Configura(object sender, EventArgs e)
         {
             try
             {
-                if(lstPuntiPiano1.SelectedItems.Count > 0 && lstPuntiPiano2.SelectedItems.Count > 0)
+                if (lstPuntiPiano1.SelectedItems.Count > 0 && lstPuntiPiano2.SelectedItems.Count > 0)
                 {
+                    if (!string.IsNullOrEmpty(txtPeso.Text))
+                    {
+                        if(Convert.ToInt32(txtPeso.Text) < 0)
+                        {
+                            throw new Exception("Il peso deve essere maggiore di 0");
+                        }
 
+                        int peso = Convert.ToInt32(txtPeso.Text);
+
+                        piano1.CollegaPunti.Add(new CollegaPunti()
+                        {
+                            Name1 = piano1.Name,
+                            Name2 = piano2.Name,
+                            Punto1 = (Punto)lstPuntiPiano1.SelectedItem,
+                            Punto2 = (Punto)lstPuntiPiano2.SelectedItem,
+                            Segmento = new Segmento((Punto)lstPuntiPiano1.SelectedItem, (Punto)lstPuntiPiano2.SelectedItem)
+                            {
+                                Peso = peso
+                            }
+                        });
+
+                        piano2.CollegaPunti.Add(new CollegaPunti()
+                        {
+                            Name1 = piano2.Name,
+                            Name2 = piano1.Name,
+                            Punto1 = (Punto)lstPuntiPiano2.SelectedItem,
+                            Punto2 = (Punto)lstPuntiPiano1.SelectedItem,
+                            Segmento = new Segmento((Punto)lstPuntiPiano1.SelectedItem, (Punto)lstPuntiPiano2.SelectedItem)
+                            {
+                                Peso = peso
+                            }
+                        });
+
+                        this.DialogResult = DialogResult.OK;
+                        this.Close();
+                    }
+                    else
+                    {
+                        throw new Exception("Inserire un peso");
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Errore nella configurazione!!!!!!!!");
+                MessageBox.Show($"Errore nella configurazione. {ex.Message}");
             }
         }
 
         private void Configurazione_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
+        }
+
+        private void btn_collega_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

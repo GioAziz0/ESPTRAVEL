@@ -14,6 +14,7 @@ namespace Mappa.Classi
         public int Level { get;set; }
         public List<Segmento> Segmenti { get; set; }
         public List<Punto> Punti { get; set; }
+        public List<CollegaPunti> CollegaPunti { get; set; } = new List<CollegaPunti>();
 
         private byte[] _imgData;
 

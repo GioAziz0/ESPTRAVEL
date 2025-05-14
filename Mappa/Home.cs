@@ -113,7 +113,7 @@ namespace Mappa
                     var jsonString = JsonConvert.SerializeObject(listaPiani, Formatting.Indented);
                     File.WriteAllText(saveFileDialog.FileName, jsonString);
 
-                    MessageBox.Show("File salvato con successo", "Operazione completata",MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("File salvato con successo", "Operazione completata", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
@@ -152,7 +152,7 @@ namespace Mappa
                         var response = await client.SendAsync(request);
                         response.EnsureSuccessStatusCode();
 
-                        MessageBox.Show("Dati salvati con successo sul server", "Operazione completata",MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Dati salvati con successo sul server", "Operazione completata", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
             }
@@ -195,11 +195,11 @@ namespace Mappa
             }
         }
 
-        public void AggiungiPianoConfigurazione()
+        public void AggiungiPianoConfigurazione(object sender, EventArgs e)
         {
             try
             {
-                if (listView2.Items.Count > 1)
+                if (listView2.Items.Count < 2)
                 {
                     if (listView1.SelectedItems.Count == 0)
                     {
@@ -215,8 +215,9 @@ namespace Mappa
                     item.SubItems.Add(piano.Name);
                     item.Tag = piano;
                     listView2.Items.Add(item);
+                    MessageBox.Show("ciao");
                 }
-                else MessageBox.Show("Soo già stati inseriti due piani"); 
+                else MessageBox.Show("Sono già stati inseriti due piani");
             }
             catch (Exception ex)
             {
@@ -232,6 +233,7 @@ namespace Mappa
                 {
                     Piano piano1 = listView2.Items[0].Tag as Piano;
                     Piano piano2 = listView2.Items[1].Tag as Piano;
+
                     using (Configurazione form = new Configurazione(piano1, piano2))
                     {
                         if (form.ShowDialog() == DialogResult.OK)
@@ -239,7 +241,7 @@ namespace Mappa
                             var newPiano1 = form.piano1;
                             var newPiano2 = form.piano2;
 
-                            foreach(ListViewItem item in listView1.Items)
+                            foreach (ListViewItem item in listView1.Items)
                             {
                                 Piano p = item.Tag as Piano;
 
@@ -252,6 +254,7 @@ namespace Mappa
 
                             RefreshPianiList();
                         }
+                        listView2.Items.Clear();
                     }
                 }
                 else MessageBox.Show("Inserire due piani prima di aprire la configurazione");
@@ -266,5 +269,11 @@ namespace Mappa
         {
             MessageBox.Show($"{message}: {ex.Message}", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+        private void apriCollegaPianiToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pnlCollegaPiani.Visible = true;
+        }
+
     }
 }

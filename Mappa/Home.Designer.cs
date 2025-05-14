@@ -43,8 +43,9 @@
             apriCollegaPianiToolStripMenuItem = new ToolStripMenuItem();
             listView1 = new ListView();
             pnlCollegaPiani = new Panel();
-            listView2 = new ListView();
+            btnAggiugi = new Button();
             btnVaiConfigurazione = new Button();
+            listView2 = new ListView();
             menuStrip1.SuspendLayout();
             pnlCollegaPiani.SuspendLayout();
             SuspendLayout();
@@ -124,6 +125,7 @@
             apriCollegaPianiToolStripMenuItem.Name = "apriCollegaPianiToolStripMenuItem";
             apriCollegaPianiToolStripMenuItem.Size = new Size(113, 20);
             apriCollegaPianiToolStripMenuItem.Text = "Apri Collega Piani";
+            apriCollegaPianiToolStripMenuItem.Click += apriCollegaPianiToolStripMenuItem_Click;
             // 
             // listView1
             // 
@@ -136,21 +138,24 @@
             // 
             // pnlCollegaPiani
             // 
+            pnlCollegaPiani.Controls.Add(btnAggiugi);
             pnlCollegaPiani.Controls.Add(btnVaiConfigurazione);
             pnlCollegaPiani.Controls.Add(listView2);
             pnlCollegaPiani.Location = new Point(318, 27);
             pnlCollegaPiani.Name = "pnlCollegaPiani";
             pnlCollegaPiani.Size = new Size(402, 242);
             pnlCollegaPiani.TabIndex = 3;
+            pnlCollegaPiani.Visible = false;
             // 
-            // listView2
+            // btnAggiugi
             // 
-            listView2.HeaderStyle = ColumnHeaderStyle.Nonclickable;
-            listView2.Location = new Point(3, 28);
-            listView2.Name = "listView2";
-            listView2.Size = new Size(189, 81);
-            listView2.TabIndex = 4;
-            listView2.UseCompatibleStateImageBehavior = false;
+            btnAggiugi.Location = new Point(22, 134);
+            btnAggiugi.Name = "btnAggiugi";
+            btnAggiugi.Size = new Size(75, 23);
+            btnAggiugi.TabIndex = 6;
+            btnAggiugi.Text = "Aggiungi";
+            btnAggiugi.UseVisualStyleBackColor = true;
+            btnAggiugi.Click += AggiungiPianoConfigurazione;
             // 
             // btnVaiConfigurazione
             // 
@@ -160,6 +165,16 @@
             btnVaiConfigurazione.TabIndex = 5;
             btnVaiConfigurazione.Text = "Vai";
             btnVaiConfigurazione.UseVisualStyleBackColor = true;
+            btnVaiConfigurazione.Click += ApriConfigurazione;
+            // 
+            // listView2
+            // 
+            listView2.HeaderStyle = ColumnHeaderStyle.Nonclickable;
+            listView2.Location = new Point(3, 16);
+            listView2.Name = "listView2";
+            listView2.Size = new Size(237, 105);
+            listView2.TabIndex = 4;
+            listView2.UseCompatibleStateImageBehavior = false;
             // 
             // Home
             // 
@@ -195,5 +210,6 @@
         private Panel pnlCollegaPiani;
         private ListView listView2;
         private Button btnVaiConfigurazione;
+        private Button btnAggiugi;
     }
 }

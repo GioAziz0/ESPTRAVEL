@@ -32,9 +32,11 @@
             lstPuntiPiano2 = new ListBox();
             lblPiano1 = new Label();
             lblPiano2 = new Label();
-            listView1 = new ListView();
+            listvPianiCollegati = new ListView();
             label3 = new Label();
             btn_collega = new Button();
+            txtPeso = new TextBox();
+            label1 = new Label();
             SuspendLayout();
             // 
             // lstPuntiPiano1
@@ -75,13 +77,13 @@
             lblPiano2.TabIndex = 3;
             lblPiano2.Text = "label2";
             // 
-            // listView1
+            // listvPianiCollegati
             // 
-            listView1.Location = new Point(613, 47);
-            listView1.Name = "listView1";
-            listView1.Size = new Size(150, 100);
-            listView1.TabIndex = 4;
-            listView1.UseCompatibleStateImageBehavior = false;
+            listvPianiCollegati.Location = new Point(613, 47);
+            listvPianiCollegati.Name = "listvPianiCollegati";
+            listvPianiCollegati.Size = new Size(150, 100);
+            listvPianiCollegati.TabIndex = 4;
+            listvPianiCollegati.UseCompatibleStateImageBehavior = false;
             // 
             // label3
             // 
@@ -95,21 +97,40 @@
             // 
             // btn_collega
             // 
-            btn_collega.Location = new Point(684, 170);
+            btn_collega.Location = new Point(670, 268);
             btn_collega.Name = "btn_collega";
             btn_collega.Size = new Size(93, 38);
             btn_collega.TabIndex = 6;
             btn_collega.Text = "Collega";
             btn_collega.UseVisualStyleBackColor = true;
+            btn_collega.Click += Configura;
+            // 
+            // txtPeso
+            // 
+            txtPeso.Location = new Point(663, 226);
+            txtPeso.Name = "txtPeso";
+            txtPeso.Size = new Size(100, 23);
+            txtPeso.TabIndex = 7;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(613, 229);
+            label1.Name = "label1";
+            label1.Size = new Size(32, 15);
+            label1.TabIndex = 8;
+            label1.Text = "Peso";
             // 
             // Configurazione
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(label1);
+            Controls.Add(txtPeso);
             Controls.Add(btn_collega);
             Controls.Add(label3);
-            Controls.Add(listView1);
+            Controls.Add(listvPianiCollegati);
             Controls.Add(lblPiano2);
             Controls.Add(lblPiano1);
             Controls.Add(lstPuntiPiano2);
@@ -127,8 +148,10 @@
         private ListBox lstPuntiPiano2;
         private Label lblPiano1;
         private Label lblPiano2;
-        private ListView listView1;
+        private ListView listvPianiCollegati;
         private Label label3;
         private Button btn_collega;
+        private TextBox txtPeso;
+        private Label label1;
     }
 }
