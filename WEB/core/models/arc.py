@@ -34,7 +34,7 @@ class Arc:
     
     @weight.setter
     def weight(self, w):
-        self._weight = float(w.replace(',', '.'))
+        self._weight = float(str(w).replace(',', '.'))
 
 
         

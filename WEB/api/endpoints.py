@@ -23,6 +23,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Endpoint per la visualizzazione dell'immagine della mappa
 @app.get("/map_image/")
 def show_map(id: str, floor: int):
+    print("Hello")
     conn = sqlite3.connect('maps.db')
     cursor = conn.cursor()
     cursor.execute(
@@ -43,6 +44,8 @@ def show_map(id: str, floor: int):
 
 @app.get("/floorsJson/")
 def get_floors(id: str):
+    if (id is None or id == ""):
+        raise HTTPException(status_code=404, detail="Given id isn't valid")
     conn = sqlite3.connect('maps.db')
     cursor = conn.cursor()
     cursor.execute(
@@ -51,6 +54,9 @@ def get_floors(id: str):
     )
     floors = [{'floor': row[0], 'name': row[1]} for row in cursor.fetchall()]
     conn.close()
+    print(floors)
+    if (floors is None) or (floors.count == 0) or (floors == []):
+        raise HTTPException(status_code=404, detail="Map not found")
     return floors
 
 # Endpoint per ottenere gli archi
@@ -182,7 +188,7 @@ def load_GUI():
 
 @app.get("/travelMap/")
 def travel_map():
-    return HTMLResponse(content=open("static/travel2.ejs").read(), status_code=200)
+    return HTMLResponse(content=open("static/travel3.ejs").read(), status_code=200)
 
 @app.get("/graph/")
 def show_graph(id: str):

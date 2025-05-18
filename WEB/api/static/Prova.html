@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interfaccia Navigazione</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            background-color: #f9f9f9;
+        }
+
+        /* Sidebar */
+        #sidebar {
+            width: 240px;
+            background-color: #e0f7fa;
+            padding: 20px;
+            transition: transform 0.5s ease;
+            overflow: hidden;
+        }
+
+        #sidebar.hidden {
+            transform: translateX(-100%);
+            width: 0;
+            padding: 0;
+        }
+
+        .input-group {
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        button.sb-button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #03a9f4;
+            border: none;
+            color: white;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Main area */
+        #main {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            transition: transform 0.5s ease;
+
+        }
+        /* Bottom toolbar */
+        .bottom-toolbar {
+            position: absolute;
+            bottom: 20px;
+            display: flex;
+            align-items: center;
+            background-color: #64b5f6;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.5s ease;
+        }
+
+        .floor-img {
+            height: 100%;
+            max-height: 80%;
+            transition: transform 0.3s ease;
+            transform: scale(1);
+        }
+
+        .right-toolbar {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            display: flex;
+            flex-direction: column;
+            background-color: #64b5f6;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.5s ease;
+        }
+
+        .bottom-toolbar button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #1976d2;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .bottom-toolbar .step-indicator {
+            padding: 10px 30px;
+            background-color: #1e88e5;
+            color: white;
+            font-weight: bold;
+        }
+
+
+        .right-toolbar button {
+            padding: 12px;
+            border: none;
+            background-color: #11355a;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .right-toolbar .floor-indicator {
+            padding: 12px;
+            border: none;
+            background-color: #0e467e;
+            color: white;
+            font-size: 18px;
+        }
+
+        /* Toggle sidebar */
+        #toggleSidebar {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 6px 12px;
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        #content-wrapper {
+            flex: 1;
+            position: relative;
+            transition: margin-left 0.3s ease;
+            margin-left: 0; 
+          }
+    </style>
+</head>
+
+<body>
+        <div id="sidebar">
+            <div class="input-group">
+                <input id="mapId" type="text" placeholder="Seleziona mappa" />
+            </div>
+            <button class="sb-button" onclick="loadMap()"> Carica </button>
+            <div class="input-group">
+                <input id="" type="text" placeholder="Seleziona partenza" />
+            </div>
+            <div class="input-group">
+                <input id="" type="text" placeholder="Seleziona arrivo" />
+            </div>
+            <button class="sb-button" id="navigate">Naviga</button>
+        </div>
+    
+        <div id="main">
+            <button id="toggleSidebar">☰</button>
+
+            <canvas id="canva" class="floor-img" style="border: 1px solid black;"></canvas>
+            <div id="errorMessage"></div>
+    
+            <!-- Bottom Toolbar -->
+            <div class="bottom-toolbar">
+                <button>&larr;</button>
+                <div class="step-indicator">1/15</div>
+                <button>&rarr;</button>
+            </div>
+    
+            <!-- Right Toolbar -->
+            <div class="right-toolbar">
+                <button id="fub" onclick="floorUp()">&uarr;</button>
+                <div class="floor-indicator">1/15</div>
+                <button id="fdb" onclick="floorDown()">&darr;</button>
+            </div>
+        </div>
+
+
+    <script>
+        // Toggle sidebar
+        const toggleButton = document.getElementById('toggleSidebar');
+        const sidebar = document.getElementById('sidebar');
+        const canvas = document.getElementById('canva');
+        const ctx = canvas.getContext('2d');
+        let cfloor = 2;
+        let currentImage = null;
+        let currentMapData = {
+            points: [],
+            arcs: [],
+            floors: [],
+            currentFloor: null
+        };
+
+        toggleButton.addEventListener('click', () => {
+            sidebar.classList.toggle('hidden');
+        });
+
+        // Naviga
+
+
+        async function loadMap() {
+            console.log("loadingMap")
+            const id = document.getElementById('mapId').value;
+            try {
+                const [floorsRes, pointsRes, arcsRes] = await Promise.all([
+                    fetch(`/floorsJson/?id=${id}`),
+                    fetch(`/pointsJson/?id=${id}`),
+                    fetch(`/arcsJson/?id=${id}`)
+                ]);
+
+                currentMapData.floors = await floorsRes.json();
+                currentMapData.points = await pointsRes.json();
+                currentMapData.arcs = await arcsRes.json();
+
+                //populateFloorSelector();
+                loadFloorData(cfloor);
+            } catch (error) {
+                console.error('Errore nel caricamento:', error);
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        }
+
+        function populateFloorSelector() {
+            currentMapData.currentFloor = currentMapData.floors[0]?.floor;
+        }
+
+        function floorUp() {
+            cfloor += 1;
+            loadFloorData();
+        }
+
+        function floorDown() {
+            cfloor -= 1;
+            loadFloorData();
+        }
+
+        async function loadFloorData() {
+            currentMapData.currentFloor = cfloor;
+            
+            const imageUrl = `/map_image/?id=${document.getElementById('mapId').value}&floor=${cfloor}`;
+            
+            console.log(imageUrl)
+            currentImage = await loadImage(imageUrl);
+            console.log("laoded?")
+            console.log("laoded?")
+            drawImage(currentImage);
+            
+            const filteredPoints = currentMapData.points.filter(p => p.floor == cfloor);
+            const filteredArcs = currentMapData.arcs.filter(a => 
+                a.floorA == cfloor && a.floorB == cfloor
+            );
+            
+            //updateDropdowns(filteredPoints);
+            drawPoints(filteredPoints);
+            drawArcs(filteredArcs, filteredPoints);
+        }
+
+        async function loadImage(url) {
+            console.log("postfetch")
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = url;
+            });
+        }
+
+        function drawImage(img) {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+        }
+
+        function drawPoints(points) {
+            points.forEach(point => {
+                const [x, y] = point.cordinatepunti.split(',').map(coord => parseInt(coord.trim()));
+                ctx.beginPath();
+                ctx.fillStyle = 'red';
+                ctx.arc(x, y, 10, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillText(point.name, x + 12, y - 12);
+            });
+        }
+
+        function drawArcs(arcs, points) {
+            arcs.forEach(arc => {
+                const start = points.find(p => p.label === arc.labelA);
+                const end = points.find(p => p.label === arc.labelB);
+                if (start && end) {
+                    const [x1, y1] = start.cordinatepunti.split(',').map(coord => parseInt(coord.trim()));
+                    const [x2, y2] = end.cordinatepunti.split(',').map(coord => parseInt(coord.trim()));
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.strokeStyle = 'blue';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                }
+            });
+        }
+
+        async function tracePath() {
+            const idMap = document.getElementById('id').value;
+            const start = document.getElementById('partenza').value;
+            const end = document.getElementById('arrivo').value;
+            const floor = currentMapData.currentFloor;
+
+            if (!idMap || !start || !end) {
+                alert('Per favore, inserisci ID mappa e seleziona partenza e arrivo.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/travel/?IDmap=${idMap}&start=${start}&end=${end}`);
+                if (!response.ok) throw new Error('Errore nella richiesta del percorso');
+                const path = await response.json();
+
+                const currentFloorPoints = currentMapData.points.filter(p => p.floor == floor);
+                drawPath(path, currentFloorPoints);
+            } catch (error) {
+                console.error('Errore:', error);
+                alert('Impossibile tracciare il percorso.');
+            }
+        }
+
+        function drawPath(path, points) {
+            clearPath();
+
+            ctx.beginPath();
+            ctx.strokeStyle = 'green';
+            ctx.lineWidth = 5;
+            ctx.lineJoin = 'round';
+
+            for (let i = 0; i < path.length; i++) {
+                const point = points.find(p => p.name === path[i]);
+                if (!point) {
+                    console.error('Punto non trovato:', path[i]);
+                    return;
+                }
+                const [x, y] = point.cordinatepunti.split(',').map(coord => parseInt(coord.trim()));
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+
+            ctx.stroke();
+        }
+
+        function clearPath() {
+            if (currentImage) {
+                drawImage(currentImage);
+                const filteredPoints = currentMapData.points.filter(p => p.floor == currentMapData.currentFloor);
+                const filteredArcs = currentMapData.arcs.filter(a => 
+                    a.floorA == currentMapData.currentFloor && a.floorB == currentMapData.currentFloor
+                );
+                drawPoints(filteredPoints);
+                drawArcs(filteredArcs, filteredPoints);
+            }
+        }
+
+
+    </script>
+</body>
+
+</html>

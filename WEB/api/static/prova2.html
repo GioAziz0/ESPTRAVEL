@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Zoom e Rotazione su Canvas con Toggle</title>
+  <style>
+    body { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    canvas { border: 1px solid #ccc; }
+    button { margin-top: 10px; padding: 8px 16px; font-size: 16px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" width="800" height="600"></canvas>
+  <button id="toggleBtn">Mostra Zoom</button>
+
+  <script>
+    const canvas    = document.getElementById('canvas');
+    const ctx       = canvas.getContext('2d');
+    const toggleBtn = document.getElementById('toggleBtn');
+    let zoomed      = false;
+
+    // Carica l'immagine
+    const img = new Image();
+    img.src = 'Screenshot (30).png'; // Sostituisci con il percorso dell'immagine
+
+    // Definisci i punti della linea
+    const p1 = { x: 100, y: 150 };
+    const p2 = { x: 300, y: 200 };
+
+    img.onload = () => render();
+
+    toggleBtn.addEventListener('click', () => {
+      zoomed = !zoomed;
+      toggleBtn.textContent = zoomed ? 'Mostra Originale' : 'Mostra Zoom';
+      render();
+    });
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (!zoomed) {
+        // Disegno originale
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        // Linea di riferimento
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth   = 2;
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+      } else {
+        // Calcoli angolo e centro
+        const dx    = p2.x - p1.x;
+        const dy    = p2.y - p1.y;
+        const theta = Math.atan2(dy, dx);
+        const midX  = (p1.x + p2.x) / 2;
+        const midY  = (p1.y + p2.y) / 2;
+
+        // Fattore di zoom
+        const length      = Math.hypot(dx, dy);
+        const desiredPx   = canvas.height * 0.5;
+        const scaleFactor = desiredPx / length;
+
+        ctx.save();
+        ctx.translate(canvas.width/2, canvas.height/2);
+        ctx.rotate(-theta + Math.PI/2);
+        ctx.scale(scaleFactor, scaleFactor);
+        ctx.translate(-midX, -midY);
+
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth   = 2 / scaleFactor;
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+
+        ctx.restore();
+      }
+    }
+  </script>
+</body>
+</html>

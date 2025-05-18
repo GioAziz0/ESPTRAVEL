@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Navigazione Intelligente</title>
+    <style>
+        :root {
+            --primary-color: #2A3F54;
+            --secondary-color: #1ABB9C;
+            --accent-color: #34495E;
+            --light-bg: #F8F9FA;
+            --text-dark: #2C3E50;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --sidebar-width: 280px;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            height: 100vh;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        #sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary-color);
+            padding: 1.5rem;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: fixed;
+            height: 100vh;
+            z-index: 1000;
+        }
+
+        #sidebar.hidden {
+            transform: translateX(-100%);
+        }
+
+        .input-group {
+            padding: 0 0.5rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: white;
+            transition: border-color 0.3s ease;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        button.sb-button {
+            width: calc(100% - 1rem);
+            margin: 0 0.5rem;
+            padding: 0.875rem;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        /* Main area */
+        #main {
+            position: relative;
+            height: 100vh;
+            margin-left: var(--sidebar-width);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: calc(100% - var(--sidebar-width));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+        }
+
+        #main.expanded {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        /* Canvas styling */
+        #canva {
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            background: white;
+            max-width: 90%;
+            max-height: 80%;
+        }
+
+        /* Toolbars */
+        .bottom-toolbar {
+            position: absolute;
+            bottom: 2rem;
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(8px);
+            padding: 0.5rem;
+            gap: 0.5rem;
+        }
+
+        .toolbar{
+            visibility: hidden;
+        }
+
+        .toolbar.active{
+            visibility: visible;
+        }
+
+        .right-toolbar {
+            position: absolute;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(8px);
+            overflow: hidden;
+        }
+
+        .bottom-toolbar button,
+        .right-toolbar button {
+            padding: 0.75rem 1.25rem;
+            border: none;
+            background: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 8px;
+        }
+
+        .step-indicator,
+        .floor-indicator {
+            padding: 0.75rem 1.5rem;
+            background: var(--secondary-color);
+            color: white;
+            font-weight: 600;
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        /* Toggle button */
+        #toggleSidebar {
+            position: fixed;
+            top: 1.5rem;
+            left: calc(var(--sidebar-width) + 1.5rem);
+            padding: 0.75rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 2000;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        #toggleSidebar:hover {
+            background: var(--accent-color);
+            transform: scale(1.05);
+        }
+
+        /* Error message */
+        #errorMessage {
+            position: absolute;
+            top: 1rem;
+            padding: 1rem 2rem;
+            background: #e74c3c;
+            color: white;
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        /*
+        @media (max-width: 768px) {
+            #sidebar {
+                width: 100%;
+                transform: translateX(-100%);
+            }
+
+            #sidebar.active {
+                transform: translateX(0);
+            }
+
+            #main {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+            */
+    </style>
+</head>
+
+<body>
+    <div id="sidebar">
+        <div class="input-group">
+            <input id="mapId" type="text" placeholder="ID Mappa" />
+        </div>
+        <button class="sb-button" onclick="loadMap()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"
+                style="margin-right: 8px;">
+                <path
+                    d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                <path
+                    d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z" />
+            </svg>
+            Carica Mappa
+        </button>
+        <div class="input-group">
+            <input id="partenza" type="text" placeholder="Punto di partenza" />
+        </div>
+        <div class="input-group">
+            <input id="arrivo" type="text" placeholder="Punto di arrivo" />
+        </div>
+        <button class="sb-button" id="navigate" onclick="tracePath()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"
+                style="margin-right: 8px;">
+                <path fill-rule="evenodd"
+                    d="M8 0a.5.5 0 0 1 .5.5v.518A7 7 0 0 1 14.982 7.5h.518a.5.5 0 0 1 0 1h-.518A7 7 0 0 1 8.5 14.982v.518a.5.5 0 0 1-1 0v-.518A7 7 0 0 1 1.018 8.5H.5a.5.5 0 0 1 0-1h.518A7 7 0 0 1 7.5 1.018V.5A.5.5 0 0 1 8 0zm-.5 2.02A6 6 0 0 0 2.02 7.5h1.005A5 5 0 0 1 7.5 3.025V2.02zm1 0v1.005A5 5 0 0 1 12.975 7.5h1.005A6 6 0 0 0 8.5 2.02zM12.975 8.5A5 5 0 0 1 8.5 12.975v1.005a6 6 0 0 0 5.48-5.48h-1.005zM7.5 12.975A5 5 0 0 1 3.025 8.5H2.02a6 6 0 0 0 5.48 5.48v-1.005z" />
+            </svg>
+            Avvia Navigazione
+        </button>
+    </div>
+
+    <div id="main">
+        <button id="toggleSidebar">&#9776</button>
+
+        <canvas id="canva" class="floor-img"></canvas>
+        <div id="errorMessage">La mappa selezionata non esista o risulta corrotta</div>
+
+        <div class="bottom-toolbar toolbar">
+            <button onclick="SB()">&larr;</button>
+            <div id="step-label" class="step-indicator">Overview</div>
+            <button onclick="SF()">&rarr;</button>
+        </div>
+
+        <div class="right-toolbar toolbar">
+            <button onclick="floorUp()">&uarr;</button>
+            <div id="floor-label" class="floor-indicator">Piano</div>
+            <button onclick="floorDown()">&darr;</button>
+        </div>
+    </div>
+
+    <script>
+        // Toggle sidebar
+        const toggleButton = document.getElementById('toggleSidebar');
+        const sidebar = document.getElementById('sidebar');
+        const main = document.getElementById('main');
+        const tbs = document.getElementsByClassName('toolbar')
+        
+        toggleButton.addEventListener('click', () => {
+            sidebar.classList.toggle('hidden');
+            main.classList.toggle('expanded');
+            
+            // Aggiorna posizione toggle button
+            if (sidebar.classList.contains('hidden')) {
+                toggleButton.style.left = '1.5rem';
+            } else {
+                toggleButton.style.left = 'calc(var(--sidebar-width) + 1.5rem)';
+            }
+        });
+
+        
+        
+        
+        const canvas = document.getElementById('canva');
+        const ctx = canvas.getContext('2d');
+        let cfloor = 0;
+        let currentImage = null;
+        let currentMapData = {
+            points: [],
+            arcs: [],
+            floors: [],
+            currentFloor: null
+        };
+        let currentFloorPoints;
+        let path;
+        // Naviga
+
+        async function loadMap() {
+            console.log(tbs)
+            clearCanvas()
+            console.log("loadingMap")
+            const id = document.getElementById('mapId').value;
+
+            try {
+                const [floorsRes, pointsRes, arcsRes] = await Promise.all([
+                fetch(`/floorsJson/?id=${id}`),
+                fetch(`/pointsJson/?id=${id}`),
+                fetch(`/arcsJson/?id=${id}`)
+                ]);
+                
+                
+                currentMapData.floors = await floorsRes.json();
+                currentMapData.points = await pointsRes.json();
+                currentMapData.arcs = await arcsRes.json();
+
+                if (!floorsRes.ok) {
+                    throw new Error('Errore nel caricamento dei dati dei piani');
+                }
+                if (!pointsRes.ok) {
+                    throw new Error('Errore nel caricamento dei dati dei punti');
+                }
+                if (!arcsRes.ok) {
+                    throw new Error('Errore nel caricamento dei dati degli archi');
+                }
+                
+                //populateFloorSelector();
+                loadFloorData(cfloor);
+
+                Array.from(tbs).forEach(element => {
+                        element.classList.add('active');
+                  });
+
+                document.getElementById('errorMessage').style.display = 'none';
+                  
+            } catch (error) {
+                Array.from(tbs).forEach(element => {
+                    element.classList.remove('active');
+              });
+                console.log(error)
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        }
+
+        function populateFloorSelector() {
+            currentMapData.currentFloor = currentMapData.floors[0]?.floor;
+        }
+
+        function floorUp() {
+            if (cfloor < currentMapData.floors.length)
+            {
+                cfloor += 1;
+                loadFloorData();
+                console.log(cfloor)
+                console.log(currentMapData.floors[cfloor].floor)
+                document.getElementById("floor-label").textContent = currentMapData.floors[cfloor].floor
+            }
+        }
+
+        function floorDown() {
+            if (cfloor > 0)
+            {
+                cfloor -= 1;
+                loadFloorData();
+                console.log(cfloor)
+                console.log(currentMapData.floors[cfloor].floor)
+                document.getElementById("floor-label").textContent = currentMapData.floors[cfloor].floor
+            }
+        }
+
+        async function loadFloorData() {
+            currentFloorPoints = null;
+            path = null;
+            currentMapData.currentFloor = currentMapData.floors[cfloor].floor;
+
+            console.log(currentMapData.floors)
+            const imageUrl = `/map_image/?id=${document.getElementById('mapId').value}&floor=${currentMapData.floors[cfloor].floor}`;
+
+            console.log(imageUrl)
+            currentImage = await loadImage(imageUrl);
+            console.log("laoded?")
+            console.log("laoded?")
+            drawImage(currentImage);
+
+            const filteredPoints = currentMapData.points.filter(p => p.floor == currentMapData.floors[cfloor].floor);
+            const filteredArcs = currentMapData.arcs.filter(a =>
+                a.floorA == currentMapData.floors[cfloor].floor && a.floorB == currentMapData.floors[cfloor].floor
+            );
+
+            //updateDropdowns(filteredPoints);
+
+            console.log(filteredPoints)
+
+            drawPoints(filteredPoints);
+            drawArcs(filteredArcs, filteredPoints);
+        }
+
+        async function loadImage(url) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = url;
+            });
+        }
+
+        function drawImage(img) {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+        }
+
+        function drawPoints(points) {
+            points.forEach(point => {
+                const [x, y] = point.cordinatepunti.split(',').map(coord => parseInt(coord.trim()));
+                ctx.beginPath();
+                ctx.fillStyle = 'red';
+                ctx.arc(x, y, 10, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillText(point.name, x + 12, y - 12);
+            });
+        }
+
+        function drawArcs(arcs, points) {
+            arcs.forEach(arc => {
+                const start = points.find(p => p.label === arc.labelA);
+                const end = points.find(p => p.label === arc.labelB);
+                if (start && end) {
+                    const [x1, y1] = start.cordinatepunti.split(',').map(coord => parseInt(coord.trim()));
+                    const [x2, y2] = end.cordinatepunti.split(',').map(coord => parseInt(coord.trim()));
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.strokeStyle = 'blue';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                    console.log("disegnato!")
+                }
+            });
+        }
+
+        
+
+
+        async function tracePath() {
+            const idMap = document.getElementById('mapId').value;
+            const start = document.getElementById('partenza').value;
+            const end = document.getElementById('arrivo').value;
+            const floor = currentMapData.currentFloor;
+
+            if (!idMap || !start || !end) {
+                alert('Per favore, inserisci ID mappa e seleziona partenza e arrivo.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/travel/?IDmap=${idMap}&start=${start}&end=${end}`);
+                if (!response.ok) throw new Error('Errore nella richiesta del percorso');
+                path = await response.json();
+
+                currentFloorPoints = currentMapData.points.filter(p => p.floor == floor);
+                //drawPath(path, currentFloorPoints);
+                Step(0)
+                setCS(0);
+            } catch (error) {
+                console.error('Errore:', error);
+                alert('Impossibile tracciare il percorso.');
+            }
+        }
+
+        function drawPath(path, points) {
+
+            ctx.beginPath();
+            ctx.strokeStyle = 'green';
+            ctx.lineWidth = 5;
+            ctx.lineJoin = 'round';
+
+            for (let i = 0; i < path.length; i++) {
+                const point = points.find(p => p.name === path[i]);
+                if (!point) {
+                    console.error('Punto non trovato:', path[i]);
+                    return;
+                }
+                const [x, y] = point.cordinatepunti.split(',').map(coord => parseInt(coord.trim()));
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+
+            ctx.stroke();
+        }
+
+        function clearCanvas() {
+            // Reset transform e cancella
+            if (ctx.resetTransform) ctx.resetTransform();
+            else ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        /*
+        function clearPath() {
+            if (currentImage) {
+                drawImage(currentImage);
+                const filteredPoints = currentMapData.points.filter(p => p.floor == currentMapData.currentFloor);
+                const filteredArcs = currentMapData.arcs.filter(a =>
+                    a.floorA == currentMapData.currentFloor && a.floorB == currentMapData.currentFloor
+                );
+                drawPoints(filteredPoints);
+                drawArcs(filteredArcs, filteredPoints);
+            }
+        } */
+
+        let currentStep = 0;
+
+        function setCS(i) {
+            if (i>=0 && i<path.length)
+                currentStep = i;
+            if (currentStep == 0){
+                document.getElementById("step-label").textContent = "Overview";
+            } else{
+                document.getElementById("step-label").textContent = currentStep;
+            }
+        }
+
+        function SF() {
+            if (currentStep < path.length - 1) {
+                setCS(currentStep + 1);
+                Step(currentStep);
+            }
+        }
+
+
+        function SB() {
+            if (currentStep >= 0) {
+                setCS(currentStep - 1);
+                Step(currentStep);
+            }
+        }
+
+        function Step(i) {
+            // Ripristina e ridisegna base
+            clearCanvas();
+            drawImage(currentImage);
+            drawPoints(currentFloorPoints);
+            drawPath(path, currentFloorPoints);
+        
+            // Trova due punti consecutivi
+            const name1 = path[i-1], name2 = path[i];
+            const p1 = currentFloorPoints.find(pt => pt.name === name1);
+            const p2 = currentFloorPoints.find(pt => pt.name === name2);
+            if (!p1 || !p2) return;
+        
+            // Coordinate
+            const [x1, y1] = p1.cordinatepunti.split(',').map(n => parseInt(n));
+            const [x2, y2] = p2.cordinatepunti.split(',').map(n => parseInt(n));
+        
+            // Calcola angolo, centro e zoom
+            const dx = x2 - x1, dy = y2 - y1;
+            const theta = Math.atan2(dy, dx);
+            const midX = (x1 + x2) / 2, midY = (y1 + y2) / 2;
+            const length = Math.hypot(dx, dy);
+            const desiredPx = canvas.height * 0.5;
+            const scaleFactor = desiredPx / length;
+        
+            // Applica transform e ridisegna segmento
+            ctx.save();
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+            ctx.rotate((-theta + Math.PI / 2) + Math.PI);
+            ctx.scale(scaleFactor, scaleFactor);
+            ctx.translate(-midX, -midY);
+    
+            ctx.drawImage(currentImage, 0, 0);
+            drawPoints(currentFloorPoints);
+            drawPath(path, currentFloorPoints);
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth   = 10;
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+            ctx.restore();
+          }
+
+    </script>
+</body>
+
+</html>
