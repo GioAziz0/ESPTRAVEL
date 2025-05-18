@@ -25,28 +25,28 @@ namespace Mappa
 
         private void ConfigureListView()
         {
-            listView1.View = View.Details;
-            listView1.FullRowSelect = true;
-            listView1.GridLines = true;
-            listView1.Columns.Add("Livello", 100);
-            listView1.Columns.Add("Nome", 200);
+            listViewPiani.View = View.Details;
+            listViewPiani.FullRowSelect = true;
+            listViewPiani.GridLines = true;
+            listViewPiani.Columns.Add("Livello", 100);
+            listViewPiani.Columns.Add("Nome", 200);
 
-            listView2.View = View.Details;
-            listView2.FullRowSelect = true;
-            listView2.GridLines = true;
-            listView2.Columns.Add("Livello", 100);
-            listView2.Columns.Add("Nome", 200);
+            listViewCollegaPiani.View = View.Details;
+            listViewCollegaPiani.FullRowSelect = true;
+            listViewCollegaPiani.GridLines = true;
+            listViewCollegaPiani.Columns.Add("Livello", 75);
+            listViewCollegaPiani.Columns.Add("Nome", 150);
         }
 
         private void RefreshPianiList()
         {
-            listView1.Items.Clear();
+            listViewPiani.Items.Clear();
             foreach (var piano in _piani.OrderBy(p => p.Level))
             {
                 var item = new ListViewItem(piano.Level.ToString());
                 item.SubItems.Add(piano.Name);
                 item.Tag = piano;
-                listView1.Items.Add(item);
+                listViewPiani.Items.Add(item);
             }
         }
 
@@ -65,13 +65,13 @@ namespace Mappa
 
         private void aPToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listView1.SelectedItems.Count == 0)
+            if (listViewPiani.SelectedItems.Count == 0)
             {
                 MessageBox.Show("Selezionare un piano", "Attenzione", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            var selectedItem = listView1.SelectedItems[0];
+            var selectedItem = listViewPiani.SelectedItems[0];
             if (!(selectedItem.Tag is Piano pianoSelezionato)) return;
 
             var otherLevels = _piani.Where(p => p.Level != pianoSelezionato.Level)
@@ -110,7 +110,7 @@ namespace Mappa
                         arcs = piano.CreaSegmenti(piano.Segmenti),
                         CollegaPunti = piano.CollegaPunti
                     }));
-                    
+
 
                     var jsonString = JsonConvert.SerializeObject(listaPiani, Formatting.Indented);
                     File.WriteAllText(saveFileDialog.FileName, jsonString);
@@ -143,7 +143,7 @@ namespace Mappa
                         image = piano.ConvertImageToBase64(piano.Img),
                         Name = piano.Name,
                         Level = piano.Level,
-                        CollegaPunti = piano.CollegaPunti   
+                        CollegaPunti = piano.CollegaPunti
 
                     }));
 
@@ -203,69 +203,28 @@ namespace Mappa
         {
             try
             {
-                if (listView2.Items.Count < 2)
+                if (listViewCollegaPiani.Items.Count < 2)
                 {
-                    if (listView1.SelectedItems.Count == 0)
+                    if (listViewPiani.SelectedItems.Count == 0)
                     {
-                        MessageBox.Show("Selezionare un piano", "Attenzione", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
+                        throw new Exception("Selezionare un piano");
                     }
 
-                    var selectedItem = listView1.SelectedItems[0];
+                    var selectedItem = listViewPiani.SelectedItems[0];
                     if (!(selectedItem.Tag is Piano pianoSelezionato)) return;
                     Piano piano = (Piano)selectedItem.Tag;
 
                     var item = new ListViewItem(piano.Level.ToString());
                     item.SubItems.Add(piano.Name);
                     item.Tag = piano;
-                    listView2.Items.Add(item);
-                    MessageBox.Show("ciao");
+                    listViewCollegaPiani.Items.Add(item);
                 }
-                else MessageBox.Show("Sono già stati inseriti due piani");
+                else throw new Exception("Sono già stati inseriti due piani");
             }
             catch (Exception ex)
             {
-
-            }
-        }
-
-        public void ApriConfigurazione(object sender, EventArgs e)
-        {
-            try
-            {
-                if (listView2.Items.Count == 2)
-                {
-                    Piano piano1 = listView2.Items[0].Tag as Piano;
-                    Piano piano2 = listView2.Items[1].Tag as Piano;
-
-                    using (Configurazione form = new Configurazione(piano1, piano2))
-                    {
-                        if (form.ShowDialog() == DialogResult.OK)
-                        {
-                            var newPiano1 = form.piano1;
-                            var newPiano2 = form.piano2;
-
-                            foreach (ListViewItem item in listView1.Items)
-                            {
-                                Piano p = item.Tag as Piano;
-
-                                int index = _piani.FindIndex(x => x.Level == p.Level);
-                                if (index != -1)
-                                {
-                                    _piani[index] = p; // sostituisce l'elemento trovato con 'p'
-                                }
-                            }
-
-                            RefreshPianiList();
-                        }
-                        listView2.Items.Clear();
-                    }
-                }
-                else MessageBox.Show("Inserire due piani prima di aprire la configurazione");
-            }
-            catch (Exception ex)
-            {
-                HandleError("Errore nell'apertura della configurazione", ex);
+                MessageBox.Show($"Errore nell'aggiunta di un piani.{ex.Message}!!!");
+                return;
             }
         }
 
@@ -279,5 +238,90 @@ namespace Mappa
             pnlCollegaPiani.Visible = true;
         }
 
+        private void btnChiudiCollega_Click(object sender, EventArgs e)
+        {
+            pnlCollegaPiani.Visible = false;
+        }
+
+        private void ApriCollega(object sender, EventArgs e)
+        {
+            try
+            {
+                if (listViewCollegaPiani.Items.Count == 2)
+                {
+                    Piano piano1 = listViewCollegaPiani.Items[0].Tag as Piano;
+                    Piano piano2 = listViewCollegaPiani.Items[1].Tag as Piano;
+
+                    using (Configurazione form = new Configurazione(piano1, piano2))
+                    {
+                        if (form.ShowDialog() == DialogResult.OK)
+                        {
+                            var newPiano1 = form.piano1;
+                            var newPiano2 = form.piano2;
+
+                            foreach (ListViewItem item in listViewPiani.Items)
+                            {
+                                Piano p = item.Tag as Piano;
+
+                                int index = _piani.FindIndex(x => x.Level == p.Level);
+                                if (index != -1)
+                                {
+                                    _piani[index] = p; // sostituisce l'elemento trovato con 'p'
+                                }
+                            }
+
+                            RefreshPianiList();
+                        }
+                        listViewCollegaPiani.Items.Clear();
+                    }
+                }
+                else MessageBox.Show("Inserire due piani prima di aprire la configurazione");
+            }
+            catch (Exception ex)
+            {
+                HandleError("Errore nell'apertura della configurazione", ex);
+            }
+        }
+
+        private void btnRimuoviCollega_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (listViewCollegaPiani.SelectedItems.Count > 0)
+                {
+                    // Prendi il primo elemento selezionato
+                    var item = listViewCollegaPiani.SelectedItems[0];
+
+                    // Eventualmente puoi usare item.Tag se ci hai messo un oggetto
+                    listViewCollegaPiani.Items.Remove(item);
+                }
+                else
+                {
+                    throw new Exception("Seleziona un elemento da rimuovere!!!");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Errore nella rimozione del piano. {ex.Message}!!!");
+            }
+        }
+
+        private void eliminaPianoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (listViewPiani.SelectedItems.Count > 0)
+                {
+                    ListViewItem elemento = listViewPiani.SelectedItems[0];
+                    listViewPiani.Items.Remove(elemento);
+                }
+                else
+                    throw new Exception("Nessun elemento selezionato");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Errore nella rimozione del punto.{ex.Message}!!!");
+            }
+        }
     }
 }

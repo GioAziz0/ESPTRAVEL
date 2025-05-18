@@ -49,6 +49,9 @@
             btnSegmentoMode = new RadioButton();
             txtNomePiano = new TextBox();
             listBoxSegmenti = new ListBox();
+            label2 = new Label();
+            btnModificaNomePunto = new Button();
+            label3 = new Label();
             menuStrip1.SuspendLayout();
             pnlSegmenti.SuspendLayout();
             panel1.SuspendLayout();
@@ -56,38 +59,40 @@
             // 
             // menuStrip1
             // 
+            menuStrip1.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             menuStrip1.Items.AddRange(new ToolStripItem[] { caricaToolStripMenuItem, rimuoviToolStripMenuItem, modalitaToolStripMenuItem, saveConfigToolStripMenuItem, cancellaConfiguToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(984, 24);
+            menuStrip1.Size = new Size(984, 29);
             menuStrip1.TabIndex = 2;
             menuStrip1.Text = "menuStrip1";
             // 
             // caricaToolStripMenuItem
             // 
             caricaToolStripMenuItem.Name = "caricaToolStripMenuItem";
-            caricaToolStripMenuItem.Size = new Size(52, 20);
-            caricaToolStripMenuItem.Text = "Carica";
+            caricaToolStripMenuItem.Size = new Size(143, 25);
+            caricaToolStripMenuItem.Text = "Carica Immagine";
             caricaToolStripMenuItem.Click += caricaToolStripMenuItem_Click;
             // 
             // rimuoviToolStripMenuItem
             // 
             rimuoviToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { rimuoviPuntoToolStripMenuItem, rimuoviSegmentoToolStripMenuItem });
             rimuoviToolStripMenuItem.Name = "rimuoviToolStripMenuItem";
-            rimuoviToolStripMenuItem.Size = new Size(63, 20);
+            rimuoviToolStripMenuItem.Size = new Size(81, 25);
             rimuoviToolStripMenuItem.Text = "Rimuovi";
+            rimuoviToolStripMenuItem.Click += rimuoviToolStripMenuItem_Click;
             // 
             // rimuoviPuntoToolStripMenuItem
             // 
             rimuoviPuntoToolStripMenuItem.Name = "rimuoviPuntoToolStripMenuItem";
-            rimuoviPuntoToolStripMenuItem.Size = new Size(175, 22);
+            rimuoviPuntoToolStripMenuItem.Size = new Size(219, 26);
             rimuoviPuntoToolStripMenuItem.Text = "Rimuovi Punto";
             rimuoviPuntoToolStripMenuItem.Click += rimuoviPuntoToolStripMenuItem_Click;
             // 
             // rimuoviSegmentoToolStripMenuItem
             // 
             rimuoviSegmentoToolStripMenuItem.Name = "rimuoviSegmentoToolStripMenuItem";
-            rimuoviSegmentoToolStripMenuItem.Size = new Size(175, 22);
+            rimuoviSegmentoToolStripMenuItem.Size = new Size(219, 26);
             rimuoviSegmentoToolStripMenuItem.Text = "Rimuovi Segmento";
             rimuoviSegmentoToolStripMenuItem.Click += rimuoviSegmentoToolStripMenuItem_Click;
             // 
@@ -95,33 +100,33 @@
             // 
             modalitaToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { segmentoToolStripMenuItem, puntoToolStripMenuItem });
             modalitaToolStripMenuItem.Name = "modalitaToolStripMenuItem";
-            modalitaToolStripMenuItem.Size = new Size(66, 20);
+            modalitaToolStripMenuItem.Size = new Size(87, 25);
             modalitaToolStripMenuItem.Text = "Modalita";
             // 
             // segmentoToolStripMenuItem
             // 
             segmentoToolStripMenuItem.BackColor = SystemColors.ButtonHighlight;
             segmentoToolStripMenuItem.Name = "segmentoToolStripMenuItem";
-            segmentoToolStripMenuItem.Size = new Size(127, 22);
+            segmentoToolStripMenuItem.Size = new Size(154, 26);
             segmentoToolStripMenuItem.Text = "segmento";
             // 
             // puntoToolStripMenuItem
             // 
             puntoToolStripMenuItem.Name = "puntoToolStripMenuItem";
-            puntoToolStripMenuItem.Size = new Size(127, 22);
+            puntoToolStripMenuItem.Size = new Size(154, 26);
             puntoToolStripMenuItem.Text = "punto";
             // 
             // saveConfigToolStripMenuItem
             // 
             saveConfigToolStripMenuItem.Name = "saveConfigToolStripMenuItem";
-            saveConfigToolStripMenuItem.Size = new Size(130, 20);
+            saveConfigToolStripMenuItem.Size = new Size(174, 25);
             saveConfigToolStripMenuItem.Text = "Salva Configurazione";
             saveConfigToolStripMenuItem.Click += salvaConfigurazioneToolStripMenuItem_Click;
             // 
             // cancellaConfiguToolStripMenuItem
             // 
             cancellaConfiguToolStripMenuItem.Name = "cancellaConfiguToolStripMenuItem";
-            cancellaConfiguToolStripMenuItem.Size = new Size(149, 20);
+            cancellaConfiguToolStripMenuItem.Size = new Size(199, 25);
             cancellaConfiguToolStripMenuItem.Text = "Cancellla configurazione";
             cancellaConfiguToolStripMenuItem.Click += cancellaConfiguToolStripMenuItem_Click;
             // 
@@ -129,9 +134,9 @@
             // 
             listBoxPunti.FormattingEnabled = true;
             listBoxPunti.ItemHeight = 15;
-            listBoxPunti.Location = new Point(12, 37);
+            listBoxPunti.Location = new Point(12, 63);
             listBoxPunti.Name = "listBoxPunti";
-            listBoxPunti.Size = new Size(197, 424);
+            listBoxPunti.Size = new Size(197, 349);
             listBoxPunti.TabIndex = 3;
             listBoxPunti.SelectedIndexChanged += listPoints_SelectedIndexChanged;
             // 
@@ -151,9 +156,9 @@
             pnlSegmenti.Controls.Add(txtNomePiano);
             pnlSegmenti.Controls.Add(listBoxSegmenti);
             pnlSegmenti.Controls.Add(listBoxPuntiSeg);
-            pnlSegmenti.Location = new Point(841, 37);
+            pnlSegmenti.Location = new Point(841, 35);
             pnlSegmenti.Name = "pnlSegmenti";
-            pnlSegmenti.Size = new Size(131, 512);
+            pnlSegmenti.Size = new Size(131, 517);
             pnlSegmenti.TabIndex = 6;
             // 
             // txtLevel
@@ -234,11 +239,45 @@
             listBoxSegmenti.Size = new Size(124, 274);
             listBoxSegmenti.TabIndex = 6;
             // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label2.Location = new Point(12, 35);
+            label2.Name = "label2";
+            label2.Size = new Size(105, 25);
+            label2.TabIndex = 7;
+            label2.Text = "Lista punti";
+            // 
+            // btnModificaNomePunto
+            // 
+            btnModificaNomePunto.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnModificaNomePunto.Location = new Point(12, 477);
+            btnModificaNomePunto.Name = "btnModificaNomePunto";
+            btnModificaNomePunto.Size = new Size(197, 37);
+            btnModificaNomePunto.TabIndex = 8;
+            btnModificaNomePunto.Text = "Modifica Nome";
+            btnModificaNomePunto.UseVisualStyleBackColor = true;
+            btnModificaNomePunto.Click += btnModificaNomePunto_Click;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label3.Location = new Point(12, 437);
+            label3.Name = "label3";
+            label3.Size = new Size(206, 25);
+            label3.TabIndex = 9;
+            label3.Text = "Modifica nome punto";
+            // 
             // Mappatura
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(984, 561);
+            Controls.Add(label3);
+            Controls.Add(btnModificaNomePunto);
+            Controls.Add(label2);
             Controls.Add(pnlSegmenti);
             Controls.Add(listBoxPunti);
             Controls.Add(menuStrip1);
@@ -281,5 +320,8 @@
         private Panel panel1;
         private Label label1;
         private CheckBox chSegmentiContinui;
+        private Label label2;
+        private Button btnModificaNomePunto;
+        private Label label3;
     }
 }

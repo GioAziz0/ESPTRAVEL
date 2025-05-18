@@ -66,8 +66,8 @@ namespace Mappa
 
         private void CaricaPiano()
         {
-            img = new Bitmap(piano.Img);
             immagineOriginale = piano.Img;
+            img = new Bitmap(immagineOriginale);
 
             int altezza = (int)(ClientSize.Height * 0.9);
             int larghezza = (img.Width * altezza) / img.Height;
@@ -120,9 +120,9 @@ namespace Mappa
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
                 string imgPath = fileDialog.FileName;
-                URL = imgPath;
-                img = Image.FromFile(imgPath);
+                URL = imgPath;             
                 immagineOriginale = Image.FromFile(imgPath);
+                img = new Bitmap(immagineOriginale);
 
                 int altezza = (int)(ClientSize.Height * 0.9);
                 int larghezza = (img.Width * altezza) / img.Height;
@@ -254,7 +254,7 @@ namespace Mappa
             {
                 int pointSize = 70; // Dimensione del punto da disegnare
                 gpr.FillRectangle(colore, x_ - pointSize / 2, y_ - pointSize / 2, pointSize, pointSize);
-                Font font = new Font("Arial", 40, FontStyle.Bold);
+                Font font = new Font("Arial", 60, FontStyle.Bold);
                 Brush brush = Brushes.Black;
                 gpr.DrawString(nome, font, brush, new PointF(x_, y_ - 10));
             }
@@ -268,7 +268,7 @@ namespace Mappa
                 {
                     Punto punto1 = listBoxPuntiSeg.Items[0] as Punto;
                     Punto punto2 = listBoxPuntiSeg.Items[1] as Punto;
-                    Pen pen = new Pen(Color.FromArgb(0, 0, 255), 3);  // Dimensione penna adatta
+                    Pen pen = new Pen(Color.FromArgb(0, 0, 255), 10);  // Dimensione penna adatta
                     g.DrawLine(pen, punto1.CordinatePunti, punto2.CordinatePunti);
                 }
             }
@@ -303,7 +303,7 @@ namespace Mappa
                 // Disegna ogni punto dalla lista
                 foreach (Segmento segmento in listaSegmenti)
                 {
-                    Pen pen = new Pen(Color.FromArgb(0, 0, 255), 3);  // Dimensione penna adatta
+                    Pen pen = new Pen(Color.FromArgb(0, 0, 255), 10);  // Dimensione penna adatta
                     gpr.DrawLine(pen, segmento.punto1.CordinatePunti, segmento.punto2.CordinatePunti);
                 }
             }
@@ -366,6 +366,8 @@ namespace Mappa
                 pnlSegmenti.Location = new Point(ClientSize.Width - 160, 37);
 
                 DisegnaPunti(); // Ridisegna i punti quando la finestra viene ridimensionata
+
+                pictureBox.Image = img;
             }
             catch { }
         }
@@ -397,6 +399,8 @@ namespace Mappa
 
                     DisegnaPunti();
                     DisegnaSegmenti();
+
+                    pictureBox.Image = img;
                 }
                 else
                 {
@@ -424,6 +428,8 @@ namespace Mappa
 
                     DisegnaPunti();
                     DisegnaSegmenti();
+
+                    pictureBox.Image = img;
                 }
                 else
                 {
@@ -457,7 +463,7 @@ namespace Mappa
                             this.DialogResult = DialogResult.OK;
                             this.Close();
                         }
-                        else throw new Exception("Piano già utlizzato cambiare il valore.");  
+                        else throw new Exception("Piano già utlizzato cambiare il valore.");
                     }
                     else throw new Exception("INserisci il livello del piano");
                 }
@@ -520,6 +526,76 @@ namespace Mappa
                 listBoxPuntiSeg.Items.Clear();
                 refresh();
             }
+        }
+
+        private void btnModificaNomePunto_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (listBoxPunti.SelectedItems.Count > 0)
+                {
+                    string nomePunto = Microsoft.VisualBasic.Interaction.InputBox("Inserisci il nuovo nome del punto:", "Crea Nuova Nome", "Nome Punto");
+
+                    if (string.IsNullOrWhiteSpace(nomePunto))
+                        return;
+
+                    bool giaEsistente = listaPunti.Any(x => x.Name == nomePunto);
+
+                    if (!giaEsistente)
+                    {
+                        Punto vecchioPunto = listBoxPunti.SelectedItem as Punto;
+                        Punto nuovoPunto = new Punto(vecchioPunto.CordinatePunti, nomePunto);
+
+                        listaPunti.Remove(vecchioPunto);
+                        listaPunti.Add(nuovoPunto);
+
+                        for (int i = 0; i < listaSegmenti.Count; i++)
+                        {
+                            Segmento seg = listaSegmenti[i];
+                            if (seg.punto1 == vecchioPunto || seg.punto2 == vecchioPunto)
+                            {
+                                Punto punto1 = (seg.punto1 == vecchioPunto) ? nuovoPunto : seg.punto1;
+                                Punto punto2 = (seg.punto2 == vecchioPunto) ? nuovoPunto : seg.punto2;
+                                Segmento nuovoSegmento = new Segmento(punto1, punto2);
+
+                                listaSegmenti[i] = nuovoSegmento;
+                            }
+                        }
+
+                        listBoxPunti.Items.Clear();
+                        listBoxSegmenti.Items.Clear();
+
+                        foreach (var punto in listaPunti)
+                        {
+                            listBoxPunti.Items.Add(punto);
+                        }
+
+                        foreach (var segmento in listaSegmenti)
+                        {
+                            listBoxSegmenti.Items.Add(segmento);
+                        }
+
+                        Bitmap immagineOrg = new Bitmap(immagineOriginale);
+                        img = immagineOrg;
+
+                        DisegnaPunti();
+                        DisegnaSegmenti();
+                        pictureBox.Image = img;
+                    }
+                    else throw new Exception("Nome del punto gia usato");
+                }
+                else
+                    throw new Exception("Nessun punto selezionato");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Errore nella modifica del nome del punto.{ex.Message}");
+            }
+        }
+
+        private void rimuoviToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

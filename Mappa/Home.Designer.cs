@@ -35,17 +35,22 @@
             aggiungiPianoToolStripMenuItem = new ToolStripMenuItem();
             eliminaPianoToolStripMenuItem = new ToolStripMenuItem();
             aPToolStripMenuItem = new ToolStripMenuItem();
+            apriCollegaPianiToolStripMenuItem = new ToolStripMenuItem();
             salvaJsonToolStripMenuItem = new ToolStripMenuItem();
             localeToolStripMenuItem = new ToolStripMenuItem();
             cluodToolStripMenuItem = new ToolStripMenuItem();
             entrambiToolStripMenuItem = new ToolStripMenuItem();
             apriJsonToolStripMenuItem = new ToolStripMenuItem();
-            apriCollegaPianiToolStripMenuItem = new ToolStripMenuItem();
-            listView1 = new ListView();
+            listViewPiani = new ListView();
             pnlCollegaPiani = new Panel();
-            btnAggiugi = new Button();
-            btnVaiConfigurazione = new Button();
-            listView2 = new ListView();
+            btnChiudiCollega = new Button();
+            btnRimuoviCollega = new Button();
+            label2 = new Label();
+            label1 = new Label();
+            btnAggiugiCollega = new Button();
+            btnVaiCollega = new Button();
+            listViewCollegaPiani = new ListView();
+            label3 = new Label();
             menuStrip1.SuspendLayout();
             pnlCollegaPiani.SuspendLayout();
             SuspendLayout();
@@ -59,130 +64,192 @@
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { aggiungiPianoToolStripMenuItem, eliminaPianoToolStripMenuItem, aPToolStripMenuItem, salvaJsonToolStripMenuItem, apriJsonToolStripMenuItem, apriCollegaPianiToolStripMenuItem });
+            menuStrip1.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            menuStrip1.Items.AddRange(new ToolStripItem[] { aggiungiPianoToolStripMenuItem, eliminaPianoToolStripMenuItem, aPToolStripMenuItem, apriCollegaPianiToolStripMenuItem, salvaJsonToolStripMenuItem, apriJsonToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(800, 24);
+            menuStrip1.Size = new Size(800, 29);
             menuStrip1.TabIndex = 1;
             menuStrip1.Text = "menuStrip1";
             // 
             // aggiungiPianoToolStripMenuItem
             // 
             aggiungiPianoToolStripMenuItem.Name = "aggiungiPianoToolStripMenuItem";
-            aggiungiPianoToolStripMenuItem.Size = new Size(101, 20);
+            aggiungiPianoToolStripMenuItem.Size = new Size(134, 25);
             aggiungiPianoToolStripMenuItem.Text = "Aggiungi Piano";
             aggiungiPianoToolStripMenuItem.Click += aggiungiPianoToolStripMenuItem_Click;
             // 
             // eliminaPianoToolStripMenuItem
             // 
             eliminaPianoToolStripMenuItem.Name = "eliminaPianoToolStripMenuItem";
-            eliminaPianoToolStripMenuItem.Size = new Size(91, 20);
+            eliminaPianoToolStripMenuItem.Size = new Size(123, 25);
             eliminaPianoToolStripMenuItem.Text = "Elimina Piano";
+            eliminaPianoToolStripMenuItem.Click += eliminaPianoToolStripMenuItem_Click;
             // 
             // aPToolStripMenuItem
             // 
             aPToolStripMenuItem.Name = "aPToolStripMenuItem";
-            aPToolStripMenuItem.Size = new Size(74, 20);
+            aPToolStripMenuItem.Size = new Size(99, 25);
             aPToolStripMenuItem.Text = "Apri Piano";
             aPToolStripMenuItem.Click += aPToolStripMenuItem_Click;
+            // 
+            // apriCollegaPianiToolStripMenuItem
+            // 
+            apriCollegaPianiToolStripMenuItem.Name = "apriCollegaPianiToolStripMenuItem";
+            apriCollegaPianiToolStripMenuItem.Size = new Size(154, 25);
+            apriCollegaPianiToolStripMenuItem.Text = "Apri Collega Piani";
+            apriCollegaPianiToolStripMenuItem.Click += apriCollegaPianiToolStripMenuItem_Click;
             // 
             // salvaJsonToolStripMenuItem
             // 
             salvaJsonToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { localeToolStripMenuItem, cluodToolStripMenuItem, entrambiToolStripMenuItem });
             salvaJsonToolStripMenuItem.Name = "salvaJsonToolStripMenuItem";
-            salvaJsonToolStripMenuItem.Size = new Size(72, 20);
+            salvaJsonToolStripMenuItem.Size = new Size(96, 25);
             salvaJsonToolStripMenuItem.Text = "Salva Json";
             // 
             // localeToolStripMenuItem
             // 
             localeToolStripMenuItem.Name = "localeToolStripMenuItem";
-            localeToolStripMenuItem.Size = new Size(122, 22);
+            localeToolStripMenuItem.Size = new Size(146, 26);
             localeToolStripMenuItem.Text = "Locale";
             localeToolStripMenuItem.Click += salvaJsonLocale;
             // 
             // cluodToolStripMenuItem
             // 
             cluodToolStripMenuItem.Name = "cluodToolStripMenuItem";
-            cluodToolStripMenuItem.Size = new Size(122, 22);
+            cluodToolStripMenuItem.Size = new Size(146, 26);
             cluodToolStripMenuItem.Text = "Cluod";
             cluodToolStripMenuItem.Click += SalvaJsonCluod;
             // 
             // entrambiToolStripMenuItem
             // 
             entrambiToolStripMenuItem.Name = "entrambiToolStripMenuItem";
-            entrambiToolStripMenuItem.Size = new Size(122, 22);
+            entrambiToolStripMenuItem.Size = new Size(146, 26);
             entrambiToolStripMenuItem.Text = "Entrambi";
             // 
             // apriJsonToolStripMenuItem
             // 
             apriJsonToolStripMenuItem.Name = "apriJsonToolStripMenuItem";
-            apriJsonToolStripMenuItem.Size = new Size(67, 20);
+            apriJsonToolStripMenuItem.Size = new Size(88, 25);
             apriJsonToolStripMenuItem.Text = "Apri Json";
             apriJsonToolStripMenuItem.Click += apriJsonToolStripMenuItem_Click;
             // 
-            // apriCollegaPianiToolStripMenuItem
+            // listViewPiani
             // 
-            apriCollegaPianiToolStripMenuItem.Name = "apriCollegaPianiToolStripMenuItem";
-            apriCollegaPianiToolStripMenuItem.Size = new Size(113, 20);
-            apriCollegaPianiToolStripMenuItem.Text = "Apri Collega Piani";
-            apriCollegaPianiToolStripMenuItem.Click += apriCollegaPianiToolStripMenuItem_Click;
-            // 
-            // listView1
-            // 
-            listView1.HeaderStyle = ColumnHeaderStyle.Nonclickable;
-            listView1.Location = new Point(12, 27);
-            listView1.Name = "listView1";
-            listView1.Size = new Size(300, 375);
-            listView1.TabIndex = 2;
-            listView1.UseCompatibleStateImageBehavior = false;
+            listViewPiani.HeaderStyle = ColumnHeaderStyle.Nonclickable;
+            listViewPiani.Location = new Point(12, 63);
+            listViewPiani.Name = "listViewPiani";
+            listViewPiani.Size = new Size(300, 375);
+            listViewPiani.TabIndex = 2;
+            listViewPiani.UseCompatibleStateImageBehavior = false;
             // 
             // pnlCollegaPiani
             // 
-            pnlCollegaPiani.Controls.Add(btnAggiugi);
-            pnlCollegaPiani.Controls.Add(btnVaiConfigurazione);
-            pnlCollegaPiani.Controls.Add(listView2);
-            pnlCollegaPiani.Location = new Point(318, 27);
+            pnlCollegaPiani.Controls.Add(btnChiudiCollega);
+            pnlCollegaPiani.Controls.Add(btnRimuoviCollega);
+            pnlCollegaPiani.Controls.Add(label2);
+            pnlCollegaPiani.Controls.Add(label1);
+            pnlCollegaPiani.Controls.Add(btnAggiugiCollega);
+            pnlCollegaPiani.Controls.Add(btnVaiCollega);
+            pnlCollegaPiani.Controls.Add(listViewCollegaPiani);
+            pnlCollegaPiani.Location = new Point(386, 32);
             pnlCollegaPiani.Name = "pnlCollegaPiani";
-            pnlCollegaPiani.Size = new Size(402, 242);
+            pnlCollegaPiani.Size = new Size(402, 406);
             pnlCollegaPiani.TabIndex = 3;
             pnlCollegaPiani.Visible = false;
             // 
-            // btnAggiugi
+            // btnChiudiCollega
             // 
-            btnAggiugi.Location = new Point(22, 134);
-            btnAggiugi.Name = "btnAggiugi";
-            btnAggiugi.Size = new Size(75, 23);
-            btnAggiugi.TabIndex = 6;
-            btnAggiugi.Text = "Aggiungi";
-            btnAggiugi.UseVisualStyleBackColor = true;
-            btnAggiugi.Click += AggiungiPianoConfigurazione;
+            btnChiudiCollega.BackColor = Color.Red;
+            btnChiudiCollega.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnChiudiCollega.Location = new Point(364, 0);
+            btnChiudiCollega.Name = "btnChiudiCollega";
+            btnChiudiCollega.Size = new Size(38, 32);
+            btnChiudiCollega.TabIndex = 10;
+            btnChiudiCollega.Text = "X";
+            btnChiudiCollega.UseVisualStyleBackColor = false;
+            btnChiudiCollega.Click += btnChiudiCollega_Click;
             // 
-            // btnVaiConfigurazione
+            // btnRimuoviCollega
             // 
-            btnVaiConfigurazione.Location = new Point(268, 98);
-            btnVaiConfigurazione.Name = "btnVaiConfigurazione";
-            btnVaiConfigurazione.Size = new Size(75, 23);
-            btnVaiConfigurazione.TabIndex = 5;
-            btnVaiConfigurazione.Text = "Vai";
-            btnVaiConfigurazione.UseVisualStyleBackColor = true;
-            btnVaiConfigurazione.Click += ApriConfigurazione;
+            btnRimuoviCollega.BackColor = Color.FromArgb(255, 128, 128);
+            btnRimuoviCollega.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnRimuoviCollega.Location = new Point(84, 36);
+            btnRimuoviCollega.Name = "btnRimuoviCollega";
+            btnRimuoviCollega.Size = new Size(75, 32);
+            btnRimuoviCollega.TabIndex = 9;
+            btnRimuoviCollega.Text = "Rimuovi";
+            btnRimuoviCollega.UseVisualStyleBackColor = false;
+            btnRimuoviCollega.Click += btnRimuoviCollega_Click;
             // 
-            // listView2
+            // label2
             // 
-            listView2.HeaderStyle = ColumnHeaderStyle.Nonclickable;
-            listView2.Location = new Point(3, 16);
-            listView2.Name = "listView2";
-            listView2.Size = new Size(237, 105);
-            listView2.TabIndex = 4;
-            listView2.UseCompatibleStateImageBehavior = false;
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label2.Location = new Point(3, 2);
+            label2.Name = "label2";
+            label2.Size = new Size(235, 25);
+            label2.TabIndex = 8;
+            label2.Text = "Collega i piani selezionati";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label1.Location = new Point(0, 330);
+            label1.Name = "label1";
+            label1.Size = new Size(185, 21);
+            label1.TabIndex = 7;
+            label1.Text = "Collega i piani selezionati";
+            // 
+            // btnAggiugiCollega
+            // 
+            btnAggiugiCollega.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnAggiugiCollega.Location = new Point(3, 36);
+            btnAggiugiCollega.Name = "btnAggiugiCollega";
+            btnAggiugiCollega.Size = new Size(75, 32);
+            btnAggiugiCollega.TabIndex = 6;
+            btnAggiugiCollega.Text = "Aggiungi";
+            btnAggiugiCollega.UseVisualStyleBackColor = true;
+            btnAggiugiCollega.Click += AggiungiPianoConfigurazione;
+            // 
+            // btnVaiCollega
+            // 
+            btnVaiCollega.Location = new Point(191, 328);
+            btnVaiCollega.Name = "btnVaiCollega";
+            btnVaiCollega.Size = new Size(75, 23);
+            btnVaiCollega.TabIndex = 5;
+            btnVaiCollega.Text = "Vai";
+            btnVaiCollega.UseVisualStyleBackColor = true;
+            btnVaiCollega.Click += ApriCollega;
+            // 
+            // listViewCollegaPiani
+            // 
+            listViewCollegaPiani.HeaderStyle = ColumnHeaderStyle.Nonclickable;
+            listViewCollegaPiani.Location = new Point(0, 74);
+            listViewCollegaPiani.Name = "listViewCollegaPiani";
+            listViewCollegaPiani.Size = new Size(225, 248);
+            listViewCollegaPiani.TabIndex = 4;
+            listViewCollegaPiani.UseCompatibleStateImageBehavior = false;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label3.Location = new Point(12, 27);
+            label3.Name = "label3";
+            label3.Size = new Size(62, 30);
+            label3.TabIndex = 4;
+            label3.Text = "Piani";
             // 
             // Home
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(label3);
             Controls.Add(pnlCollegaPiani);
-            Controls.Add(listView1);
+            Controls.Add(listViewPiani);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
             Name = "Home";
@@ -190,6 +257,7 @@
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             pnlCollegaPiani.ResumeLayout(false);
+            pnlCollegaPiani.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -205,11 +273,16 @@
         private ToolStripMenuItem localeToolStripMenuItem;
         private ToolStripMenuItem cluodToolStripMenuItem;
         private ToolStripMenuItem entrambiToolStripMenuItem;
-        private ListView listView1;
+        private ListView listViewPiani;
         private ToolStripMenuItem apriCollegaPianiToolStripMenuItem;
         private Panel pnlCollegaPiani;
-        private ListView listView2;
-        private Button btnVaiConfigurazione;
-        private Button btnAggiugi;
+        private ListView listViewCollegaPiani;
+        private Button btnVaiCollega;
+        private Button btnAggiugiCollega;
+        private Button btnRimuoviCollega;
+        private Label label2;
+        private Label label1;
+        private Button btnChiudiCollega;
+        private Label label3;
     }
 }
