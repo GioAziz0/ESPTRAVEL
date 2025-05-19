@@ -72,7 +72,7 @@ namespace Mappa
             int altezza = (int)(ClientSize.Height * 0.9);
             int larghezza = (img.Width * altezza) / img.Height;
             pictureBox.Size = new Size(larghezza, altezza);
-            pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox.Image = img;
             pictureBox.Location = new Point(ClientSize.Width / 2 - larghezza / 2, 44);
             pictureBox.MouseClick += pctClick;
@@ -128,7 +128,7 @@ namespace Mappa
                 int altezza = (int)(ClientSize.Height * 0.9);
                 int larghezza = (img.Width * altezza) / img.Height;
                 pictureBox.Size = new Size(larghezza, altezza);
-                pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
                 pictureBox.Image = img;
                 pictureBox.Location = new Point(ClientSize.Width / 2 - larghezza / 2, 44);
                 pictureBox.MouseClick += pctClick;
