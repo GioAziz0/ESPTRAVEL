@@ -14,12 +14,16 @@ namespace Mappa
 {
     public partial class Configurazione : Form
     {
-        public Piano piano1 { get; set; }
-        public Piano piano2 { get; set; }
-        public Configurazione(Piano piano1, Piano piano2)
+        private Piano piano1 { get; set; }
+        private Piano piano2 { get; set; }
+        public CollegaPunti collegamento { get; set; }
+
+        private List<CollegaPunti> collegamenti = new List<CollegaPunti>();
+        public Configurazione(Piano piano1, Piano piano2, List<CollegaPunti> collegametni)
         {
             this.piano1 = piano1;
             this.piano2 = piano2;
+            collegametni = collegamenti;
             InitializeComponent();
             ConfigureListView();
             AggiungiPunti();
@@ -73,23 +77,14 @@ namespace Mappa
 
                         int peso = Convert.ToInt32(txtPeso.Text);
 
-                        piano1.CollegaPunti.Add(new CollegaPunti()
+                        collegamento = new CollegaPunti()
                         {
                             Floor1 = piano1.Level,
                             Floor2 = piano2.Level,
                             Punto1 = (Punto)lstPuntiPiano1.SelectedItem,
                             Punto2 = (Punto)lstPuntiPiano2.SelectedItem,
                             Peso = peso
-                        });
-
-                        piano2.CollegaPunti.Add(new CollegaPunti()
-                        {
-                            Floor1 = piano2.Level,
-                            Floor2 = piano1.Level,
-                            Punto1 = (Punto)lstPuntiPiano2.SelectedItem,
-                            Punto2 = (Punto)lstPuntiPiano1.SelectedItem,
-                            Peso = peso    
-                        });
+                        };
 
                         this.DialogResult = DialogResult.OK;
                         this.Close();
