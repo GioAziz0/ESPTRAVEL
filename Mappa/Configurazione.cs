@@ -47,7 +47,7 @@ namespace Mappa
                 lstPuntiPiano2.Items.Add(punto);
             }
 
-            List<CollegaPunti> collegamenti = piano1.CollegaPunti.Where(x => x.Name2 == piano2.Name).ToList();
+            List<CollegaPunti> collegamenti = piano1.CollegaPunti.Where(x => x.Floor2 == piano2.Level).ToList();
             MessageBox.Show($"Collegamenti trovati: {collegamenti.Count}");
             foreach (var collegamento in collegamenti)
             {
@@ -75,8 +75,8 @@ namespace Mappa
 
                         piano1.CollegaPunti.Add(new CollegaPunti()
                         {
-                            Name1 = piano1.Name,
-                            Name2 = piano2.Name,
+                            Floor1 = piano1.Level,
+                            Floor2 = piano2.Level,
                             Punto1 = (Punto)lstPuntiPiano1.SelectedItem,
                             Punto2 = (Punto)lstPuntiPiano2.SelectedItem,
                             Peso = peso
@@ -84,8 +84,8 @@ namespace Mappa
 
                         piano2.CollegaPunti.Add(new CollegaPunti()
                         {
-                            Name1 = piano2.Name,
-                            Name2 = piano1.Name,
+                            Floor1 = piano2.Level,
+                            Floor2 = piano1.Level,
                             Punto1 = (Punto)lstPuntiPiano2.SelectedItem,
                             Punto2 = (Punto)lstPuntiPiano1.SelectedItem,
                             Peso = peso    

@@ -14,6 +14,7 @@ namespace Mappa
 {
     public partial class Home : Form
     {
+        List<CollegaPunti> _collegamenti = new List<CollegaPunti>();
         private readonly List<Piano> _piani = new List<Piano>();
         private const string JsonFilter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
 
@@ -271,8 +272,8 @@ namespace Mappa
                             }
 
                             RefreshPianiList();
+                            listViewCollegaPiani.Items.Clear();
                         }
-                        listViewCollegaPiani.Items.Clear();
                     }
                 }
                 else MessageBox.Show("Inserire due piani prima di aprire la configurazione");

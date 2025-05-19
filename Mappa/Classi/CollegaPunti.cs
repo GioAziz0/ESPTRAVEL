@@ -8,9 +8,9 @@ namespace Mappa.Classi
 {
     public class CollegaPunti
     {
-        public string Name1 { get; set; }
+        public int Floor1 { get; set; }
 
-        public string Name2 { get; set; }
+        public int Floor2 { get; set; }
         public Punto Punto1 { get; set; }
         public Punto Punto2 { get; set; }
 
