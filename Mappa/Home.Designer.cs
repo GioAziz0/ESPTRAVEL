@@ -136,6 +136,7 @@
             // 
             // listViewPiani
             // 
+            listViewPiani.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             listViewPiani.HeaderStyle = ColumnHeaderStyle.Nonclickable;
             listViewPiani.Location = new Point(12, 63);
             listViewPiani.Name = "listViewPiani";
@@ -195,12 +196,12 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label1.Location = new Point(0, 330);
+            label1.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.Location = new Point(3, 226);
             label1.Name = "label1";
-            label1.Size = new Size(185, 21);
+            label1.Size = new Size(78, 25);
             label1.TabIndex = 7;
-            label1.Text = "Collega i piani selezionati";
+            label1.Text = "Collega";
             // 
             // btnAggiugiCollega
             // 
@@ -215,9 +216,10 @@
             // 
             // btnVaiCollega
             // 
-            btnVaiCollega.Location = new Point(191, 328);
+            btnVaiCollega.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnVaiCollega.Location = new Point(84, 226);
             btnVaiCollega.Name = "btnVaiCollega";
-            btnVaiCollega.Size = new Size(75, 23);
+            btnVaiCollega.Size = new Size(75, 27);
             btnVaiCollega.TabIndex = 5;
             btnVaiCollega.Text = "Vai";
             btnVaiCollega.UseVisualStyleBackColor = true;
@@ -225,10 +227,11 @@
             // 
             // listViewCollegaPiani
             // 
+            listViewCollegaPiani.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             listViewCollegaPiani.HeaderStyle = ColumnHeaderStyle.Nonclickable;
             listViewCollegaPiani.Location = new Point(0, 74);
             listViewCollegaPiani.Name = "listViewCollegaPiani";
-            listViewCollegaPiani.Size = new Size(225, 248);
+            listViewCollegaPiani.Size = new Size(225, 109);
             listViewCollegaPiani.TabIndex = 4;
             listViewCollegaPiani.UseCompatibleStateImageBehavior = false;
             // 

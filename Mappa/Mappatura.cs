@@ -14,6 +14,7 @@ using System.Runtime.InteropServices.Marshalling;
 using System.Net.Mime;
 using System.Drawing.Configuration;
 using Mappa.Classi;
+using System.Windows.Input;
 
 
 namespace Mappa
@@ -36,7 +37,6 @@ namespace Mappa
             piano = new Piano("", new List<Segmento>(), new List<Punto>(), null, int.MinValue, new List<CollegaPunti>());
             this.livelliUtilizzati = new List<int>(livelliUtilizzati);
             abilitazioneControlli(false);
-
         }
 
         public Mappatura(Piano pianoOriginale, List<int> livelliUtilizzati)
@@ -76,6 +76,7 @@ namespace Mappa
             pictureBox.Image = img;
             pictureBox.Location = new Point(ClientSize.Width / 2 - larghezza / 2, 44);
             pictureBox.MouseClick += pctClick;
+            pictureBox.MouseWheel += gestioneMouse;
             pictureBox.Visible = true;
             Controls.Add(pictureBox);
             abilitazioneControlli(true);
@@ -120,7 +121,7 @@ namespace Mappa
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
                 string imgPath = fileDialog.FileName;
-                URL = imgPath;             
+                URL = imgPath;
                 immagineOriginale = Image.FromFile(imgPath);
                 img = new Bitmap(immagineOriginale);
 
@@ -131,6 +132,7 @@ namespace Mappa
                 pictureBox.Image = img;
                 pictureBox.Location = new Point(ClientSize.Width / 2 - larghezza / 2, 44);
                 pictureBox.MouseClick += pctClick;
+                pictureBox.MouseWheel += gestioneMouse;
                 pictureBox.Visible = true;
                 Controls.Add(pictureBox);
                 abilitazioneControlli(true);
@@ -534,7 +536,7 @@ namespace Mappa
             {
                 if (listBoxPunti.SelectedItems.Count > 0)
                 {
-                    string nomePunto = Microsoft.VisualBasic.Interaction.InputBox("Inserisci il nuovo nome del punto:", "Crea Nuova Nome", "Nome Punto");
+                    string nomePunto = txtNomePunto.Text.Trim();
 
                     if (string.IsNullOrWhiteSpace(nomePunto))
                         return;
@@ -593,9 +595,46 @@ namespace Mappa
             }
         }
 
-        private void rimuoviToolStripMenuItem_Click(object sender, EventArgs e)
+        private void txtNomePunto_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        /***********************/
+
+
+        private double _zoomLevel = 1.0;
+        private int _originalWidth;
+        private int _originalHeight;
+
+        private void gestioneMouse(object sender, MouseEventArgs e)
+        {
+            /*if (e.Delta > 0) // Rotellina verso l'alto
+            {
+                _zoomLevel += 0.1;
+            }
+            else if (e.Delta < 0) // Rotellina verso il basso
+            {
+                _zoomLevel -= 0.1;
+            }
+            if (_zoomLevel < 0.1) _zoomLevel = 0.1;
+            if (_zoomLevel > 3.0) _zoomLevel = 3.0;
+
+            int newWidth = (int)(_originalWidth * _zoomLevel);
+            int newHeight = (int)(_originalHeight * _zoomLevel);
+
+            pictureBox.Width = newWidth;
+            pictureBox.Height = newHeight;
+            pictureBox.Image = ResizeImage((Bitmap)pictureBox.Image, newWidth, newHeight);*/
+        }
+
+        private Bitmap ResizeImage(Bitmap image, int width, int height)
+        {
+            Bitmap resizedImage = new Bitmap(image);
+            Graphics graphics = Graphics.FromImage(resizedImage);
+            graphics.DrawImage(image, 0, 0, width, height);
+            graphics.Dispose();
+            return resizedImage;
         }
     }
 }

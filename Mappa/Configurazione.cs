@@ -23,8 +23,8 @@ namespace Mappa
             InitializeComponent();
             ConfigureListView();
             AggiungiPunti();
-            lblPiano1.Text = piano1.Name;
-            lblPiano2.Text = piano2.Name;
+            lblPiano1.Text = "Lista punit di: " + piano1.Name;
+            lblPiano2.Text = "Lista punti di: " + piano2.Name;
         }
 
         private void ConfigureListView()
@@ -32,8 +32,8 @@ namespace Mappa
             listvPianiCollegati.View = View.Details;
             listvPianiCollegati.FullRowSelect = true;
             listvPianiCollegati.GridLines = true;
-            listvPianiCollegati.Columns.Add(piano1.Name, 75);
-            listvPianiCollegati.Columns.Add(piano2.Name, 75);
+            listvPianiCollegati.Columns.Add(piano1.Name, 85);
+            listvPianiCollegati.Columns.Add(piano2.Name, 85);
         }
 
         private void AggiungiPunti()

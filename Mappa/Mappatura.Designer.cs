@@ -52,6 +52,7 @@
             label2 = new Label();
             btnModificaNomePunto = new Button();
             label3 = new Label();
+            txtNomePunto = new TextBox();
             menuStrip1.SuspendLayout();
             pnlSegmenti.SuspendLayout();
             panel1.SuspendLayout();
@@ -80,7 +81,6 @@
             rimuoviToolStripMenuItem.Name = "rimuoviToolStripMenuItem";
             rimuoviToolStripMenuItem.Size = new Size(81, 25);
             rimuoviToolStripMenuItem.Text = "Rimuovi";
-            rimuoviToolStripMenuItem.Click += rimuoviToolStripMenuItem_Click;
             // 
             // rimuoviPuntoToolStripMenuItem
             // 
@@ -251,12 +251,12 @@
             // 
             // btnModificaNomePunto
             // 
-            btnModificaNomePunto.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnModificaNomePunto.Location = new Point(12, 477);
+            btnModificaNomePunto.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnModificaNomePunto.Location = new Point(132, 465);
             btnModificaNomePunto.Name = "btnModificaNomePunto";
-            btnModificaNomePunto.Size = new Size(197, 37);
+            btnModificaNomePunto.Size = new Size(77, 29);
             btnModificaNomePunto.TabIndex = 8;
-            btnModificaNomePunto.Text = "Modifica Nome";
+            btnModificaNomePunto.Text = "Modifica";
             btnModificaNomePunto.UseVisualStyleBackColor = true;
             btnModificaNomePunto.Click += btnModificaNomePunto_Click;
             // 
@@ -264,17 +264,28 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label3.Location = new Point(12, 437);
+            label3.Location = new Point(12, 426);
             label3.Name = "label3";
             label3.Size = new Size(206, 25);
             label3.TabIndex = 9;
             label3.Text = "Modifica nome punto";
+            // 
+            // txtNomePunto
+            // 
+            txtNomePunto.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtNomePunto.Location = new Point(12, 465);
+            txtNomePunto.Name = "txtNomePunto";
+            txtNomePunto.PlaceholderText = "Nome Punto";
+            txtNomePunto.Size = new Size(105, 29);
+            txtNomePunto.TabIndex = 10;
+            txtNomePunto.TextChanged += txtNomePunto_TextChanged;
             // 
             // Mappatura
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(984, 561);
+            Controls.Add(txtNomePunto);
             Controls.Add(label3);
             Controls.Add(btnModificaNomePunto);
             Controls.Add(label2);
@@ -323,5 +334,6 @@
         private Label label2;
         private Button btnModificaNomePunto;
         private Label label3;
+        private TextBox txtNomePunto;
     }
 }
