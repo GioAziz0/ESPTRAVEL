@@ -10,6 +10,7 @@ namespace Mappa.Classi
     public class SalvaJson
     {
         public List<SavePiano> piani { get; set; } = new List<SavePiano>();
+        public List<CollegaPunti> floorConnection { get; set; } = new List<CollegaPunti>();
     }
 
     public class SavePiano()
@@ -20,7 +21,6 @@ namespace Mappa.Classi
         public string image { get; set; }
         public List<List<string>> arcs { get; set; } = new List<List<string>>();
         public List<Punto> points { get; set; } = new List<Punto>();
-        public List<CollegaPunti> CollegaPunti { get; set; } = new List<CollegaPunti>();
         public string ConvertImageToBase64(Image image)
         {
             using (MemoryStream ms = new MemoryStream())
@@ -52,5 +52,11 @@ namespace Mappa.Classi
             }
             return segmenti;
         }
+    }
+
+    public class LoadJson()
+    {
+        public List<Piano> piani { get; set; } = new List<Piano>();
+        public List<CollegaPunti> collegamenti { get; set; } = new List<CollegaPunti> { };
     }
 }

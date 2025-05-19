@@ -109,9 +109,8 @@ namespace Mappa
                         Name = piano.Name,
                         Level = piano.Level,
                         arcs = piano.CreaSegmenti(piano.Segmenti),
-                        CollegaPunti = piano.CollegaPunti
                     }));
-
+                    listaPiani.floorConnection = _collegamenti;
 
                     var jsonString = JsonConvert.SerializeObject(listaPiani, Formatting.Indented);
                     File.WriteAllText(saveFileDialog.FileName, jsonString);
@@ -144,9 +143,8 @@ namespace Mappa
                         image = piano.ConvertImageToBase64(piano.Img),
                         Name = piano.Name,
                         Level = piano.Level,
-                        CollegaPunti = piano.CollegaPunti
-
                     }));
+                    listaPiani.floorConnection = _collegamenti;
 
                     var jsonContent = JsonConvert.SerializeObject(listaPiani, Formatting.Indented);
 
@@ -182,15 +180,15 @@ namespace Mappa
                     var caricaPiani = new LoaderPiani();
                     var pianiCaricati = caricaPiani.LoadFromJson(jsonString);
 
-                    if (!pianiCaricati.Any())
+                    if (!pianiCaricati.piani.Any())
                     {
                         MessageBox.Show($"Nessun piano trovato nel file selezionato", "Attenzione",
                                       MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
                     }
-
+                    _collegamenti = pianiCaricati.collegamenti;
                     _piani.Clear();
-                    _piani.AddRange(pianiCaricati);
+                    _piani.AddRange(pianiCaricati.piani);
                     RefreshPianiList();
                 }
             }
@@ -250,29 +248,20 @@ namespace Mappa
             {
                 if (listViewCollegaPiani.Items.Count == 2)
                 {
-                    Piano piano1 = listViewCollegaPiani.Items[0].Tag as Piano;
-                    Piano piano2 = listViewCollegaPiani.Items[1].Tag as Piano;
+                    Piano piano1 = (Piano)listViewCollegaPiani.Items[0].Tag!;
+                    Piano piano2 = (Piano)listViewCollegaPiani.Items[1].Tag!;
 
-                    using (Configurazione form = new Configurazione(piano1, piano2))
+                    using (Configurazione form = new Configurazione(piano1, piano2, _collegamenti.Where(x => x.Floor1 == piano1.Level || x.Floor1 == piano2.Level && x.Floor2 == piano1.Level || x.Floor2 == piano2.Level).ToList()))
                     {
                         if (form.ShowDialog() == DialogResult.OK)
                         {
-                            var newPiano1 = form.piano1;
-                            var newPiano2 = form.piano2;
-
-                            foreach (ListViewItem item in listViewPiani.Items)
-                            {
-                                Piano p = item.Tag as Piano;
-
-                                int index = _piani.FindIndex(x => x.Level == p.Level);
-                                if (index != -1)
-                                {
-                                    _piani[index] = p; // sostituisce l'elemento trovato con 'p'
-                                }
-                            }
-
-                            RefreshPianiList();
+                            var newCollegamento = form.collegamento;
+                            _collegamenti.Add(newCollegamento);
                             listViewCollegaPiani.Items.Clear();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Operazione annullata.");
                         }
                     }
                 }
@@ -314,6 +303,7 @@ namespace Mappa
                 if (listViewPiani.SelectedItems.Count > 0)
                 {
                     ListViewItem elemento = listViewPiani.SelectedItems[0];
+                    _piani.Remove((Piano)listViewPiani.SelectedItems[0].Tag!); //rimuove il piano anche dalla lista
                     listViewPiani.Items.Remove(elemento);
                 }
                 else

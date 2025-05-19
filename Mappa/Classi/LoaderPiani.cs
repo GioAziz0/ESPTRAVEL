@@ -9,12 +9,12 @@ namespace Mappa.Classi
 {
     public class LoaderPiani
     {
-        public List<Piano> LoadFromJson(string jsonContent)
+        public LoadJson LoadFromJson(string jsonContent)
         {
             // Deserializza il JSON nella struttura SaveJson
-            SalvaJson savedData = JsonConvert.DeserializeObject<SalvaJson>(jsonContent);
+            SalvaJson savedData = JsonConvert.DeserializeObject<SalvaJson>(jsonContent)!;
 
-            List<Piano> piani = new List<Piano>();
+            LoadJson loadJson = new LoadJson();
 
             foreach (var savePiano in savedData.piani)
             {
@@ -34,17 +34,18 @@ namespace Mappa.Classi
                 // Crea un nuovo Piano con i dati convertiti
                 Piano piano = new Piano(
                     name: savePiano.Name,
-                    collegapunti: savePiano.CollegaPunti,
                     segmenti: segmenti,  // Nota: arcs nel SavePiano corrisponde a Segmenti in Piano
                     punti: savePiano.points,    // points nel SavePiano corrisponde a Punti in Piano
                     img: img,
                     lv: savePiano.Level
                 );
 
-                piani.Add(piano);
+                loadJson.piani.Add(piano);
             }
 
-            return piani;
+            loadJson.collegamenti = savedData.floorConnection;
+
+            return loadJson;
         }
     }
 }

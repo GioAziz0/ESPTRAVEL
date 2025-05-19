@@ -14,16 +14,17 @@ namespace Mappa
 {
     public partial class Configurazione : Form
     {
-        private Piano piano1 { get; set; }
-        private Piano piano2 { get; set; }
+        bool cancella = true;
+        private Piano piano1;
+        private Piano piano2;
         public CollegaPunti collegamento { get; set; }
 
-        private List<CollegaPunti> collegamenti = new List<CollegaPunti>();
-        public Configurazione(Piano piano1, Piano piano2, List<CollegaPunti> collegametni)
+        private List<CollegaPunti> _collegamenti = new List<CollegaPunti>();
+        public Configurazione(Piano piano1, Piano piano2, List<CollegaPunti> collegamenti)
         {
             this.piano1 = piano1;
             this.piano2 = piano2;
-            collegametni = collegamenti;
+            _collegamenti = collegamenti;
             InitializeComponent();
             ConfigureListView();
             AggiungiPunti();
@@ -51,9 +52,7 @@ namespace Mappa
                 lstPuntiPiano2.Items.Add(punto);
             }
 
-            List<CollegaPunti> collegamenti = piano1.CollegaPunti.Where(x => x.Floor2 == piano2.Level).ToList();
-            MessageBox.Show($"Collegamenti trovati: {collegamenti.Count}");
-            foreach (var collegamento in collegamenti)
+            foreach (var collegamento in _collegamenti)
             {
                 ListViewItem item = new ListViewItem(collegamento.Punto1.Name);
                 item.SubItems.Add(collegamento.Punto2.Name);
@@ -81,12 +80,13 @@ namespace Mappa
                         {
                             Floor1 = piano1.Level,
                             Floor2 = piano2.Level,
-                            Punto1 = (Punto)lstPuntiPiano1.SelectedItem,
-                            Punto2 = (Punto)lstPuntiPiano2.SelectedItem,
+                            Punto1 = (Punto)lstPuntiPiano1.SelectedItem!,
+                            Punto2 = (Punto)lstPuntiPiano2.SelectedItem!,
                             Peso = peso
                         };
 
                         this.DialogResult = DialogResult.OK;
+                        cancella = false;
                         this.Close();
                     }
                     else
@@ -103,7 +103,10 @@ namespace Mappa
 
         private void Configurazione_FormClosing(object sender, FormClosingEventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            if (cancella)
+            {
+                this.DialogResult = DialogResult.Cancel;
+            }
         }
 
         private void btn_collega_Click(object sender, EventArgs e)

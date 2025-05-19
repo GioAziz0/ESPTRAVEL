@@ -19,7 +19,8 @@ namespace Mappa.Classi
         }
         public override string ToString()
         {
-            return $"Punto: {Name}, Cordinate: ({CordinatePunti.X}, {CordinatePunti.Y})";
+            return $"Punto: {Name}";
+            //return $"Punto: {Name}, Cordinate: ({CordinatePunti.X}, {CordinatePunti.Y})";
         }
     }
 }

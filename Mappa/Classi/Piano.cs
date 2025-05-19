@@ -14,7 +14,6 @@ namespace Mappa.Classi
         public int Level { get;set; }
         public List<Segmento> Segmenti { get; set; }
         public List<Punto> Punti { get; set; }
-        public List<CollegaPunti> CollegaPunti { get; set; } = new List<CollegaPunti>();
 
         private byte[] _imgData;
 
@@ -31,13 +30,12 @@ namespace Mappa.Classi
             }
         }
 
-        public Piano(string name, List<Segmento> segmenti, List<Punto> punti, Image img, int lv, List<CollegaPunti> collegapunti) {
+        public Piano(string name, List<Segmento> segmenti, List<Punto> punti, Image img, int lv) {
             Name = name;
             Segmenti = segmenti;
             Punti = punti;
             Level = lv;
             Img = img;
-            CollegaPunti = collegapunti;
         }
         public override string ToString()
         {
