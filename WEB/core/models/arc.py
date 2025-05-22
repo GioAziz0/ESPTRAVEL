@@ -7,7 +7,8 @@ class Arc:
         self.weight = weight 
     
     def _point_setter(self, name):
-        if re.search("^[a-zA-Z0-9_+-]+$", str(name)): #se la stringa è alfanumerice:
+        print(name)
+        if re.search("^[a-zA-Z0-9_+\-* .]+$", str(name)): #se la stringa è alfanumerica:
             return str(name)
         else:
             raise ValueError("Point name must be alphanumerical")

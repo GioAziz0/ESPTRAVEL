@@ -23,11 +23,11 @@ def ShortestPath(graph, start, destination):
         path = nx.dijkstra_path(graph, source=start, target=destination, weight='weight')
         return path
     except nx.NetworkXNoPath:
-        return "No path found"
+        raise AttributeError("Non esiste un percorso che collega questi 2 punti") 
     except nx.NodeNotFound:
-        return f"Departure '{start}' or Destination '{destination}' not found"
+        raise AttributeError(f"Partenza'{start}' e/o Destinazione '{destination}' non trovato/i")
     except ValueError:
-        return "Invalid Graph"
+        raise ValueError("Invalid Graph")
  
 
 class Graph:

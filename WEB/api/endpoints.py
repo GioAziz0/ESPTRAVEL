@@ -108,6 +108,7 @@ async def load_json(id: str, file: UploadFile = File(...)):
     content = await file.read()
     try:
         floors = json.loads(content)
+        flarcs = floors["floorConnection"]
         floors = floors["piani"]
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Invalid JSON format")
@@ -154,6 +155,7 @@ async def load_json(id: str, file: UploadFile = File(...)):
                     (coord, label, id, level)
                 )
 
+        
             # Salvataggio immagine
             image_data = base64.b64decode(image_base64)
             img = Image.open(BytesIO(image_data))
@@ -168,6 +170,21 @@ async def load_json(id: str, file: UploadFile = File(...)):
                 (id, level, name_floor, image_path)
             )
 
+        for arc in flarcs:
+            FU = arc['Floor1']
+            FD = arc['Floor2']
+            LU = arc['Punto1']
+            LU = LU['Name']
+            LD = arc['Punto2']
+            LD = LD['Name']
+            W = arc['Peso']
+            cursor.execute(
+                    """INSERT INTO arcs 
+                    (labelA, labelB, weight, mapIDA, mapIDB, floorA, floorB) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?)""",
+                    (LU, LD, W, id, id, FU, FD))
+        
+        
         conn.commit()
     except Exception as e:
         conn.rollback()
@@ -188,7 +205,7 @@ def load_GUI():
 
 @app.get("/travelMap/")
 def travel_map():
-    return HTMLResponse(content=open("static/travel3.ejs").read(), status_code=200)
+    return HTMLResponse(content=open("static/travel4.html").read(), status_code=200)
 
 @app.get("/graph/")
 def show_graph(id: str):
@@ -209,16 +226,26 @@ def show_graph(id: str):
 def trv(IDmap: str = None, start: str = None, end: str = None):
     conn = sqlite3.connect('maps.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT labelA, labelB, weight FROM arcs WHERE mapIDA = ? AND mapIDB = ?", (IDmap, IDmap))
-    arcs = cursor.fetchall()
+    cursor.execute("SELECT labelA, labelB, floorA, floorB, weight FROM arcs WHERE mapIDA = ? AND mapIDB = ?", (IDmap, IDmap))
+    arcss = cursor.fetchall()
+    arcs = []
+    for arc in arcss:
+        arcs.append([str(str(arc[2])+ "*" + str(arc[0])), str(str(arc[3]) + "*" + str(arc[1])), str(arc[4])])
     conn.close()
-   
-    m = travel.Graph()
-    m.MakeMap(arcs)
+    print(arcs)
+    try:
+        m = travel.Graph()
+        m.MakeMap(arcs)
+        m.showMap()
+        print(m.Travel(start, end))
+        return m.Travel(start, end)
+    except AttributeError as error:
+        raise HTTPException(status_code=500, detail=str(error))
     '''
+    except ValueError as error:
+        raise HTTPException(status_code=500, detail=str("La mappa è corrotta, o non correttamente funzionante"))
+ 
     for arc in arcs:
         labelA, labelB, weight = arc
         m.addArc(labelA, labelB, weight)
     '''
-    print(m.Travel(start, end))
-    return m.Travel(start, end)

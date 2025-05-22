@@ -118,11 +118,11 @@
             gap: 0.5rem;
         }
 
-        .toolbar{
+        .toolbar {
             visibility: hidden;
         }
 
-        .toolbar.active{
+        .toolbar.active {
             visibility: visible;
         }
 
@@ -194,6 +194,12 @@
             box-shadow: var(--shadow);
             display: none;
         }
+
+        /*
+        .floor-img {
+            transition: transform 2.5s ease-in-out;
+            transform-origin: center center;
+        } */
 
         /*
         @media (max-width: 768px) {
@@ -271,11 +277,11 @@
         const sidebar = document.getElementById('sidebar');
         const main = document.getElementById('main');
         const tbs = document.getElementsByClassName('toolbar')
-        
+
         toggleButton.addEventListener('click', () => {
             sidebar.classList.toggle('hidden');
             main.classList.toggle('expanded');
-            
+
             // Aggiorna posizione toggle button
             if (sidebar.classList.contains('hidden')) {
                 toggleButton.style.left = '1.5rem';
@@ -284,10 +290,28 @@
             }
         });
 
-        
-        
-        
         const canvas = document.getElementById('canva');
+
+        let isAnimating = false;
+        let currentTransform = {
+            x: 0,
+            y: 0,
+            scale: 1,
+            rotation: 0
+        };
+        let targetTransform = { ...currentTransform };
+        let animationFrameId = null;
+
+        canvas.addEventListener('transitionend', () => {
+            isAnimating = false;
+        });
+
+        let currentStep = 0;
+        let path = [];
+
+
+
+
         const ctx = canvas.getContext('2d');
         let cfloor = 0;
         let currentImage = null;
@@ -298,7 +322,6 @@
             currentFloor: null
         };
         let currentFloorPoints;
-        let path;
         // Naviga
 
         async function loadMap() {
@@ -309,12 +332,12 @@
 
             try {
                 const [floorsRes, pointsRes, arcsRes] = await Promise.all([
-                fetch(`/floorsJson/?id=${id}`),
-                fetch(`/pointsJson/?id=${id}`),
-                fetch(`/arcsJson/?id=${id}`)
+                    fetch(`/floorsJson/?id=${id}`),
+                    fetch(`/pointsJson/?id=${id}`),
+                    fetch(`/arcsJson/?id=${id}`)
                 ]);
-                
-                
+
+
                 currentMapData.floors = await floorsRes.json();
                 currentMapData.points = await pointsRes.json();
                 currentMapData.arcs = await arcsRes.json();
@@ -328,20 +351,20 @@
                 if (!arcsRes.ok) {
                     throw new Error('Errore nel caricamento dei dati degli archi');
                 }
-                
+
                 //populateFloorSelector();
                 loadFloorData(cfloor);
 
                 Array.from(tbs).forEach(element => {
-                        element.classList.add('active');
-                  });
+                    element.classList.add('active');
+                });
 
                 document.getElementById('errorMessage').style.display = 'none';
-                  
+
             } catch (error) {
                 Array.from(tbs).forEach(element => {
                     element.classList.remove('active');
-              });
+                });
                 console.log(error)
                 document.getElementById('errorMessage').style.display = 'block';
             }
@@ -352,8 +375,7 @@
         }
 
         function floorUp() {
-            if (cfloor < currentMapData.floors.length)
-            {
+            if (cfloor < currentMapData.floors.length) {
                 cfloor += 1;
                 loadFloorData();
                 console.log(cfloor)
@@ -363,8 +385,7 @@
         }
 
         function floorDown() {
-            if (cfloor > 0)
-            {
+            if (cfloor > 0) {
                 cfloor -= 1;
                 loadFloorData();
                 console.log(cfloor)
@@ -375,29 +396,31 @@
 
         async function loadFloorData() {
             currentFloorPoints = null;
-            path = null;
             currentMapData.currentFloor = currentMapData.floors[cfloor].floor;
-
+            
             console.log(currentMapData.floors)
             const imageUrl = `/map_image/?id=${document.getElementById('mapId').value}&floor=${currentMapData.floors[cfloor].floor}`;
-
+            
             console.log(imageUrl)
             currentImage = await loadImage(imageUrl);
             console.log("laoded?")
             console.log("laoded?")
             drawImage(currentImage);
-
+            
             const filteredPoints = currentMapData.points.filter(p => p.floor == currentMapData.floors[cfloor].floor);
             const filteredArcs = currentMapData.arcs.filter(a =>
-                a.floorA == currentMapData.floors[cfloor].floor && a.floorB == currentMapData.floors[cfloor].floor
+            a.floorA == currentMapData.floors[cfloor].floor && a.floorB == currentMapData.floors[cfloor].floor
             );
-
+            
+            currentFloorPoints = filteredPoints
+            localPath = path.filter(p => p == currentFloorPoints.name)
+            
             //updateDropdowns(filteredPoints);
 
             console.log(filteredPoints)
 
             drawPoints(filteredPoints);
-            drawArcs(filteredArcs, filteredPoints);
+            //drawArcs(filteredArcs, filteredPoints);
         }
 
         async function loadImage(url) {
@@ -419,7 +442,7 @@
             points.forEach(point => {
                 const [x, y] = point.cordinatepunti.split(',').map(coord => parseInt(coord.trim()));
                 ctx.beginPath();
-                ctx.fillStyle = 'red';
+                ctx.fillStyle = 'Green';
                 ctx.arc(x, y, 10, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.fillText(point.name, x + 12, y - 12);
@@ -444,7 +467,7 @@
             });
         }
 
-        
+
 
 
         async function tracePath() {
@@ -465,14 +488,18 @@
 
                 currentFloorPoints = currentMapData.points.filter(p => p.floor == floor);
                 //drawPath(path, currentFloorPoints);
-                Step(0)
+                //Step(0);
+                clearCanvas();
+                ctx.drawImage(currentImage, 0, 0);
+                drawPoints(currentFloorPoints);
+                drawPath(path, currentFloorPoints);
                 setCS(0);
             } catch (error) {
                 console.error('Errore:', error);
                 alert('Impossibile tracciare il percorso.');
             }
         }
-
+        /*
         function drawPath(path, points) {
 
             ctx.beginPath();
@@ -490,6 +517,20 @@
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             }
+
+            ctx.stroke();
+        } */
+
+        function drawPath(path, points) {
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(0, 127, 255, 0.5)';
+            ctx.lineWidth = 8;
+
+            path.forEach((pointName, i) => {
+                const point = points.find(p => p.name === pointName);
+                const [x, y] = point.cordinatepunti.split(',').map(Number);
+                i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+            });
 
             ctx.stroke();
         }
@@ -514,17 +555,17 @@
             }
         } */
 
-        let currentStep = 0;
-
         function setCS(i) {
-            if (i>=0 && i<path.length)
+            if (i >= 0 && i < path.length)
                 currentStep = i;
-            if (currentStep == 0){
+            if (currentStep == 0) {
                 document.getElementById("step-label").textContent = "Overview";
-            } else{
+            } else {
                 document.getElementById("step-label").textContent = currentStep;
             }
         }
+
+
 
         function SF() {
             if (currentStep < path.length - 1) {
@@ -533,57 +574,130 @@
             }
         }
 
-
         function SB() {
-            if (currentStep >= 0) {
+            if (currentStep > 0) {
                 setCS(currentStep - 1);
                 Step(currentStep);
             }
         }
 
+        // Sostituisci la funzione Step con questa versione corretta
         function Step(i) {
-            // Ripristina e ridisegna base
-            clearCanvas();
-            drawImage(currentImage);
-            drawPoints(currentFloorPoints);
-            drawPath(path, currentFloorPoints);
+            if (!path || i < 0 || i >= path.length) return;
+            console.log(i);
+            // Calcola parametri per la nuova trasformazione
+            const calculateTarget = () => {
+                if (i == 0) {
+                    return { x: canvas.width / 2,  y: canvas.height / 2, scale: 1, rotation: 0 };
+                }
+                const p1 = currentFloorPoints.find(pt => pt.name === path[i - 1]);
+                const p2 = currentFloorPoints.find(pt => pt.name === path[i]);
+                if (!p1 || !p2) return null;
+
+                const [x1, y1] = p1.cordinatepunti.split(',').map(Number);
+                const [x2, y2] = p2.cordinatepunti.split(',').map(Number);
+
+                const dx = x2 - x1;
+                const dy = y2 - y1;
+                const length = Math.hypot(dx, dy);
+
+                // Calcola angolo base per allineamento verticale
+                let angle = Math.atan2(dy, dx);
+                const verticalAngle = Math.PI; // -90° (verso l'alto nel canvas)
+                
+                /*
+                // Forza l'angolo più vicino per avere B sopra ad A
+                if (dy > 0) { // Se B è sotto ad A nel canvas
+                    angle += Math.PI; // Inverti direzione
+                } */
+
+                const rotation = verticalAngle - angle;
+
+                return {
+                    x: (x1 + x2) / 2,
+                    y: (y1 + y2) / 2,
+                    scale: Math.min(canvas.height / (length * 1.5)),
+                    rotation: -angle + Math.PI / 2 + Math.PI
+                };
+            };
+
+            const newTarget = calculateTarget();
+            if (!newTarget || newTarget == null) return;
+            console.log("ciao");
+            targetTransform = newTarget;
+            startAnimation();
+        }
+
+        // Aggiungi queste funzioni di animazione
+        function startAnimation() {
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            animate();
+        }
+
+        function animate() {
+            // Interpolazione angolo con percorso più breve
+            let angleDiff = targetTransform.rotation - currentTransform.rotation;
+            angleDiff = ((angleDiff + Math.PI) % (2 * Math.PI)) - Math.PI; // Forza il percorso più breve
+            
+            currentTransform.rotation += angleDiff * 0.05;
+            
+            // Interpolazione posizione e scala
+            currentTransform.x += (targetTransform.x - currentTransform.x) * 0.05;
+            currentTransform.y += (targetTransform.y - currentTransform.y) * 0.05;
+            currentTransform.scale += (targetTransform.scale - currentTransform.scale) * 0.05;
         
-            // Trova due punti consecutivi
-            const name1 = path[i-1], name2 = path[i];
-            const p1 = currentFloorPoints.find(pt => pt.name === name1);
-            const p2 = currentFloorPoints.find(pt => pt.name === name2);
-            if (!p1 || !p2) return;
+            applyTransforms();
         
-            // Coordinate
-            const [x1, y1] = p1.cordinatepunti.split(',').map(n => parseInt(n));
-            const [x2, y2] = p2.cordinatepunti.split(',').map(n => parseInt(n));
+            if (needsUpdate()) {
+                animationFrameId = requestAnimationFrame(animate);
+            }
+        }
         
-            // Calcola angolo, centro e zoom
-            const dx = x2 - x1, dy = y2 - y1;
-            const theta = Math.atan2(dy, dx);
-            const midX = (x1 + x2) / 2, midY = (y1 + y2) / 2;
-            const length = Math.hypot(dx, dy);
-            const desiredPx = canvas.height * 0.5;
-            const scaleFactor = desiredPx / length;
+        function needsUpdate() {
+            return Math.abs(currentTransform.rotation - targetTransform.rotation) > 0.001 ||
+                   Math.abs(currentTransform.scale - targetTransform.scale) > 0.001;
+        }
+
+        function applyTransforms() {
+            // Reset e pulizia
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-            // Applica transform e ridisegna segmento
-            ctx.save();
-            ctx.translate(canvas.width / 2, canvas.height / 2);
-            ctx.rotate((-theta + Math.PI / 2) + Math.PI);
-            ctx.scale(scaleFactor, scaleFactor);
-            ctx.translate(-midX, -midY);
-    
+            // Centro del canvas
+            ctx.translate(canvas.width/2, canvas.height/2);
+            
+            // Applica rotazione
+            ctx.rotate(currentTransform.rotation);
+            
+            // Scala basata sulla lunghezza del segmento
+            ctx.scale(currentTransform.scale, currentTransform.scale);
+            
+            // Centra sul punto medio
+            ctx.translate(-currentTransform.x, -currentTransform.y);
+        
+            // Disegno elementi
             ctx.drawImage(currentImage, 0, 0);
             drawPoints(currentFloorPoints);
             drawPath(path, currentFloorPoints);
-            ctx.strokeStyle = 'red';
-            ctx.lineWidth   = 10;
-            ctx.beginPath();
-            ctx.moveTo(x1, y1);
-            ctx.lineTo(x2, y2);
-            ctx.stroke();
-            ctx.restore();
-          }
+        
+            // Evidenzia segmento corrente
+            if (currentStep > 0) {
+                const p1 = currentFloorPoints.find(pt => pt.name === path[currentStep-1]);
+                const p2 = currentFloorPoints.find(pt => pt.name === path[currentStep]);
+                
+                if (p1 && p2) {
+                    const [x1, y1] = p1.cordinatepunti.split(',').map(Number);
+                    const [x2, y2] = p2.cordinatepunti.split(',').map(Number);
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.strokeStyle = 'rgba(143, 0, 255, 1)';
+                    ctx.lineWidth = 5;
+                    ctx.stroke();
+                }
+            }
+        }
 
     </script>
 </body>
