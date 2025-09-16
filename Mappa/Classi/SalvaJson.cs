@@ -37,7 +37,7 @@ namespace Mappa.Classi
 
             foreach (var item in lista)
             {
-                if (item.Count != 3)
+                if (item.Count != 4)
                     continue; // oppure throw exception
 
                 string nome1 = item[0];
@@ -48,7 +48,9 @@ namespace Mappa.Classi
                 Punto punto1 = points.FirstOrDefault(p => p.Name == nome1);
                 Punto punto2 = points.FirstOrDefault(p => p.Name == nome2);
 
-                segmenti.Add(new Segmento(punto1, punto2));
+                bool accessible = item[3].ToLower() == "true";
+
+                segmenti.Add(new Segmento(punto1, punto2, accessible));
             }
             return segmenti;
         }

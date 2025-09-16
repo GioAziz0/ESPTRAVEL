@@ -183,7 +183,7 @@ namespace Mappa
                 if (!Controls.Contains(pictureBox))
                     Controls.Add(pictureBox);
 
-                
+
                 abilitazioneControlli(true);
 
             }
@@ -197,6 +197,7 @@ namespace Mappa
             modalitaToolStripMenuItem.Enabled = ablitazione;
             saveConfigToolStripMenuItem.Enabled = ablitazione;
             pnlSegmenti.Visible = ablitazione;
+            pnlPunti.Visible = ablitazione;
             MaximizeBox = ablitazione;
             MinimizeBox = ablitazione;
             if (ablitazione) WindowState = FormWindowState.Maximized;
@@ -308,15 +309,15 @@ namespace Mappa
             originalX = Math.Max(0, Math.Min(originalX, immagineOriginale.Width - 1));
             originalY = Math.Max(0, Math.Min(originalY, immagineOriginale.Height - 1));
 
-            Punto PuntoClick = new Punto(new Point(originalX, originalY), TrovaNome());
+            Punto PuntoClick = new Punto(new Point(originalX, originalY), TrovaNome(), IsJointSelected());
 
-            // Il resto del codice rimane uguale...
             if (btnPuntoMode.Checked)
             {
                 listaPunti.Add(PuntoClick);
                 listBoxPunti.Items.Add(PuntoClick);
 
-                DisegnaPunto(PuntoClick.CordinatePunti.X, PuntoClick.CordinatePunti.Y, PuntoClick.Name, Brushes.Red);
+                //DisegnaPunto(PuntoClick.CordinatePunti.X, PuntoClick.CordinatePunti.Y, PuntoClick.Name, Brushes.Red);
+                DisegnaPunto(PuntoClick, Brushes.Red);
                 pictureBox.Refresh();
             }
             else if (btnSegmentoMode.Checked)
@@ -347,9 +348,10 @@ namespace Mappa
                         DisegnaPunti();
                         return;
                     }
-                    Segmento segTemp = new Segmento(listBoxPuntiSeg.Items[0] as Punto, listBoxPuntiSeg.Items[1] as Punto);
+                    Segmento segTemp = new Segmento(listBoxPuntiSeg.Items[0] as Punto, listBoxPuntiSeg.Items[1] as Punto, IsAccessibleSelected());
 
                     drawSegment();
+                    
                     listBoxSegmenti.Items.Add(segTemp);
                     listaSegmenti.Add(segTemp);
                     listBoxPuntiSeg.Items.Clear();
@@ -357,16 +359,30 @@ namespace Mappa
                     if (chSegmentiContinui.Checked)
                     {
                         listBoxPuntiSeg.Items.Add(punto2);
-                        DisegnaPunto(punto2.CordinatePunti.X, punto2.CordinatePunti.Y, punto2.Name, Brushes.Green);
+                        //DisegnaPunto(punto2.CordinatePunti.X, punto2.CordinatePunti.Y, punto2.Name, Brushes.Green);
+                        DisegnaPunto(punto2, Brushes.Green);
                         pictureBox.Refresh();
                     }
                 }
                 else
                 {
-                    DisegnaPunto(puntoPiuVicino.CordinatePunti.X, puntoPiuVicino.CordinatePunti.Y, puntoPiuVicino.Name, Brushes.Green);
+                    //DisegnaPunto(puntoPiuVicino.CordinatePunti.X, puntoPiuVicino.CordinatePunti.Y, puntoPiuVicino.Name, Brushes.Green);
+                    DisegnaPunto(puntoPiuVicino, Brushes.Green);
                     pictureBox.Refresh();
                 }
             }
+        }
+
+        public bool IsJointSelected()
+        {
+            if (JointYes.Checked) return true;
+            else return false;
+        }
+
+        public bool IsAccessibleSelected()
+        {
+            if (AccessibleYes.Checked) return true;
+            else return false;
         }
 
         public string TrovaNome()
@@ -404,7 +420,28 @@ namespace Mappa
             }
         }
 
-        private void drawSegment()
+        private void DisegnaPunto(Punto punto, Brush colore)
+        {
+            using (Graphics gpr = Graphics.FromImage(img))
+            {
+                int pointSize = 70; // Dimensione del punto da disegnare
+                if (punto.IsJoint)
+                {
+                    // Disegna un cerchio
+                    gpr.FillEllipse(colore, punto.CordinatePunti.X - pointSize / 2, punto.CordinatePunti.Y - pointSize / 2, pointSize, pointSize);
+                }
+                else
+                {
+                    // Disegna un quadrato
+                    gpr.FillRectangle(colore, punto.CordinatePunti.X - pointSize / 2, punto.CordinatePunti.Y - pointSize / 2, pointSize, pointSize);
+                }
+                Font font = new Font("Arial", 60, FontStyle.Bold);
+                Brush brush = Brushes.Black;
+                gpr.DrawString(punto.Name, font, brush, new PointF(punto.CordinatePunti.X, punto.CordinatePunti.Y - 10));
+            }
+        }
+
+        /*private void drawSegment()
         {
             using (Graphics g = Graphics.FromImage(img))
             {
@@ -419,7 +456,36 @@ namespace Mappa
 
             //pictureBox.Image = img;
             DisegnaPunti();
+        }*/
+
+        private void drawSegment()
+        {
+            using (Graphics g = Graphics.FromImage(img))
+            {
+                if (listBoxPuntiSeg.Items.Count == 2)
+                {
+                    Punto punto1 = listBoxPuntiSeg.Items[0] as Punto;
+                    Punto punto2 = listBoxPuntiSeg.Items[1] as Punto;
+
+                    // Trova il segmento corrispondente nella lista, se già esiste
+                    Segmento segmento = listaSegmenti.FirstOrDefault(s =>
+                        (s.punto1 == punto1 && s.punto2 == punto2) ||
+                        (s.punto1 == punto2 && s.punto2 == punto1));
+
+                    // Se non esiste ancora, usa il valore di accessibilità selezionato
+                    bool isAccessible = segmento != null ? segmento.IsAccessible : IsAccessibleSelected();
+
+                    Color colore = isAccessible ? Color.Green : Color.Orange;
+                    using (Pen pen = new Pen(colore, 10))
+                    {
+                        g.DrawLine(pen, punto1.CordinatePunti, punto2.CordinatePunti);
+                    }
+                }
+            }
+
+            DisegnaPunti();
         }
+
 
         private float Distanza(Punto p1, Punto p2)
         {
@@ -433,14 +499,15 @@ namespace Mappa
                 // Disegna ogni punto dalla lista
                 foreach (Punto p in listaPunti)
                 {
-                    DisegnaPunto(p.CordinatePunti.X, p.CordinatePunti.Y, p.Name, Brushes.Red);
+                    //DisegnaPunto(p.CordinatePunti.X, p.CordinatePunti.Y, p.Name, Brushes.Red);
+                    DisegnaPunto(p, Brushes.Red);
                 }
             }
 
             pictureBox.Image = img;
             pictureBox.Refresh();
         }
-        public void DisegnaSegmenti()
+        /*public void DisegnaSegmenti()
         {
             using (Graphics gpr = Graphics.FromImage(img))
             {
@@ -454,7 +521,27 @@ namespace Mappa
 
             pictureBox.Image = img;
             pictureBox.Refresh();
+        }*/
+
+        public void DisegnaSegmenti()
+        {
+            using (Graphics gpr = Graphics.FromImage(img))
+            {
+                foreach (Segmento segmento in listaSegmenti)
+                {
+                    // Verde se accessibile, arancione se non accessibile
+                    Color colore = segmento.IsAccessible ? Color.Green : Color.Orange;
+                    using (Pen pen = new Pen(colore, 10))
+                    {
+                        gpr.DrawLine(pen, segmento.punto1.CordinatePunti, segmento.punto2.CordinatePunti);
+                    }
+                }
+            }
+
+            pictureBox.Image = img;
+            pictureBox.Refresh();
         }
+
 
         private void Form1_ClientSizeChanged(object sender, EventArgs e)
         {
@@ -630,7 +717,8 @@ namespace Mappa
             if (puntoSelezionato != null)
             {
                 DisegnaPunti();
-                DisegnaPunto(puntoSelezionato.CordinatePunti.X, puntoSelezionato.CordinatePunti.Y, puntoSelezionato.Name, Brushes.Blue);
+                //DisegnaPunto(puntoSelezionato.CordinatePunti.X, puntoSelezionato.CordinatePunti.Y, puntoSelezionato.Name, Brushes.Blue);
+                DisegnaPunto(puntoSelezionato, Brushes.Blue);
                 pictureBox.Refresh();
             }
         }
@@ -779,6 +867,11 @@ namespace Mappa
             graphics.DrawImage(image, 0, 0, width, height);
             graphics.Dispose();
             return resizedImage;
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

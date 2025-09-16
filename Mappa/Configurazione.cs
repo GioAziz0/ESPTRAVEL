@@ -69,7 +69,7 @@ namespace Mappa
                 {
                     if (!string.IsNullOrEmpty(txtPeso.Text))
                     {
-                        if(Convert.ToInt32(txtPeso.Text) < 0)
+                        if (Convert.ToInt32(txtPeso.Text) < 0)
                         {
                             throw new Exception("Il peso deve essere maggiore di 0");
                         }
@@ -82,6 +82,7 @@ namespace Mappa
                             Floor2 = piano2.Level,
                             Punto1 = (Punto)lstPuntiPiano1.SelectedItem!,
                             Punto2 = (Punto)lstPuntiPiano2.SelectedItem!,
+                            IsElevator = btnTipoCollegamentoAscensore.Checked,
                             Peso = peso
                         };
 
@@ -109,9 +110,31 @@ namespace Mappa
             }
         }
 
-        private void btn_collega_Click(object sender, EventArgs e)
-        {
 
+        private void btnTipoCollegamentoScala_CheckedChanged(object sender, EventArgs e)
+        {
+            AggiornaPeso();
+        }
+
+        private void btnTipoCollegamentoAscensore_CheckedChanged(object sender, EventArgs e)
+        {
+            AggiornaPeso();
+        }
+
+        private void AggiornaPeso()
+        {
+            if (txtPeso.Text != "10" || txtPeso.Text != "40") return;
+
+            if (btnTipoCollegamentoAscensore.Checked)
+            {
+                txtPeso.Text = "10";
+                txtPeso.Enabled = false;
+            }
+            else if (btnTipoCollegamentoScala.Checked)
+            {
+                txtPeso.Text = "40";
+                txtPeso.Enabled = true;
+            }
         }
     }
 }

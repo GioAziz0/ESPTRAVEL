@@ -37,6 +37,10 @@
             btn_collega = new Button();
             txtPeso = new TextBox();
             label1 = new Label();
+            panel1 = new Panel();
+            btnTipoCollegamentoAscensore = new RadioButton();
+            btnTipoCollegamentoScala = new RadioButton();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // lstPuntiPiano1
@@ -112,28 +116,64 @@
             // txtPeso
             // 
             txtPeso.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            txtPeso.Location = new Point(672, 271);
+            txtPeso.Location = new Point(59, 48);
             txtPeso.Name = "txtPeso";
             txtPeso.Size = new Size(113, 29);
             txtPeso.TabIndex = 7;
+            txtPeso.Text = "40";
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.Location = new Point(613, 275);
+            label1.Location = new Point(0, 52);
             label1.Name = "label1";
             label1.Size = new Size(53, 25);
             label1.TabIndex = 8;
             label1.Text = "Peso";
             // 
+            // panel1
+            // 
+            panel1.Controls.Add(btnTipoCollegamentoAscensore);
+            panel1.Controls.Add(label1);
+            panel1.Controls.Add(txtPeso);
+            panel1.Controls.Add(btnTipoCollegamentoScala);
+            panel1.Location = new Point(613, 246);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(172, 100);
+            panel1.TabIndex = 9;
+            // 
+            // btnTipoCollegamentoAscensore
+            // 
+            btnTipoCollegamentoAscensore.AutoSize = true;
+            btnTipoCollegamentoAscensore.Location = new Point(90, 8);
+            btnTipoCollegamentoAscensore.Name = "btnTipoCollegamentoAscensore";
+            btnTipoCollegamentoAscensore.Size = new Size(79, 19);
+            btnTipoCollegamentoAscensore.TabIndex = 1;
+            btnTipoCollegamentoAscensore.TabStop = true;
+            btnTipoCollegamentoAscensore.Text = "Ascensore";
+            btnTipoCollegamentoAscensore.UseVisualStyleBackColor = true;
+            btnTipoCollegamentoAscensore.CheckedChanged += btnTipoCollegamentoAscensore_CheckedChanged;
+            // 
+            // btnTipoCollegamentoScala
+            // 
+            btnTipoCollegamentoScala.AutoSize = true;
+            btnTipoCollegamentoScala.Checked = true;
+            btnTipoCollegamentoScala.Location = new Point(3, 8);
+            btnTipoCollegamentoScala.Name = "btnTipoCollegamentoScala";
+            btnTipoCollegamentoScala.Size = new Size(52, 19);
+            btnTipoCollegamentoScala.TabIndex = 0;
+            btnTipoCollegamentoScala.TabStop = true;
+            btnTipoCollegamentoScala.Text = "Scala";
+            btnTipoCollegamentoScala.UseVisualStyleBackColor = true;
+            btnTipoCollegamentoScala.CheckedChanged += btnTipoCollegamentoScala_CheckedChanged;
+            // 
             // Configurazione
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 402);
-            Controls.Add(label1);
-            Controls.Add(txtPeso);
+            ClientSize = new Size(1212, 402);
+            Controls.Add(panel1);
             Controls.Add(btn_collega);
             Controls.Add(label3);
             Controls.Add(listvPianiCollegati);
@@ -144,6 +184,8 @@
             Name = "Configurazione";
             Text = "Configurazione";
             FormClosing += Configurazione_FormClosing;
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -159,5 +201,8 @@
         private Button btn_collega;
         private TextBox txtPeso;
         private Label label1;
+        private Panel panel1;
+        private RadioButton btnTipoCollegamentoAscensore;
+        private RadioButton btnTipoCollegamentoScala;
     }
 }

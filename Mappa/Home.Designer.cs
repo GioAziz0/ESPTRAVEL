@@ -110,21 +110,21 @@
             // localeToolStripMenuItem
             // 
             localeToolStripMenuItem.Name = "localeToolStripMenuItem";
-            localeToolStripMenuItem.Size = new Size(146, 26);
+            localeToolStripMenuItem.Size = new Size(180, 26);
             localeToolStripMenuItem.Text = "Locale";
             localeToolStripMenuItem.Click += salvaJsonLocale;
             // 
             // cluodToolStripMenuItem
             // 
             cluodToolStripMenuItem.Name = "cluodToolStripMenuItem";
-            cluodToolStripMenuItem.Size = new Size(146, 26);
+            cluodToolStripMenuItem.Size = new Size(180, 26);
             cluodToolStripMenuItem.Text = "Cluod";
             cluodToolStripMenuItem.Click += SalvaJsonCluod;
             // 
             // entrambiToolStripMenuItem
             // 
             entrambiToolStripMenuItem.Name = "entrambiToolStripMenuItem";
-            entrambiToolStripMenuItem.Size = new Size(146, 26);
+            entrambiToolStripMenuItem.Size = new Size(180, 26);
             entrambiToolStripMenuItem.Text = "Entrambi";
             // 
             // apriJsonToolStripMenuItem
