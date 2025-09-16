@@ -70,10 +70,12 @@ namespace Mappa
 
             int altezza = (int)(ClientSize.Height * 0.9);
             int larghezza = (img.Width * altezza) / img.Height;
-            pictureBox.Size = new Size(larghezza, altezza);
+            //pictureBox.Size = new Size(larghezza, altezza);
             pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox.Image = img;
-            pictureBox.Location = new Point(ClientSize.Width / 2 - larghezza / 2, 44);
+            //pictureBox.Location = new Point(ClientSize.Width / 2 - larghezza / 2, 44);
+            pictureBox.Size = new Size(ClientSize.Width - 220 - 160, (int)(ClientSize.Height * 0.9));
+            pictureBox.Location = new Point(220, 44); // margine sinistro
             pictureBox.MouseClick += pctClick;
             pictureBox.MouseWheel += gestioneMouse;
             pictureBox.Visible = true;
@@ -98,7 +100,7 @@ namespace Mappa
 
         private void caricaToolStripMenuItem_Click(object sender, EventArgs e)  //carica immagine della mappa
         {
-            if (img != null)    //se è gia stata caricata un'immagine (resetta la mappa)
+            /*if (img != null)    //se è gia stata caricata un'immagine (resetta la mappa)
             {
                 img.Dispose();
                 listaPunti = new List<Punto>();
@@ -107,7 +109,39 @@ namespace Mappa
                 listBoxSegmenti.Items.Clear();
                 //cmbModalita.SelectedIndex = 0;
                 btnPuntoMode.Checked = true;
+
+                listaSegmenti = new List<Segmento>();
+                piano = new Piano("", new List<Segmento>(), new List<Punto>(), null, int.MinValue);
+                if (immagineOriginale != null) immagineOriginale.Dispose();
+                txtNomePiano.Clear();
+                txtLevel.Clear();
+                listBoxPuntiSeg.ClearSelected();
+                listBoxPunti.ClearSelected();
+                listBoxSegmenti.ClearSelected();
+
+            }*/
+
+            if (img != null)
+            {
+                img.Dispose();
+                if (immagineOriginale != null) immagineOriginale.Dispose();
+                listaPunti = new List<Punto>();
+                listaSegmenti = new List<Segmento>();
+                piano = new Piano("", new List<Segmento>(), new List<Punto>(), null, int.MinValue);
+
+                listBoxPunti.Items.Clear();
+                listBoxPuntiSeg.Items.Clear();
+                listBoxSegmenti.Items.Clear();
+                listBoxPunti.ClearSelected();
+                listBoxSegmenti.ClearSelected();
+                listBoxPuntiSeg.ClearSelected();
+
+                txtNomePiano.Clear();
+                txtLevel.Clear();
+
+                btnPuntoMode.Checked = true;
             }
+
 
             // Apre la finestra di dialogo per selezionare l'immagine
 
@@ -126,14 +160,30 @@ namespace Mappa
 
                 int altezza = (int)(ClientSize.Height * 0.9);
                 int larghezza = (img.Width * altezza) / img.Height;
-                pictureBox.Size = new Size(larghezza, altezza);
+                //int larghezza = ClientSize.Width - 220 - 160;
+                //pictureBox.Size = new Size(larghezza, altezza);
+                pictureBox.Size = new Size(ClientSize.Width - 220 - 160, (int)(ClientSize.Height * 0.9));
                 pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
                 pictureBox.Image = img;
-                pictureBox.Location = new Point(ClientSize.Width / 2 - larghezza / 2, 44);
-                pictureBox.MouseClick += pctClick;
-                pictureBox.MouseWheel += gestioneMouse;
+                //pictureBox.Location = new Point(ClientSize.Width / 2 - larghezza / 2, 44);
+                //pictureBox.Location = new Point(220, 44);
+                pictureBox.Location = new Point(220, 44); // margine sinistro
                 pictureBox.Visible = true;
-                Controls.Add(pictureBox);
+                /*pictureBox.MouseClick += pctClick;
+                pictureBox.MouseWheel += gestioneMouse;
+                Controls.Add(pictureBox);*/
+
+                // evita registrazioni multiple dell'evento
+                pictureBox.MouseClick -= pctClick;
+                pictureBox.MouseClick += pctClick;
+                pictureBox.MouseWheel -= gestioneMouse;
+                pictureBox.MouseWheel += gestioneMouse;
+
+                // aggiungi il controllo solo se non è già presente
+                if (!Controls.Contains(pictureBox))
+                    Controls.Add(pictureBox);
+
+                
                 abilitazioneControlli(true);
 
             }
@@ -152,29 +202,124 @@ namespace Mappa
             if (ablitazione) WindowState = FormWindowState.Maximized;
         }
 
+        //private void pctClick(object sender, MouseEventArgs e)
+        //{
+        //    // Calcola i fattori di scala per la larghezza e l'altezza
+        //    float scaleX = (float)img.Width / pictureBox.Width;
+        //    float scaleY = (float)img.Height / pictureBox.Height;
+
+        //    // Calcola la posizione corretta nell'immagine originale
+        //    int positionX = (int)(e.X * scaleX);
+        //    int positionY = (int)(e.Y * scaleY);
+
+        //    Punto PuntoClick = new Punto(new Point(positionX, positionY), TrovaNome());
+
+        //    if (/*cmbModalita.SelectedIndex == 0*/btnPuntoMode.Checked)
+        //    {
+        //        listaPunti.Add(PuntoClick);
+        //        listBoxPunti.Items.Add(PuntoClick);
+
+        //        DisegnaPunto(PuntoClick.CordinatePunti.X, PuntoClick.CordinatePunti.Y, PuntoClick.Name, Brushes.Red);
+
+        //        //pictureBox.Image = img;
+        //        pictureBox.Refresh();
+        //    }
+        //    else if (/*cmbModalita.SelectedIndex == 1*/btnSegmentoMode.Checked)
+        //    {
+        //        var listaPuntiOrdinati = listaPunti.OrderBy(p => Distanza(p, PuntoClick)).ToList();
+        //        Punto puntoPiuVicino = listaPuntiOrdinati.First();
+        //        listBoxPuntiSeg.Items.Add(puntoPiuVicino);
+
+        //        if (listBoxPuntiSeg.Items.Count == 2)
+        //        {
+        //            if (listBoxPuntiSeg.Items[0] == listBoxPuntiSeg.Items[1])
+        //            {
+        //                MessageBox.Show("I punti selezionti sono uguali");
+        //                listBoxPuntiSeg.Items.Clear();
+        //                DisegnaPunti();
+        //                return;
+        //            }
+        //            Punto punto1 = listBoxPuntiSeg.Items[0] as Punto;
+        //            Punto punto2 = listBoxPuntiSeg.Items[1] as Punto;
+        //            bool esiste = listaSegmenti.Any(segmento =>
+        //                (segmento.Nome1 + segmento.Nome2 == punto1.Name + punto2.Name) ||
+        //                (segmento.Nome1 + segmento.Nome2 == punto2.Name + punto1.Name));
+
+        //            if (esiste)
+        //            {
+        //                MessageBox.Show("Esiste gia un segmento con questi punti");
+        //                listBoxPuntiSeg.Items.Clear();
+        //                DisegnaPunti();
+        //                return;
+        //            }
+        //            Segmento segTemp = new Segmento(listBoxPuntiSeg.Items[0] as Punto, listBoxPuntiSeg.Items[1] as Punto);
+        //            // Aggiunge il nuovo segmento
+        //            drawSegment();
+        //            listBoxSegmenti.Items.Add(segTemp);
+        //            listaSegmenti.Add(segTemp);
+        //            listBoxPuntiSeg.Items.Clear();
+
+        //            if (chSegmentiContinui.Checked)
+        //            {
+        //                listBoxPuntiSeg.Items.Add(punto2);
+        //                DisegnaPunto(punto2.CordinatePunti.X, punto2.CordinatePunti.Y, punto2.Name, Brushes.Green);
+        //                pictureBox.Refresh();
+        //            }
+        //        }
+        //        else
+        //        {
+        //            DisegnaPunto(puntoPiuVicino.CordinatePunti.X, puntoPiuVicino.CordinatePunti.Y, puntoPiuVicino.Name, Brushes.Green);
+        //            pictureBox.Refresh();
+
+        //        }
+
+        //    }
+        //}
+
         private void pctClick(object sender, MouseEventArgs e)
         {
-            // Calcola i fattori di scala per la larghezza e l'altezza
-            float scaleX = (float)img.Width / pictureBox.Width;
-            float scaleY = (float)img.Height / pictureBox.Height;
+            if (immagineOriginale == null) return;
 
-            // Calcola la posizione corretta nell'immagine originale
-            int positionX = (int)(e.X * scaleX);
-            int positionY = (int)(e.Y * scaleY);
+            // Calcola il rapporto di scaling per mantenere le proporzioni
+            float ratioX = (float)pictureBox.Width / immagineOriginale.Width;
+            float ratioY = (float)pictureBox.Height / immagineOriginale.Height;
+            float ratio = Math.Min(ratioX, ratioY);
 
-            Punto PuntoClick = new Punto(new Point(positionX, positionY), TrovaNome());
+            // Calcola le dimensioni dell'immagine visualizzata
+            int displayWidth = (int)(immagineOriginale.Width * ratio);
+            int displayHeight = (int)(immagineOriginale.Height * ratio);
 
-            if (/*cmbModalita.SelectedIndex == 0*/btnPuntoMode.Checked)
+            // Calcola i margini per centrare l'immagine
+            int offsetX = (pictureBox.Width - displayWidth) / 2;
+            int offsetY = (pictureBox.Height - displayHeight) / 2;
+
+            // Verifica se il click è dentro l'area dell'immagine
+            if (e.X < offsetX || e.X >= offsetX + displayWidth ||
+                e.Y < offsetY || e.Y >= offsetY + displayHeight)
+            {
+                return; // Click fuori dall'immagine
+            }
+
+            // Converti le coordinate del click in coordinate dell'immagine originale
+            int originalX = (int)((e.X - offsetX) / ratio);
+            int originalY = (int)((e.Y - offsetY) / ratio);
+
+            // Assicurati che le coordinate siano dentro i limiti dell'immagine
+            originalX = Math.Max(0, Math.Min(originalX, immagineOriginale.Width - 1));
+            originalY = Math.Max(0, Math.Min(originalY, immagineOriginale.Height - 1));
+
+            Punto PuntoClick = new Punto(new Point(originalX, originalY), TrovaNome());
+
+            // Il resto del codice rimane uguale...
+            if (btnPuntoMode.Checked)
             {
                 listaPunti.Add(PuntoClick);
                 listBoxPunti.Items.Add(PuntoClick);
 
                 DisegnaPunto(PuntoClick.CordinatePunti.X, PuntoClick.CordinatePunti.Y, PuntoClick.Name, Brushes.Red);
-
-                //pictureBox.Image = img;
                 pictureBox.Refresh();
             }
-            else if (/*cmbModalita.SelectedIndex == 1*/btnSegmentoMode.Checked)
+            else if (btnSegmentoMode.Checked)
             {
                 var listaPuntiOrdinati = listaPunti.OrderBy(p => Distanza(p, PuntoClick)).ToList();
                 Punto puntoPiuVicino = listaPuntiOrdinati.First();
@@ -184,7 +329,7 @@ namespace Mappa
                 {
                     if (listBoxPuntiSeg.Items[0] == listBoxPuntiSeg.Items[1])
                     {
-                        MessageBox.Show("I punti selezionti sono uguali");
+                        MessageBox.Show("I punti selezionati sono uguali");
                         listBoxPuntiSeg.Items.Clear();
                         DisegnaPunti();
                         return;
@@ -197,13 +342,13 @@ namespace Mappa
 
                     if (esiste)
                     {
-                        MessageBox.Show("Esiste gia un segmento con questi punti");
+                        MessageBox.Show("Esiste già un segmento con questi punti");
                         listBoxPuntiSeg.Items.Clear();
                         DisegnaPunti();
                         return;
                     }
                     Segmento segTemp = new Segmento(listBoxPuntiSeg.Items[0] as Punto, listBoxPuntiSeg.Items[1] as Punto);
-                    // Aggiunge il nuovo segmento
+
                     drawSegment();
                     listBoxSegmenti.Items.Add(segTemp);
                     listaSegmenti.Add(segTemp);
@@ -220,9 +365,7 @@ namespace Mappa
                 {
                     DisegnaPunto(puntoPiuVicino.CordinatePunti.X, puntoPiuVicino.CordinatePunti.Y, puntoPiuVicino.Name, Brushes.Green);
                     pictureBox.Refresh();
-
                 }
-
             }
         }
 
@@ -362,8 +505,10 @@ namespace Mappa
             {
                 int altezza = (int)(ClientSize.Height * 0.9);
                 int larghezza = (img.Width * altezza) / img.Height;
-                pictureBox.Size = new Size(larghezza, altezza);
-                pictureBox.Location = new Point(ClientSize.Width / 2 - larghezza / 2, 44);
+                //pictureBox.Size = new Size(larghezza, altezza);
+                //pictureBox.Location = new Point(ClientSize.Width / 2 - larghezza / 2, 44);
+                pictureBox.Size = new Size(ClientSize.Width - 220 - 160, (int)(ClientSize.Height * 0.9));
+                pictureBox.Location = new Point(220, 44); // margine sinistro
                 pnlSegmenti.Location = new Point(ClientSize.Width - 160, 37);
 
                 DisegnaPunti(); // Ridisegna i punti quando la finestra viene ridimensionata
@@ -579,8 +724,8 @@ namespace Mappa
                         Bitmap immagineOrg = new Bitmap(immagineOriginale);
                         img = immagineOrg;
 
-                        DisegnaPunti();
                         DisegnaSegmenti();
+                        DisegnaPunti();
                         pictureBox.Image = img;
                     }
                     else throw new Exception("Nome del punto gia usato");
