@@ -54,7 +54,7 @@ namespace Mappa
         private void aggiungiPianoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var existingLevels = _piani.Select(p => p.Level).ToList();
-            using (var form = new Mappatura(existingLevels))
+            using (var form = new Mappatura(existingLevels, _collegamenti))
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {
@@ -79,7 +79,7 @@ namespace Mappa
                                    .Select(p => p.Level)
                                    .ToList();
 
-            using (var form = new Mappatura(pianoSelezionato, otherLevels))
+            using (var form = new Mappatura(pianoSelezionato, otherLevels, _collegamenti))
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {
@@ -312,6 +312,30 @@ namespace Mappa
             catch (Exception ex)
             {
                 MessageBox.Show($"Errore nella rimozione del punto.{ex.Message}!!!");
+            }
+        }
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+
+            var result = MessageBox.Show(
+                "Eventuali modifiche non salvate saranno perse.\nVuoi davvero uscire?",
+                "Attenzione",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (result == DialogResult.No)
+            {
+                e.Cancel = true;
+            }
+
+        }
+
+        private void listViewPiani_DoubleClick(object sender, EventArgs e)
+        {
+            if(listViewPiani.SelectedItems.Count > 0)
+            {
+                aPToolStripMenuItem_Click(sender, e);
             }
         }
     }

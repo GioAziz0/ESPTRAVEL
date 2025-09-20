@@ -41,6 +41,7 @@
             listBoxPunti = new ListBox();
             listBoxPuntiSeg = new ListBox();
             pnlSegmenti = new Panel();
+            ModificaSegmento = new Button();
             txtLevel = new TextBox();
             panel1 = new Panel();
             panel3 = new Panel();
@@ -165,6 +166,7 @@
             // 
             // pnlSegmenti
             // 
+            pnlSegmenti.Controls.Add(ModificaSegmento);
             pnlSegmenti.Controls.Add(txtLevel);
             pnlSegmenti.Controls.Add(panel1);
             pnlSegmenti.Controls.Add(txtNomePiano);
@@ -172,8 +174,18 @@
             pnlSegmenti.Controls.Add(listBoxPuntiSeg);
             pnlSegmenti.Location = new Point(841, 35);
             pnlSegmenti.Name = "pnlSegmenti";
-            pnlSegmenti.Size = new Size(131, 644);
+            pnlSegmenti.Size = new Size(131, 746);
             pnlSegmenti.TabIndex = 6;
+            // 
+            // ModificaSegmento
+            // 
+            ModificaSegmento.Location = new Point(4, 647);
+            ModificaSegmento.Name = "ModificaSegmento";
+            ModificaSegmento.Size = new Size(124, 38);
+            ModificaSegmento.TabIndex = 13;
+            ModificaSegmento.Text = "Modifica segmento selezionato";
+            ModificaSegmento.UseVisualStyleBackColor = true;
+            ModificaSegmento.Click += ModificaSegmento_Click;
             // 
             // txtLevel
             // 
@@ -263,30 +275,30 @@
             label4.AutoSize = true;
             label4.Location = new Point(13, 0);
             label4.Name = "label4";
-            label4.Size = new Size(78, 15);
+            label4.Size = new Size(56, 15);
             label4.TabIndex = 16;
-            label4.Text = "È uno snodo?";
+            label4.Text = "Tipologia";
             // 
             // JointNo
             // 
             JointNo.AutoSize = true;
-            JointNo.Location = new Point(60, 17);
+            JointNo.Location = new Point(3, 42);
             JointNo.Name = "JointNo";
-            JointNo.Size = new Size(41, 19);
+            JointNo.Size = new Size(92, 19);
             JointNo.TabIndex = 15;
-            JointNo.Text = "No";
+            JointNo.Text = "Destinazione";
             JointNo.UseVisualStyleBackColor = true;
             // 
             // JointYes
             // 
             JointYes.AutoSize = true;
             JointYes.Checked = true;
-            JointYes.Location = new Point(13, 17);
+            JointYes.Location = new Point(3, 17);
             JointYes.Name = "JointYes";
-            JointYes.Size = new Size(34, 19);
+            JointYes.Size = new Size(59, 19);
             JointYes.TabIndex = 14;
             JointYes.TabStop = true;
-            JointYes.Text = "Si";
+            JointYes.Text = "Snodo";
             JointYes.UseVisualStyleBackColor = true;
             // 
             // label1
@@ -339,6 +351,7 @@
             listBoxSegmenti.Name = "listBoxSegmenti";
             listBoxSegmenti.Size = new Size(124, 274);
             listBoxSegmenti.TabIndex = 6;
+            listBoxSegmenti.SelectedIndexChanged += listBoxSegmenti_SelectedIndexChanged;
             // 
             // label2
             // 
@@ -383,7 +396,7 @@
             // 
             // trackBar1
             // 
-            trackBar1.Location = new Point(23, 504);
+            trackBar1.Location = new Point(32, 491);
             trackBar1.Name = "trackBar1";
             trackBar1.Size = new Size(104, 45);
             trackBar1.TabIndex = 11;
@@ -398,14 +411,14 @@
             pnlPunti.Controls.Add(label3);
             pnlPunti.Location = new Point(12, 38);
             pnlPunti.Name = "pnlPunti";
-            pnlPunti.Size = new Size(200, 599);
+            pnlPunti.Size = new Size(200, 743);
             pnlPunti.TabIndex = 12;
             // 
             // Mappatura
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(984, 691);
+            ClientSize = new Size(984, 778);
             Controls.Add(pnlPunti);
             Controls.Add(pnlSegmenti);
             Controls.Add(menuStrip1);
@@ -469,5 +482,6 @@
         private RadioButton AccessibleNo;
         private RadioButton AccessibleYes;
         private Panel pnlPunti;
+        private Button ModificaSegmento;
     }
 }

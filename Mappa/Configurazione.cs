@@ -30,6 +30,8 @@ namespace Mappa
             AggiungiPunti();
             lblPiano1.Text = "Lista punit di: " + piano1.Name;
             lblPiano2.Text = "Lista punti di: " + piano2.Name;
+            chkAB.Text = $"Percorribile da '{piano1.Name}' a '{piano2.Name}'";
+            chkBA.Text = $"Percorribile da '{piano2.Name}' a '{piano1.Name}'";
         }
 
         private void ConfigureListView()
@@ -82,8 +84,9 @@ namespace Mappa
                             Floor2 = piano2.Level,
                             Punto1 = (Punto)lstPuntiPiano1.SelectedItem!,
                             Punto2 = (Punto)lstPuntiPiano2.SelectedItem!,
-                            IsElevator = btnTipoCollegamentoAscensore.Checked,
-                            Peso = peso
+                            IsAccessible = btnTipoCollegamentoAscensore.Checked,
+                            Peso = peso,
+                            Direzione = chkAB.Checked && chkBA.Checked ? 0 : (chkAB.Checked ? 1 : (chkBA.Checked ? 2 : 0))
                         };
 
                         this.DialogResult = DialogResult.OK;
@@ -123,18 +126,20 @@ namespace Mappa
 
         private void AggiornaPeso()
         {
-            if (txtPeso.Text != "10" || txtPeso.Text != "40") return;
+            //MessageBox.Show("PRIMA"+txtPeso.Text);
+            //if (txtPeso.Text != "10" || txtPeso.Text != "40") return;
 
             if (btnTipoCollegamentoAscensore.Checked)
             {
                 txtPeso.Text = "10";
-                txtPeso.Enabled = false;
+                //MessageBox.Show("ASCENSORE");
             }
             else if (btnTipoCollegamentoScala.Checked)
             {
                 txtPeso.Text = "40";
-                txtPeso.Enabled = true;
+                //MessageBox.Show("SCALA");
             }
+            //MessageBox.Show("DOPO" + txtPeso.Text);
         }
     }
 }

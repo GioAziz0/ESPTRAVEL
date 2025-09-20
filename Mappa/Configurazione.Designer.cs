@@ -38,6 +38,10 @@
             txtPeso = new TextBox();
             label1 = new Label();
             panel1 = new Panel();
+            chkBA = new CheckBox();
+            chkAB = new CheckBox();
+            label4 = new Label();
+            label2 = new Label();
             btnTipoCollegamentoAscensore = new RadioButton();
             btnTipoCollegamentoScala = new RadioButton();
             panel1.SuspendLayout();
@@ -50,7 +54,7 @@
             lstPuntiPiano1.ItemHeight = 21;
             lstPuntiPiano1.Location = new Point(12, 47);
             lstPuntiPiano1.Name = "lstPuntiPiano1";
-            lstPuntiPiano1.Size = new Size(250, 340);
+            lstPuntiPiano1.Size = new Size(250, 403);
             lstPuntiPiano1.TabIndex = 0;
             // 
             // lstPuntiPiano2
@@ -60,7 +64,7 @@
             lstPuntiPiano2.ItemHeight = 21;
             lstPuntiPiano2.Location = new Point(321, 47);
             lstPuntiPiano2.Name = "lstPuntiPiano2";
-            lstPuntiPiano2.Size = new Size(250, 340);
+            lstPuntiPiano2.Size = new Size(250, 403);
             lstPuntiPiano2.TabIndex = 1;
             // 
             // lblPiano1
@@ -105,7 +109,7 @@
             // btn_collega
             // 
             btn_collega.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btn_collega.Location = new Point(613, 349);
+            btn_collega.Location = new Point(613, 424);
             btn_collega.Name = "btn_collega";
             btn_collega.Size = new Size(172, 38);
             btn_collega.TabIndex = 6;
@@ -134,24 +138,70 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(chkBA);
+            panel1.Controls.Add(chkAB);
+            panel1.Controls.Add(label4);
+            panel1.Controls.Add(label2);
             panel1.Controls.Add(btnTipoCollegamentoAscensore);
             panel1.Controls.Add(label1);
             panel1.Controls.Add(txtPeso);
             panel1.Controls.Add(btnTipoCollegamentoScala);
             panel1.Location = new Point(613, 246);
             panel1.Name = "panel1";
-            panel1.Size = new Size(172, 100);
+            panel1.Size = new Size(172, 172);
             panel1.TabIndex = 9;
+            // 
+            // chkBA
+            // 
+            chkBA.AutoSize = true;
+            chkBA.Checked = true;
+            chkBA.CheckState = CheckState.Checked;
+            chkBA.Location = new Point(5, 147);
+            chkBA.Name = "chkBA";
+            chkBA.Size = new Size(132, 19);
+            chkBA.TabIndex = 12;
+            chkBA.Text = "Percorribile da A a B";
+            chkBA.UseVisualStyleBackColor = true;
+            // 
+            // chkAB
+            // 
+            chkAB.AutoSize = true;
+            chkAB.Checked = true;
+            chkAB.CheckState = CheckState.Checked;
+            chkAB.Location = new Point(5, 122);
+            chkAB.Name = "chkAB";
+            chkAB.Size = new Size(132, 19);
+            chkAB.TabIndex = 11;
+            chkAB.Text = "Percorribile da A a B";
+            chkAB.UseVisualStyleBackColor = true;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(5, 98);
+            label4.Name = "label4";
+            label4.Size = new Size(162, 15);
+            label4.TabIndex = 10;
+            label4.Text = "Il collegamento è accessibile?";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(3, 6);
+            label2.Name = "label2";
+            label2.Size = new Size(162, 15);
+            label2.TabIndex = 9;
+            label2.Text = "Il collegamento è accessibile?";
             // 
             // btnTipoCollegamentoAscensore
             // 
             btnTipoCollegamentoAscensore.AutoSize = true;
-            btnTipoCollegamentoAscensore.Location = new Point(90, 8);
+            btnTipoCollegamentoAscensore.Location = new Point(90, 24);
             btnTipoCollegamentoAscensore.Name = "btnTipoCollegamentoAscensore";
-            btnTipoCollegamentoAscensore.Size = new Size(79, 19);
+            btnTipoCollegamentoAscensore.Size = new Size(34, 19);
             btnTipoCollegamentoAscensore.TabIndex = 1;
             btnTipoCollegamentoAscensore.TabStop = true;
-            btnTipoCollegamentoAscensore.Text = "Ascensore";
+            btnTipoCollegamentoAscensore.Text = "Si";
             btnTipoCollegamentoAscensore.UseVisualStyleBackColor = true;
             btnTipoCollegamentoAscensore.CheckedChanged += btnTipoCollegamentoAscensore_CheckedChanged;
             // 
@@ -159,12 +209,12 @@
             // 
             btnTipoCollegamentoScala.AutoSize = true;
             btnTipoCollegamentoScala.Checked = true;
-            btnTipoCollegamentoScala.Location = new Point(3, 8);
+            btnTipoCollegamentoScala.Location = new Point(3, 24);
             btnTipoCollegamentoScala.Name = "btnTipoCollegamentoScala";
-            btnTipoCollegamentoScala.Size = new Size(52, 19);
+            btnTipoCollegamentoScala.Size = new Size(41, 19);
             btnTipoCollegamentoScala.TabIndex = 0;
             btnTipoCollegamentoScala.TabStop = true;
-            btnTipoCollegamentoScala.Text = "Scala";
+            btnTipoCollegamentoScala.Text = "No";
             btnTipoCollegamentoScala.UseVisualStyleBackColor = true;
             btnTipoCollegamentoScala.CheckedChanged += btnTipoCollegamentoScala_CheckedChanged;
             // 
@@ -172,7 +222,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1212, 402);
+            ClientSize = new Size(1201, 513);
             Controls.Add(panel1);
             Controls.Add(btn_collega);
             Controls.Add(label3);
@@ -204,5 +254,9 @@
         private Panel panel1;
         private RadioButton btnTipoCollegamentoAscensore;
         private RadioButton btnTipoCollegamentoScala;
+        private Label label2;
+        private CheckBox chkBA;
+        private CheckBox chkAB;
+        private Label label4;
     }
 }

@@ -29,6 +29,7 @@ namespace Mappa
         List<Segmento> listaSegmenti;
         string URL;
         List<int> livelliUtilizzati;
+        private List<CollegaPunti> collegamentiPiani;
 
         public Mappatura(List<int> livelliUtilizzati)
         {
@@ -48,6 +49,29 @@ namespace Mappa
                      new List<Punto>(pianoOriginale.Punti),
                      pianoOriginale.Img, pianoOriginale.Level);
             CaricaPiano();
+            txtLevel.Text = piano.Level.ToString();
+        }
+
+        public Mappatura(List<int> livelliUtilizzati, List<CollegaPunti> collegamentiPiani = null)
+        {
+            InitializeComponent();
+            inizializzazioneInComune();
+            piano = new Piano("", new List<Segmento>(), new List<Punto>(), null, int.MinValue);
+            this.livelliUtilizzati = new List<int>(livelliUtilizzati);
+            this.collegamentiPiani = collegamentiPiani ?? new List<CollegaPunti>();
+            abilitazioneControlli(false);
+        }
+
+        public Mappatura(Piano pianoOriginale, List<int> livelliUtilizzati, List<CollegaPunti> collegamentiPiani = null)
+        {
+            InitializeComponent();
+            inizializzazioneInComune();
+            piano = new Piano(pianoOriginale.Name,
+                     new List<Segmento>(pianoOriginale.Segmenti),
+                     new List<Punto>(pianoOriginale.Punti),
+                     pianoOriginale.Img, pianoOriginale.Level);
+            CaricaPiano();
+            this.collegamentiPiani = collegamentiPiani ?? new List<CollegaPunti>();
             txtLevel.Text = piano.Level.ToString();
         }
 
@@ -351,7 +375,7 @@ namespace Mappa
                     Segmento segTemp = new Segmento(listBoxPuntiSeg.Items[0] as Punto, listBoxPuntiSeg.Items[1] as Punto, IsAccessibleSelected());
 
                     drawSegment();
-                    
+
                     listBoxSegmenti.Items.Add(segTemp);
                     listaSegmenti.Add(segTemp);
                     listBoxPuntiSeg.Items.Clear();
@@ -505,6 +529,7 @@ namespace Mappa
             }
 
             pictureBox.Image = img;
+            DisegnaCollegamentiPiani();
             pictureBox.Refresh();
         }
         /*public void DisegnaSegmenti()
@@ -725,6 +750,16 @@ namespace Mappa
 
         private void cancellaConfiguToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            var result = MessageBox.Show(
+                "Continuando verranno perse tutte le modifiche del piano. Continuare?",
+                "Attenzione",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (result == DialogResult.No)
+            {
+                return;
+            }
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
@@ -872,6 +907,96 @@ namespace Mappa
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void DisegnaCollegamentiPiani()
+        {
+            if (collegamentiPiani == null) return;
+
+            using (Graphics g = Graphics.FromImage(img))
+            {
+                foreach (var collegamento in collegamentiPiani)
+                {
+                    // Se il collegamento riguarda questo piano
+                    if (collegamento.Floor1 == piano.Level || collegamento.Floor2 == piano.Level)
+                    {
+                        // Prendi il punto del piano corrente
+                        Punto punto = collegamento.Floor1 == piano.Level ? collegamento.Punto1 : collegamento.Punto2;
+
+                        int size = 60;
+                        int x = punto.CordinatePunti.X - size / 2;
+                        int y = punto.CordinatePunti.Y - size / 2;
+
+                        if (collegamento.IsAccessible)
+                        {
+                            // Rettangolo per ascensore
+                            g.FillRectangle(Brushes.BlueViolet, x, y, size, size);
+                        }
+                        else
+                        {
+                            // Triangolo per scala
+                            Point[] triangle = new Point[]
+                            {
+                        new Point(x + size / 2, y),           // top
+                        new Point(x, y + size),               // bottom left
+                        new Point(x + size, y + size)         // bottom right
+                            };
+                            g.FillPolygon(Brushes.BlueViolet, triangle);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void listBoxSegmenti_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Segmento segmentoSelezionato = listBoxSegmenti.SelectedItem as Segmento;
+            if (segmentoSelezionato != null)
+            {
+                //colora il segmento selezionato di blu
+                DisegnaSegmenti();
+                using (Graphics g = Graphics.FromImage(img))
+                {
+                    Color colore = Color.Blue;
+                    using (Pen pen = new Pen(colore, 10))
+                    {
+                        g.DrawLine(pen, segmentoSelezionato.punto1.CordinatePunti, segmentoSelezionato.punto2.CordinatePunti);
+                    }
+                }
+                pictureBox.Refresh();
+            }
+        }
+
+        private void ModificaSegmento_Click(object sender, EventArgs e)
+        {
+            if (listBoxSegmenti.SelectedItem is Segmento segmento)
+            {
+                Segmento temp = segmento;
+                using (var form = new ModificaSegmento(segmento))
+                {
+                    if (form.ShowDialog() == DialogResult.OK)
+                    {
+                        segmento.IsAccessible = form.IsAccessible;
+                        segmento.Difficolta.AtoB_open = form.AtoB_Open;
+                        segmento.Difficolta.BtoA_open = form.BtoA_Open;
+                        segmento.Difficolta.AtoB_fattore = form.AtoB_Fattore;
+                        segmento.Difficolta.BtoA_fattore = form.BtoA_Fattore;
+                        //MessageBox con tutte le variabili cambiate
+                        MessageBox.Show($"IsAccessible: {segmento.IsAccessible}\nAtoB_open: {segmento.Difficolta.AtoB_open}\nBtoA_open: {segmento.Difficolta.BtoA_open}\nAtoB_fattore: {segmento.Difficolta.AtoB_fattore}\nBtoA_fattore: {segmento.Difficolta.BtoA_fattore}");
+                        /*DisegnaSegmenti();*/
+                        ////////////////////////
+                        listaSegmenti.Remove(temp);
+                        listaSegmenti.Add(segmento);
+                        img = new Bitmap(immagineOriginale);
+                        DisegnaSegmenti();
+                        DisegnaPunti();
+                        pictureBox.Image = img;
+                        ///////////////////////
+
+                    }
+                }
+            }
+            listBoxSegmenti.SelectedItem = null;
         }
     }
 }

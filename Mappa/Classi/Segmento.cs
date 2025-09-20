@@ -14,6 +14,7 @@ namespace Mappa.Classi
         public Punto punto1 { get; set; }
         public Punto punto2 { get; set; }
         public bool IsAccessible { get; set; }
+        public DifficoltaSegmento Difficolta { get; set; } = new DifficoltaSegmento();
         public Segmento() { }
         public Segmento(Punto P1, Punto P2)
         {
@@ -32,6 +33,16 @@ namespace Mappa.Classi
             Peso = Math.Sqrt(Math.Pow(P1.CordinatePunti.X - P2.CordinatePunti.X, 2) + Math.Pow(P1.CordinatePunti.Y - P2.CordinatePunti.Y, 2));
             IsAccessible = accessible;
         }
+        public Segmento(Punto P1, Punto P2, bool accessible, DifficoltaSegmento difficolta)
+        {
+            punto1 = P1;
+            punto2 = P2;
+            Nome1 = P1.Name;
+            Nome2 = P2.Name;
+            Peso = Math.Sqrt(Math.Pow(P1.CordinatePunti.X - P2.CordinatePunti.X, 2) + Math.Pow(P1.CordinatePunti.Y - P2.CordinatePunti.Y, 2));
+            IsAccessible = accessible;
+            Difficolta = difficolta;
+        }
 
         public override string ToString()
         {
@@ -45,6 +56,10 @@ namespace Mappa.Classi
             ciao.Add(Nome2);
             ciao.Add(Peso.ToString());
             ciao.Add(IsAccessible.ToString());
+            ciao.Add(Difficolta.AtoB_open.ToString());
+            ciao.Add(Difficolta.BtoA_open.ToString());
+            ciao.Add(Difficolta.AtoB_fattore.ToString());
+            ciao.Add(Difficolta.BtoA_fattore.ToString());
             return ciao;
         }
     }

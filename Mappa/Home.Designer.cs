@@ -38,8 +38,6 @@
             apriCollegaPianiToolStripMenuItem = new ToolStripMenuItem();
             salvaJsonToolStripMenuItem = new ToolStripMenuItem();
             localeToolStripMenuItem = new ToolStripMenuItem();
-            cluodToolStripMenuItem = new ToolStripMenuItem();
-            entrambiToolStripMenuItem = new ToolStripMenuItem();
             apriJsonToolStripMenuItem = new ToolStripMenuItem();
             listViewPiani = new ListView();
             pnlCollegaPiani = new Panel();
@@ -102,7 +100,7 @@
             // 
             // salvaJsonToolStripMenuItem
             // 
-            salvaJsonToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { localeToolStripMenuItem, cluodToolStripMenuItem, entrambiToolStripMenuItem });
+            salvaJsonToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { localeToolStripMenuItem });
             salvaJsonToolStripMenuItem.Name = "salvaJsonToolStripMenuItem";
             salvaJsonToolStripMenuItem.Size = new Size(96, 25);
             salvaJsonToolStripMenuItem.Text = "Salva Json";
@@ -113,19 +111,6 @@
             localeToolStripMenuItem.Size = new Size(180, 26);
             localeToolStripMenuItem.Text = "Locale";
             localeToolStripMenuItem.Click += salvaJsonLocale;
-            // 
-            // cluodToolStripMenuItem
-            // 
-            cluodToolStripMenuItem.Name = "cluodToolStripMenuItem";
-            cluodToolStripMenuItem.Size = new Size(180, 26);
-            cluodToolStripMenuItem.Text = "Cluod";
-            cluodToolStripMenuItem.Click += SalvaJsonCluod;
-            // 
-            // entrambiToolStripMenuItem
-            // 
-            entrambiToolStripMenuItem.Name = "entrambiToolStripMenuItem";
-            entrambiToolStripMenuItem.Size = new Size(180, 26);
-            entrambiToolStripMenuItem.Text = "Entrambi";
             // 
             // apriJsonToolStripMenuItem
             // 
@@ -143,6 +128,7 @@
             listViewPiani.Size = new Size(300, 375);
             listViewPiani.TabIndex = 2;
             listViewPiani.UseCompatibleStateImageBehavior = false;
+            listViewPiani.DoubleClick += listViewPiani_DoubleClick;
             // 
             // pnlCollegaPiani
             // 
@@ -274,8 +260,6 @@
         private ToolStripMenuItem salvaJsonToolStripMenuItem;
         private ToolStripMenuItem apriJsonToolStripMenuItem;
         private ToolStripMenuItem localeToolStripMenuItem;
-        private ToolStripMenuItem cluodToolStripMenuItem;
-        private ToolStripMenuItem entrambiToolStripMenuItem;
         private ListView listViewPiani;
         private ToolStripMenuItem apriCollegaPianiToolStripMenuItem;
         private Panel pnlCollegaPiani;
