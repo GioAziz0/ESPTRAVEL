@@ -108,7 +108,7 @@
             // localeToolStripMenuItem
             // 
             localeToolStripMenuItem.Name = "localeToolStripMenuItem";
-            localeToolStripMenuItem.Size = new Size(180, 26);
+            localeToolStripMenuItem.Size = new Size(126, 26);
             localeToolStripMenuItem.Text = "Locale";
             localeToolStripMenuItem.Click += salvaJsonLocale;
             // 
@@ -242,7 +242,7 @@
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
             Name = "Home";
-            Text = "Homecs";
+            Text = "Mapforge home";
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             pnlCollegaPiani.ResumeLayout(false);

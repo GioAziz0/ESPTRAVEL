@@ -15,6 +15,7 @@ using System.Net.Mime;
 using System.Drawing.Configuration;
 using Mappa.Classi;
 using System.Windows.Input;
+using System.Security.Policy;
 
 
 namespace Mappa
@@ -30,6 +31,9 @@ namespace Mappa
         string URL;
         List<int> livelliUtilizzati;
         private List<CollegaPunti> collegamentiPiani;
+        int pointSize = 70; // Dimensione del punto da disegnare
+        private bool _suppressClosePrompt = false; // Variabile per sopprimere il prompt di chiusura
+
 
         public Mappatura(List<int> livelliUtilizzati)
         {
@@ -448,7 +452,7 @@ namespace Mappa
         {
             using (Graphics gpr = Graphics.FromImage(img))
             {
-                int pointSize = 70; // Dimensione del punto da disegnare
+                //int pointSize = 70; // Dimensione del punto da disegnare
                 if (punto.IsJoint)
                 {
                     // Disegna un cerchio
@@ -459,9 +463,31 @@ namespace Mappa
                     // Disegna un quadrato
                     gpr.FillRectangle(colore, punto.CordinatePunti.X - pointSize / 2, punto.CordinatePunti.Y - pointSize / 2, pointSize, pointSize);
                 }
-                Font font = new Font("Arial", 60, FontStyle.Bold);
-                Brush brush = Brushes.Black;
-                gpr.DrawString(punto.Name, font, brush, new PointF(punto.CordinatePunti.X, punto.CordinatePunti.Y - 10));
+
+                //Font font = new Font("Arial", 60, FontStyle.Bold);
+                //Brush brush = Brushes.Black;
+                //gpr.DrawString(punto.Name, font, brush, new PointF(punto.CordinatePunti.X, punto.CordinatePunti.Y - 10));
+
+                // Font proporzionale alla dimensione del punto
+                /*using (Font font = new Font("Arial", Math.Max(8, pointSize / 2), FontStyle.Bold))
+                {
+                    gpr.DrawString(punto.Name, font, Brushes.Black, new PointF(punto.CordinatePunti.X, punto.CordinatePunti.Y - pointSize / 4));
+                }*/
+
+                // Calcolo proporzionale del font rispetto al punto
+                float fontSize = (60f / 70f) * pointSize;
+                float offsetY = (10f / 70f) * pointSize;
+
+
+                using (Font font = new Font("Arial", fontSize, FontStyle.Bold))
+                {
+                    gpr.DrawString(punto.Name, font, Brushes.Black, new PointF(punto.CordinatePunti.X, punto.CordinatePunti.Y - offsetY));
+                }
+
+                ////////////
+                ///la posizione dello slider = misura del punto di partenza
+
+                /////////////////
             }
         }
 
@@ -500,7 +526,11 @@ namespace Mappa
                     bool isAccessible = segmento != null ? segmento.IsAccessible : IsAccessibleSelected();
 
                     Color colore = isAccessible ? Color.Green : Color.Orange;
-                    using (Pen pen = new Pen(colore, 10))
+
+                    // Spessore proporzionale alla dimensione dei punti
+                    int penWidth = Math.Max(2, pointSize / 4);
+
+                    using (Pen pen = new Pen(colore, penWidth))
                     {
                         g.DrawLine(pen, punto1.CordinatePunti, punto2.CordinatePunti);
                     }
@@ -556,7 +586,11 @@ namespace Mappa
                 {
                     // Verde se accessibile, arancione se non accessibile
                     Color colore = segmento.IsAccessible ? Color.Green : Color.Orange;
-                    using (Pen pen = new Pen(colore, 10))
+
+                    // Spessore proporzionale alla dimensione dei punti
+                    int penWidth = Math.Max(2, pointSize / 4);
+
+                    using (Pen pen = new Pen(colore, penWidth))
                     {
                         gpr.DrawLine(pen, segmento.punto1.CordinatePunti, segmento.punto2.CordinatePunti);
                     }
@@ -655,8 +689,8 @@ namespace Mappa
                     Bitmap immagineOrg = new Bitmap(immagineOriginale);
                     img = immagineOrg;
 
-                    DisegnaPunti();
                     DisegnaSegmenti();
+                    DisegnaPunti();
 
                     pictureBox.Image = img;
                 }
@@ -717,7 +751,8 @@ namespace Mappa
                             piano.Segmenti = new List<Segmento>(listaSegmenti);
                             piano.Img = immagineOriginale;
                             piano.Level = Convert.ToInt32(txtLevel.Text);
-                            Mappatura_FormClosed(null, null);
+                            //Mappatura_FormClosed(null, null);
+                            _suppressClosePrompt = true;
                             this.DialogResult = DialogResult.OK;
                             this.Close();
                         }
@@ -745,12 +780,19 @@ namespace Mappa
                 //DisegnaPunto(puntoSelezionato.CordinatePunti.X, puntoSelezionato.CordinatePunti.Y, puntoSelezionato.Name, Brushes.Blue);
                 DisegnaPunto(puntoSelezionato, Brushes.Blue);
                 pictureBox.Refresh();
+
+                txtNomePunto.Enabled = true;
+                btnModificaNomePunto.Enabled = true;
+                chkJoint.Enabled = true;
+                txtNomePunto.Text = puntoSelezionato.Name;
+                if (puntoSelezionato.IsJoint) chkJoint.Checked = true;
+                else chkJoint.Checked = false;
             }
         }
 
         private void cancellaConfiguToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var result = MessageBox.Show(
+            /*var result = MessageBox.Show(
                 "Continuando verranno perse tutte le modifiche del piano. Continuare?",
                 "Attenzione",
                 MessageBoxButtons.YesNo,
@@ -759,7 +801,7 @@ namespace Mappa
             if (result == DialogResult.No)
             {
                 return;
-            }
+            }*/
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
@@ -808,12 +850,20 @@ namespace Mappa
                     if (string.IsNullOrWhiteSpace(nomePunto))
                         return;
 
-                    bool giaEsistente = listaPunti.Any(x => x.Name == nomePunto);
+                    bool giaEsistente = false;
+                    if (nomePunto == (listBoxPunti.SelectedItem as Punto).Name)
+                    {
+                        giaEsistente = false;
+                    }
+                    else
+                    {
+                        giaEsistente = listaPunti.Any(x => x.Name == nomePunto);
+                    }
 
                     if (!giaEsistente)
                     {
                         Punto vecchioPunto = listBoxPunti.SelectedItem as Punto;
-                        Punto nuovoPunto = new Punto(vecchioPunto.CordinatePunti, nomePunto);
+                        Punto nuovoPunto = new Punto(vecchioPunto.CordinatePunti, nomePunto, chkJoint.Checked);
 
                         listaPunti.Remove(vecchioPunto);
                         listaPunti.Add(nuovoPunto);
@@ -825,7 +875,7 @@ namespace Mappa
                             {
                                 Punto punto1 = (seg.punto1 == vecchioPunto) ? nuovoPunto : seg.punto1;
                                 Punto punto2 = (seg.punto2 == vecchioPunto) ? nuovoPunto : seg.punto2;
-                                Segmento nuovoSegmento = new Segmento(punto1, punto2);
+                                Segmento nuovoSegmento = new Segmento(punto1, punto2, seg.IsAccessible);
 
                                 listaSegmenti[i] = nuovoSegmento;
                             }
@@ -850,6 +900,13 @@ namespace Mappa
                         DisegnaSegmenti();
                         DisegnaPunti();
                         pictureBox.Image = img;
+
+                        txtNomePunto.Text = "";
+                        chkJoint.Checked = false;
+                        chkJoint.Enabled = false;
+                        txtNomePunto.Enabled = false;
+                        btnModificaNomePunto.Enabled = false;
+                        listBoxPunti.ClearSelected();
                     }
                     else throw new Exception("Nome del punto gia usato");
                 }
@@ -923,7 +980,8 @@ namespace Mappa
                         // Prendi il punto del piano corrente
                         Punto punto = collegamento.Floor1 == piano.Level ? collegamento.Punto1 : collegamento.Punto2;
 
-                        int size = 60;
+
+                        int size = pointSize;
                         int x = punto.CordinatePunti.X - size / 2;
                         int y = punto.CordinatePunti.Y - size / 2;
 
@@ -958,11 +1016,13 @@ namespace Mappa
                 using (Graphics g = Graphics.FromImage(img))
                 {
                     Color colore = Color.Blue;
-                    using (Pen pen = new Pen(colore, 10))
+                    int penWidth = Math.Max(2, pointSize / 4);
+                    using (Pen pen = new Pen(colore, penWidth))
                     {
                         g.DrawLine(pen, segmentoSelezionato.punto1.CordinatePunti, segmentoSelezionato.punto2.CordinatePunti);
                     }
                 }
+                DisegnaPunti();
                 pictureBox.Refresh();
             }
         }
@@ -998,6 +1058,114 @@ namespace Mappa
             }
             listBoxSegmenti.SelectedItem = null;
         }
+
+        private void trackDimensioniPunti_Scroll(object sender, EventArgs e)
+        {
+            // Aggiorna la dimensione del punto in base allo slider
+            int dimensione = trackDimensioniPunti.Value;
+            if (dimensione < 10) dimensione = 10;
+            else if (dimensione > 200) dimensione = 200;
+            pointSize = dimensione;
+
+            // Riparti sempre dall'immagine originale
+            img = new Bitmap(immagineOriginale);
+
+            // Ridisegna i segmenti prima dei punti
+            DisegnaSegmenti();
+
+            // Ridisegna i punti con la nuova dimensione
+            foreach (Punto p in listaPunti)
+            {
+                DisegnaPunto(p, Brushes.Red);
+            }
+
+            pictureBox.Image = img;
+            pictureBox.Refresh();
+        }
+
+
+        private void btnrimuoviPunto_Click(object sender, EventArgs e)
+        {
+            rimuoviPuntoToolStripMenuItem_Click(sender, e);
+
+        }
+
+        private void btnRimuoviSegmento_Click(object sender, EventArgs e)
+        {
+            rimuoviSegmentoToolStripMenuItem_Click(sender, e);
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            // Se il flag è impostato, salto il prompt (chiusura dovuta a salvataggio)
+            if (!_suppressClosePrompt && e.CloseReason == CloseReason.UserClosing)
+            {
+                var result = MessageBox.Show(
+                    "Eventuali modifiche non salvate saranno perse.\nVuoi davvero uscire?",
+                    "Attenzione",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
+
+                if (result == DialogResult.No)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+
+            base.OnFormClosing(e);
+        }
+
+        /*protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            // Mostra l'avviso solo se la chiusura è causata dall'utente (X)
+            if (e.CloseReason == CloseReason.UserClosing && this.DialogResult == DialogResult.None)
+            {
+                var result = MessageBox.Show(
+                    "Eventuali modifiche non salvate saranno perse.\nVuoi davvero uscire?",
+                    "Attenzione",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
+
+                if (result == DialogResult.No)
+                {
+                    e.Cancel = true;
+                }
+            }
+            base.OnFormClosing(e);
+        }*/
+
+        /*private void trackDimensioniPunti_Scroll(object sender, EventArgs e)
+        {
+            //in base a trackDimensioniPunti.Value cambia la dimensione dei punti
+            int dimensione = trackDimensioniPunti.Value;
+            if (dimensione < 10) dimensione = 10;
+            else if (dimensione > 200) dimensione = 200;
+            //MessageBox.Show("Dimensione punti: " + dimensione);
+            pointSize = dimensione;
+            using (Graphics gpr = Graphics.FromImage(img))
+            {
+                // Disegna ogni punto dalla lista
+                foreach (Punto p in listaPunti)
+                {
+                    int pointSize = dimensione; // Dimensione del punto da disegnare
+                    Brush colore = Brushes.Red;
+                    if (p.IsJoint)
+                    {
+                        // Disegna un cerchio
+                        gpr.FillEllipse(colore, p.CordinatePunti.X - pointSize / 2, p.CordinatePunti.Y - pointSize / 2, pointSize, pointSize);
+                    }
+                    else
+                    {
+                        // Disegna un quadrato
+                        gpr.FillRectangle(colore, p.CordinatePunti.X - pointSize / 2, p.CordinatePunti.Y - pointSize / 2, pointSize, pointSize);
+                    }
+                    Font font = new Font("Arial", dimensione, FontStyle.Bold);
+                    Brush brush = Brushes.Black;
+                    gpr.DrawString(p.Name, font, brush, new PointF(p.CordinatePunti.X, p.CordinatePunti.Y - 10));
+                }
+            }
+        }*/
     }
 }
 

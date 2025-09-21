@@ -65,7 +65,7 @@ namespace Mappa.Classi
 
         public override string ToString()
         {
-            return $"Segmento {Nome1}-{Nome2}";
+            return $"'{Nome1}'-'{Nome2}'";
         }
 
         public List<string> ToList()
