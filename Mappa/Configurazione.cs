@@ -126,20 +126,14 @@ namespace Mappa
 
         private void AggiornaPeso()
         {
-            //MessageBox.Show("PRIMA"+txtPeso.Text);
-            //if (txtPeso.Text != "10" || txtPeso.Text != "40") return;
-
             if (btnTipoCollegamentoAscensore.Checked)
             {
                 txtPeso.Text = "10";
-                //MessageBox.Show("ASCENSORE");
             }
             else if (btnTipoCollegamentoScala.Checked)
             {
                 txtPeso.Text = "40";
-                //MessageBox.Show("SCALA");
             }
-            //MessageBox.Show("DOPO" + txtPeso.Text);
         }
     }
 }

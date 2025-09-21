@@ -15,7 +15,6 @@ namespace Mappa
     {
         public bool IsAccessible => chkAccessibile.Checked;
         public double Peso;
-        //public double FattoreDifficolta => (double)numFattore.Value * Peso;
         public bool AtoB_Open => chkAtoB.Checked;
         public bool BtoA_Open => chkBtoA.Checked;
         public double AtoB_Fattore => (double)AtoB_numFattore.Value;
@@ -23,7 +22,6 @@ namespace Mappa
 
 
         private CheckBox chkAccessibile = new CheckBox { Text = "Accessibile", Width = 4000 };
-        //private NumericUpDown numFattore = new NumericUpDown { Minimum = 0, Maximum = 300, DecimalPlaces = 1, Value = 100, Width = 200 };
         private CheckBox chkAtoB = new CheckBox { Text = "", Width = 4000 };
         private CheckBox chkBtoA = new CheckBox { Text = "", Width = 4000 };
         private NumericUpDown AtoB_numFattore = new NumericUpDown { Minimum = 0, Maximum = 100, DecimalPlaces = 3, Value = 1, Width = 200 };
@@ -58,7 +56,7 @@ namespace Mappa
                     BtoA_numFattore.Enabled = false;
                 }
 
-                this.DialogResult = DialogResult.OK; // <--- essenziale
+                this.DialogResult = DialogResult.OK;
                 this.Close();
             };
 
@@ -79,10 +77,9 @@ namespace Mappa
             Font bold = new Font("Segoe UI", 9F, FontStyle.Bold);
             Font title = new Font("Segoe UI", 12F, FontStyle.Bold);
             var separatore = new Label { Text = "\n \n \n", Width = 4000 };
-            //var separatore = new Panel { Height = 10, Width = 4000 };
 
-        //aggingi evento alla spunta della casella di chkpendenza, che se chkpendenza è selezionato disabilita chkBtoA e imposta BtoA_numFattore = 1/AtoB_numFattore
-        chkPendenza.CheckedChanged += (s, e) =>
+            //evento alla spunta della casella di chkpendenza, che se chkpendenza è selezionato disabilita chkBtoA e imposta BtoA_numFattore = 1/AtoB_numFattore
+            chkPendenza.CheckedChanged += (s, e) =>
             {
                 if (chkPendenza.Checked)
                 {

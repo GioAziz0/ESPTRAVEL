@@ -419,7 +419,6 @@
             txtNomePunto.PlaceholderText = "Nome Punto";
             txtNomePunto.Size = new Size(105, 29);
             txtNomePunto.TabIndex = 10;
-            txtNomePunto.TextChanged += txtNomePunto_TextChanged;
             // 
             // trackDimensioniPunti
             // 
@@ -503,7 +502,6 @@
             Name = "Mappatura";
             Text = "Modifica del piano";
             FormClosed += Mappatura_FormClosed;
-            Load += Form1_Load;
             ClientSizeChanged += Form1_ClientSizeChanged;
             KeyPress += Mappatura_KeyPress;
             menuStrip1.ResumeLayout(false);

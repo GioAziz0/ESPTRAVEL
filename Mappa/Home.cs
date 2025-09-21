@@ -279,10 +279,7 @@ namespace Mappa
             {
                 if (listViewCollegaPiani.SelectedItems.Count > 0)
                 {
-                    // Prendi il primo elemento selezionato
                     var item = listViewCollegaPiani.SelectedItems[0];
-
-                    // Eventualmente puoi usare item.Tag se ci hai messo un oggetto
                     listViewCollegaPiani.Items.Remove(item);
                 }
                 else

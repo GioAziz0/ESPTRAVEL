@@ -30,7 +30,6 @@ namespace Mappa.Classi
         public override string ToString()
         {
             return $"Punto: {Name}";
-            //return $"Punto: {Name}, Cordinate: ({CordinatePunti.X}, {CordinatePunti.Y})";
         }
     }
 }
