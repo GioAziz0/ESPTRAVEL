@@ -240,6 +240,7 @@
             // chSegmentiContinui
             // 
             chSegmentiContinui.AutoSize = true;
+            chSegmentiContinui.Font = new Font("Segoe UI", 9F);
             chSegmentiContinui.Location = new Point(18, 0);
             chSegmentiContinui.Name = "chSegmentiContinui";
             chSegmentiContinui.Size = new Size(73, 34);
@@ -422,6 +423,7 @@
             Controls.Add(pnlPunti);
             Controls.Add(pnlSegmenti);
             Controls.Add(menuStrip1);
+            Font = new Font("Segoe UI", 9F);
             MainMenuStrip = menuStrip1;
             Name = "Mappatura";
             Text = "Form1";

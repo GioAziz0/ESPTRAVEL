@@ -44,6 +44,25 @@ namespace Mappa.Classi
             Difficolta = difficolta;
         }
 
+        public Segmento Clone()
+        {
+            return new Segmento
+            {
+                Peso = this.Peso,
+                IsAccessible = this.IsAccessible,
+                punto1 = this.punto1,
+                punto2 = this.punto2,
+                Difficolta = new DifficoltaSegmento
+                {
+                    AtoB_open = this.Difficolta.AtoB_open,
+                    BtoA_open = this.Difficolta.BtoA_open,
+                    AtoB_fattore = this.Difficolta.AtoB_fattore,
+                    BtoA_fattore = this.Difficolta.BtoA_fattore
+                }
+            };
+        }
+
+
         public override string ToString()
         {
             return $"Segmento {Nome1}-{Nome2}";

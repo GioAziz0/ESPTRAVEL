@@ -971,8 +971,8 @@ namespace Mappa
         {
             if (listBoxSegmenti.SelectedItem is Segmento segmento)
             {
-                Segmento temp = segmento;
-                using (var form = new ModificaSegmento(segmento))
+                Segmento temp = segmento.Clone();
+                using (var form = new ModificaSegmento(temp))
                 {
                     if (form.ShowDialog() == DialogResult.OK)
                     {
@@ -985,8 +985,8 @@ namespace Mappa
                         MessageBox.Show($"IsAccessible: {segmento.IsAccessible}\nAtoB_open: {segmento.Difficolta.AtoB_open}\nBtoA_open: {segmento.Difficolta.BtoA_open}\nAtoB_fattore: {segmento.Difficolta.AtoB_fattore}\nBtoA_fattore: {segmento.Difficolta.BtoA_fattore}");
                         /*DisegnaSegmenti();*/
                         ////////////////////////
-                        listaSegmenti.Remove(temp);
-                        listaSegmenti.Add(segmento);
+                        /*listaSegmenti.Remove(temp);
+                        listaSegmenti.Add(segmento);*/
                         img = new Bitmap(immagineOriginale);
                         DisegnaSegmenti();
                         DisegnaPunti();
