@@ -92,7 +92,7 @@
             listvPianiCollegati.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             listvPianiCollegati.Location = new Point(613, 47);
             listvPianiCollegati.Name = "listvPianiCollegati";
-            listvPianiCollegati.Size = new Size(170, 193);
+            listvPianiCollegati.Size = new Size(374, 193);
             listvPianiCollegati.TabIndex = 4;
             listvPianiCollegati.UseCompatibleStateImageBehavior = false;
             // 
@@ -148,7 +148,7 @@
             panel1.Controls.Add(btnTipoCollegamentoScala);
             panel1.Location = new Point(613, 246);
             panel1.Name = "panel1";
-            panel1.Size = new Size(172, 172);
+            panel1.Size = new Size(374, 172);
             panel1.TabIndex = 9;
             // 
             // chkBA
@@ -222,7 +222,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1201, 513);
+            ClientSize = new Size(1003, 513);
             Controls.Add(panel1);
             Controls.Add(btn_collega);
             Controls.Add(label3);

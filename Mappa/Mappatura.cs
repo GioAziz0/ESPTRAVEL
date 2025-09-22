@@ -31,7 +31,7 @@ namespace Mappa
         string URL;
         List<int> livelliUtilizzati;
         private List<CollegaPunti> collegamentiPiani;
-        int pointSize = 70; // Dimensione del punto da disegnare
+        int pointSize = 20; // Dimensione del punto da disegnare
         private bool _suppressClosePrompt = false; // Variabile per sopprimere il prompt di chiusura
 
         public Mappatura(List<int> livelliUtilizzati, List<CollegaPunti> collegamentiPiani = null)

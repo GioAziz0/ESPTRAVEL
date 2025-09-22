@@ -41,6 +41,7 @@
             listBoxPunti = new ListBox();
             listBoxPuntiSeg = new ListBox();
             pnlSegmenti = new Panel();
+            label7 = new Label();
             btnRimuoviSegmento = new Button();
             ModificaSegmento = new Button();
             txtLevel = new TextBox();
@@ -68,7 +69,6 @@
             chkJoint = new CheckBox();
             label6 = new Label();
             btnrimuoviPunto = new Button();
-            label7 = new Label();
             menuStrip1.SuspendLayout();
             pnlSegmenti.SuspendLayout();
             panel1.SuspendLayout();
@@ -183,6 +183,16 @@
             pnlSegmenti.Name = "pnlSegmenti";
             pnlSegmenti.Size = new Size(131, 746);
             pnlSegmenti.TabIndex = 6;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Font = new Font("Segoe UI", 13.25F, FontStyle.Bold);
+            label7.Location = new Point(0, 385);
+            label7.Name = "label7";
+            label7.Size = new Size(136, 25);
+            label7.TabIndex = 15;
+            label7.Text = "Lista Segmenti";
             // 
             // btnRimuoviSegmento
             // 
@@ -427,7 +437,7 @@
             trackDimensioniPunti.Name = "trackDimensioniPunti";
             trackDimensioniPunti.Size = new Size(104, 45);
             trackDimensioniPunti.TabIndex = 11;
-            trackDimensioniPunti.Value = 70;
+            trackDimensioniPunti.Value = 20;
             trackDimensioniPunti.Scroll += trackDimensioniPunti_Scroll;
             // 
             // pnlPunti
@@ -478,16 +488,6 @@
             btnrimuoviPunto.Text = "Rimuovi punto selezionato";
             btnrimuoviPunto.UseVisualStyleBackColor = false;
             btnrimuoviPunto.Click += btnrimuoviPunto_Click;
-            // 
-            // label7
-            // 
-            label7.AutoSize = true;
-            label7.Font = new Font("Segoe UI", 13.25F, FontStyle.Bold);
-            label7.Location = new Point(0, 385);
-            label7.Name = "label7";
-            label7.Size = new Size(136, 25);
-            label7.TabIndex = 15;
-            label7.Text = "Lista Segmenti";
             // 
             // Mappatura
             // 
